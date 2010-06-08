@@ -1,0 +1,15 @@
+global proc testYafaraySettingUI()
+{
+if(`windowPref -exists "yafaraySettingWindow"`) 
+    {windowPref -remove "yafaraySettingWindow";}
+if(`window -exists "yafaraySettingWindow"`) 
+    {deleteUI "yafaraySettingWindow";}
+
+window -title "YafaRay Settings" -menuBar true -width 400 -height 700 yafaraySettingWindow;
+menu -label "Help" -helpMenu true;
+    menuItem -label "About Application...";
+columnLayout;
+    button -label "add YafaRay material to object" -width 300 -height 25;
+
+showWindow;
+}
