@@ -1,0 +1,17 @@
+global proc testMaterialNodeCreateUI()
+{
+    global string $testMaterialWindow;
+    if (`windowPref -exists $testMaterialWindow`) {windowPref -remove $testMaterialWindow;}
+    if (`window -exists $testMaterialWindow`) {deleteUI $testMaterialWindow;}
+    $testMaterialWindow=`window -title "test material node" -width 300 -height 50`;
+      columnLayout -adj 1;
+        button -label "test material node" -command "testGlass";
+    showWindow;
+
+}
+
+global proc testMaterialNodeDeleteUI()
+{
+    global string $testMaterialWindow;
+    deleteUI $testMaterialWindow;
+}
