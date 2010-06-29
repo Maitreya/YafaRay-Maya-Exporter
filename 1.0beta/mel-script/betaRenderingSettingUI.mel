@@ -1,0 +1,41 @@
+global proc ySettingUI()
+{
+    global string $yafRenderSettingWindow;
+    if(`windowPref -exists $yafRenderSettingWindow`) {windowPref -remove $yafRenderSettingWindow;}
+    if(`window -exists $yafRenderSettingWindow`) {deleteUI $yafRenderSettingWindow;}
+
+    $yafRenderSettingWindow=`window -title "YafaRay Setting Window" -width 400 -height 600`;
+        string $yafLogo=`columnLayout`;
+          image -image "d:\\My Documents\\maya\\2011\\scripts\\logo1.png";
+          setParent ..;
+          
+        string $yafSetting = `tabLayout -width 400 -height 500 -innerMarginWidth 5 -innerMarginHeight 5`;
+
+          $yafObjSetting = `columnLayout`;
+            separator -height 10 -style "none";
+            text -label "     this menu is for setting meshlight or volumn for mesh objects";
+            separator -height 10 -style "none";
+            $yafMeshLight =` frameLayout -label "Meshlight" -width 390 -collapsable 1`;
+              columnLayout -adj 1;
+                checkBox -label "enable meshlight";
+                setParent..;
+              setParent ..;
+            $yafVolume = `frameLayout -label "Volume" -width 390 -collapsable 1`;
+              setParent ..;
+            setParent ..;
+
+          $yafWorldSetting = `columnLayout`;
+            setParent ..;
+
+          $yafRenderSetting = `columnLayout`;
+            setParent ..;
+
+
+        tabLayout -edit -tabLabel $yafObjSetting "Object Settings"
+                        -tabLabel $yafWorldSetting "World Settings"
+                        -tabLabel $yafRenderSetting "Rendering Settings"
+                        $yafSetting;
+    showWindow;
+    
+
+}

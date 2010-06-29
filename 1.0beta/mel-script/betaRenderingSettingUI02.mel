@@ -1,0 +1,79 @@
+//global proc ySettingUI()
+//{
+    global string $yafRenderSettingWindow;
+    if(`windowPref -exists $yafRenderSettingWindow`) {windowPref -remove $yafRenderSettingWindow;}
+    if(`window -exists $yafRenderSettingWindow`) {deleteUI $yafRenderSettingWindow;}
+
+    $yafRenderSettingWindow=`window -title "YafaRay Setting Window" -width 435 -height 600`;
+        string $yafLogo=`columnLayout -parent $yafRenderSettingWindow`;
+          image -parent $yafLogo -image "yaflogo.xpm";
+          //setParent ..;
+          
+        string $yafSetting = `tabLayout -parent $yafRenderSettingWindow -width 430 /*-height 500*/ -innerMarginWidth 5 -innerMarginHeight 5`;
+
+		  string $yafObjSetting = `columnLayout -parent $yafSetting`;
+		   string $yafObjScroll = `scrollLayout -parent $yafObjSetting -width 420 -height 550`;
+            separator -parent $yafObjScroll -height 10 -style "none";
+            text -parent $yafObjScroll -label "     this menu is for setting meshlight or volumn for mesh objects";
+            separator -parent $yafObjScroll -height 10 -style "none";
+            
+            string $yafMeshLight =` frameLayout -parent $yafObjScroll -label "Meshlight" -width 390 -collapsable 1`;
+              string $yafMeshLightEditor = `columnLayout -parent $yafMeshLight -adj 1`;
+                checkBox -parent $yafMeshLightEditor -label "enable meshlight" -value true 
+				         -onCommand "columnLayout -edit -enable true $yafMeshLightDetailEditor"
+						 -offCommand "columnLayout -edit -enable false $yafMeshLightDetailEditor";
+			  separator -parent $yafMeshLight -height 15 -style "in";
+              string $yafMeshLightDetailEditor = `columnLayout -parent $yafMeshLight`;
+                colorSliderGrp -parent $yafMeshLightDetailEditor -label "Meshlight Color" -rgb 1 1 1;
+                floatSliderGrp -parent $yafMeshLightDetailEditor -label "Power" -minValue 0.0 -maxValue 10000.0 -field true;
+                checkBoxGrp -parent $yafMeshLightDetailEditor -label "Double Sided" -numberOfCheckBoxes 1;
+                intSliderGrp -parent $yafMeshLightDetailEditor -label "Samples" -minValue 0 -maxValue 512 -field true;
+              separator -parent $yafMeshLight -height 15 -style "in";
+                //setParent..;
+              //setParent ..;
+            string $yafBGP = `frameLayout -parent $yafObjScroll -label "BGPLight" -width 390 -collapsable 1`;
+              string $yafBGPEditor = `columnLayout -parent $yafBGP -adj 1`;
+                checkBox -parent $yafBGPEditor -label "enable BG Portal Light" -value true
+				         -onCommand "columnLayout -edit -enable true $yafBGPDetailEditor"
+						 -offCommand "columnLayout -edit -enable false $yafBGPDetailEditor";
+                
+              separator -parent $yafBGP -height 15 -style "in";
+              string $yafBGPDetailEditor = `columnLayout -parent $yafBGP`;
+                floatSliderGrp -parent $yafBGPDetailEditor -label "Power" -minValue 0.0 -maxValue 10000.0 -field true;
+                intSliderGrp -parent $yafBGPDetailEditor -label "Samples" -minValue 0 -maxValue 512 -field true;
+                checkBoxGrp -parent $yafBGPDetailEditor -label "Diffuse Photons" -numberOfCheckBoxes 1;
+                checkBoxGrp -parent $yafBGPDetailEditor -label "Caustic Photons" -numberOfCheckBoxes 1;
+                checkBoxGrp -parent $yafBGPDetailEditor -label "Photon Only" -numberOfCheckBoxes 1;
+              separator -parent $yafBGP -height 15 -style "in";
+			     
+              
+			string $yafVolume = `frameLayout -parent $yafObjScroll -label "Volume" -width 390 -collapsable 1`;
+			  string $yafVolumeEditor = `columnLayout -parent $yafVolume -adj 1`;
+			    checkBox -parent $yafVolumeEditor -label "enable Volume" -value true
+				         -onCommand "columnLayout -edit -enable true $yafVolumeDetailEditor"
+						 -offCommand "columnLayout -edit -enable false $yafVolumeDetailEditor";
+			  separator -parent $yafVolume -height 15 -style "in";
+			  string $yafVolumeDetailEditor = `columnLayout -parent $yafVolume`;
+			    attrEnumOptionMenuGrp -label "Volume Region" //here an attribute should be added
+			                          -enumeratedItem 0 "ExpDensity Volume"
+			                          -enumeratedItem 1 "Uniform Volume"
+			                          -enumeratedItem 2 "Noise Volume";
+            
+              //setParent ..;
+            //setParent ..;
+
+          string $yafWorldSetting = `columnLayout -parent $yafSetting`;
+            //setParent ..;
+
+          string $yafRenderSetting = `columnLayout -parent $yafSetting`;
+            //setParent ..;
+
+
+        tabLayout -edit -tabLabel $yafObjSetting "Object Settings"
+                        -tabLabel $yafWorldSetting "World Settings"
+                        -tabLabel $yafRenderSetting "Rendering Settings"
+                        $yafSetting;
+    showWindow;
+    
+
+//}
