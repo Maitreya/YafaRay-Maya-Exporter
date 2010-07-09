@@ -7,14 +7,12 @@ global proc ySettingUI()
     $yafRenderSettingWindow=`window -title "YafaRay Setting Window" -width 435 -height 600`;
         string $yafLogo=`columnLayout -parent $yafRenderSettingWindow`;
           image -parent $yafLogo -image "yaflogo.xpm";
-          //setParent ..;
-          
+
         string $yafSetting = `tabLayout -parent $yafRenderSettingWindow -width 430 /*-height 500*/ -innerMarginWidth 5 -innerMarginHeight 5`;
 
 		  string $yafObjSetting = `columnLayout -parent $yafSetting`;
 		   yObjectSettingUI($yafObjSetting);     
-              //setParent ..;
-            //setParent ..;
+
           string $yafCameraSetting = `columnLayout -parent $yafSetting`;
             yCameraSettingUI($yafCameraSetting);
                        
@@ -22,6 +20,7 @@ global proc ySettingUI()
             yWorldSettingUI($yafWorldSetting);
 
           string $yafRenderSetting = `columnLayout -parent $yafSetting`;
+            yRenderSettingUI($yafRenderSetting);
             //setParent ..;
 
 
@@ -221,7 +220,47 @@ global proc yWorldSettingUI(string $worldSettingTab)
             text -parent $yafWorldScroll -label "     this menu is for setting background and volume";
       separator -parent $yafWorldScroll -height 10 -style "none";
       
-     string $yafBG = `frameLayout -parent $yafWorldScroll -label "Background Settings"-collapsable 1`;
+     string $yafWVolume=`frameLayout -parent $yafWorldScroll -label "Volume Setting" -collapsable 1`;
+         separator -parent $yafWVolume -height 15 -style "in";
+         string $yafVolumeEnum=`attrEnumOptionMenu -parent $yafWVolume -label "         Volume Type" -attribute ($yafWorldSettingNode+".VolumeTypes")`;
+         int $yafVolumeType=`getAttr ($yafWorldSettingNode+".VolumeTypes")`;
+		 string $yafVolumeNone;
+		 if($yafVolumeType==0)
+		 {$yafVolumeNone = `frameLayout -parent $yafWVolume -label "None" -width 390 -collapsable 1 -collapse false -enable true`;}
+	     else
+	     {$yafVolumeNone = `frameLayout -parent $yafWVolume -label "None" -width 390 -collapsable 1 -collapse true -enable false`;}
+	         attrControlGrp -attribute ($yafWorldSettingNode+".StepSize");
+         string $yafVolumeScatter;
+         if($yafVolumeType==1)
+		 {$yafVolumeScatter = `frameLayout -parent $yafWVolume -label "Single Scatter" -width 390 -collapsable 1 -collapse false -enable true`;}
+	     else
+	     {$yafVolumeScatter = `frameLayout -parent $yafWVolume -label "Single Scatter" -width 390 -collapsable 1 -collapse true -enable false`;}
+             attrControlGrp -attribute ($yafWorldSettingNode+".Adaptive");
+             string $yafOptimizeControl=`checkBoxGrp -parent $yafVolumeScatter -numberOfCheckBoxes 1 -label "" -label1 "Optimize"`;
+             connectControl -index 2 $yafOptimizeControl ($yafWorldSettingNode+".Optimize") ;
+             string $yafAttGridColumn;
+             if(`getAttr ($yafWorldSettingNode+".Optimize")`==1)
+             {$yafAttGridColumn=`columnLayout -parent $yafVolumeScatter -enable true`;}
+             else
+             {$yafAttGridColumn=`columnLayout -parent $yafVolumeScatter -enable false`;}
+                 attrControlGrp -attribute ($yafWorldSettingNode+".AttGridResolution");
+		 string $yafVolumeSky;
+         if($yafVolumeType==2)
+		 {$yafVolumeSky = `frameLayout -parent $yafWVolume -label "Sky" -width 390 -collapsable 1 -collapse false -enable true`;}
+	     else
+	     {$yafVolumeSky = `frameLayout -parent $yafWVolume -label "Sky" -width 390 -collapsable 1 -collapse true -enable false`;}
+	         attrControlGrp -attribute ($yafWorldSettingNode+".Scale");
+	         attrControlGrp -attribute ($yafWorldSettingNode+".Alpha");
+         separator -parent $yafWVolume -height 15 -style "in";
+         //events in this framelayout
+         attrEnumOptionMenu -edit
+		                     -changeCommand ("yVolumeChange"+" "+$yafWorldSettingNode+" "+$yafVolumeNone+" "+$yafVolumeScatter+" "+$yafVolumeSky)
+		                     $yafVolumeEnum;
+		 checkBoxGrp -edit
+		             -onCommand1 ("columnLayout -edit -enable true "+$yafAttGridColumn)
+					 -offCommand1 ("columnLayout -edit -enable false "+$yafAttGridColumn)
+					 $yafOptimizeControl;
+	 string $yafBG = `frameLayout -parent $yafWorldScroll -label "Background Settings"-collapsable 1`;
       separator -parent $yafBG -height 10 -style "none";
       string $yafBackGType=`attrEnumOptionMenu -parent $yafBG -label "         Background Type" -attribute ($yafWorldSettingNode+".BackgroundTypes")`;
 //	                        -changeCommand ("backgroundChange"+" "+$yafWorldSettingNode)`;
@@ -341,6 +380,9 @@ global proc yWorldSettingUI(string $worldSettingTab)
           attrControlGrp -attribute ($yafWorldSettingNode+".xDirection");
           attrControlGrp -attribute ($yafWorldSettingNode+".yDirection");
           attrControlGrp -attribute ($yafWorldSettingNode+".zDirection");
+          button -label "Get angle from selected sun lamp";
+          button -label "Get position from selected sun lamp";
+          button -label "Update angle and position of selected sun lamp";
           attrControlGrp -attribute ($yafWorldSettingNode+".AddRealSun");
           attrControlGrp -attribute ($yafWorldSettingNode+".SunPower");
           attrControlGrp -attribute ($yafWorldSettingNode+".Skylight");
@@ -363,6 +405,9 @@ global proc yWorldSettingUI(string $worldSettingTab)
           attrControlGrp -attribute ($yafWorldSettingNode+".xDirection");
           attrControlGrp -attribute ($yafWorldSettingNode+".yDirection");
           attrControlGrp -attribute ($yafWorldSettingNode+".zDirection");
+          button -label "Get angle from selected sun lamp";
+          button -label "Get position from selected sun lamp";
+          button -label "Update angle and position of selected sun lamp";
           attrControlGrp -attribute ($yafWorldSettingNode+".Altitude");
           attrControlGrp -attribute ($yafWorldSettingNode+".Night");         
           separator -parent $yafDSSunsky -height 15 -style "in";
@@ -399,7 +444,12 @@ global proc yWorldSettingUI(string $worldSettingTab)
           attrControlGrp -attribute ($yafWorldSettingNode+".Brightness");
           attrControlGrp -attribute ($yafWorldSettingNode+".Exposure");
           attrControlGrp -attribute ($yafWorldSettingNode+".GammaEncoding");
-          attrControlGrp -attribute ($yafWorldSettingNode+".DarkTideSunskyColorSpaces");          
+          attrEnumOptionMenuGrp -label "DSSky Color Spaces" 
+		                        -attribute ($yafWorldSettingNode+".DarkTideSunskyColorSpaces") 
+								-enumeratedItem 0 "CIE (E)" 
+								-enumeratedItem 1 "CIE (D50)" 
+								-enumeratedItem 2 "sRBG (D65)" 
+								-enumeratedItem 3 "sRGB (D50)";        
           separator -parent $yafDSSunsky -height 15 -style "in";
           
           checkBoxGrp -edit
@@ -488,6 +538,30 @@ global proc backgroundChange(string $nodeName,string $frameSingle,string $frameG
 			break;
 	}
 }
+global proc yVolumeChange(string $nodeName,string $none,string $scatter,string $sky)
+{
+	int $volumeType=`getAttr ($nodeName+".VolumeTypes")`;
+	switch($volumeType)
+	{
+	    case 0:
+			frameLayout -edit -enable true -collapse false $none;
+			frameLayout -edit -enable false -collapse true $scatter;
+			frameLayout -edit -enable false -collapse true $sky;
+			break;
+		case 1:
+			frameLayout -edit -enable false -collapse true $none;
+			frameLayout -edit -enable true -collapse false $scatter;
+			frameLayout -edit -enable false -collapse true $sky;
+			break;
+		case 2:
+			frameLayout -edit -enable false -collapse true $none;
+			frameLayout -edit -enable false -collapse true $scatter;
+			frameLayout -edit -enable true -collapse false $sky;
+			break;
+		case 3:
+			break;	
+	}
+}
 
 //global proc int testUseIBL(string $yafWorldSettingNode)
 //{
@@ -511,9 +585,318 @@ global proc backgroundChange(string $nodeName,string $frameSingle,string $frameG
 //					print "command excuted too";
 //			  }
 //}
+global proc yRenderSettingUI(string $renderSettingTab)
+{
+	string $nodeTemp[]=`ls -type "renderSetting"`;
+	string $yafRenderSettingNode;
+	if(size($nodeTemp)==0)
+	{
+		$yafRenderSettingNode=`createNode renderSetting`;
+		select -deselect $yafRenderSettingNode;
+	}
+    else
+    {
+		$yafRenderSettingNode=$nodeTemp[0];
+	}
+	
+	$yafRenderScroll=`scrollLayout -parent $renderSettingTab -width 420 -height 550`;
+	    separator -parent $yafRenderScroll -height 10 -style "none";
+		text -parent $yafRenderScroll -label "     this menu is for rendering settings";
+        separator -parent $yafRenderScroll -height 10 -style "none";
+	    string $yafRenderSet=`frameLayout -parent $yafRenderScroll -label "Render Set" -width 390 -collapsable 1`;
+	        separator -parent $yafRenderSet -height 15 -style "in";
+	        text -parent $yafRenderSet -label "this is for render set, since still don't know how to implement, leave it blank";
+	        separator -parent $yafRenderSet -height 15 -style "in";
+	        
+	    string $yafLightingMethodSetting=`frameLayout -parent $yafRenderScroll -label "Lighting Method Setting" -width 390 -collapsable 1`;
+	        separator -parent $yafLightingMethodSetting -height 15 -style "in";
+	        string $yafLightingTypeEnum=`attrEnumOptionMenu -parent $yafLightingMethodSetting -label "           Lighting Type" -attribute ($yafRenderSettingNode+".LightingType")`;
+	        int $yafLightingType=`getAttr ($yafRenderSettingNode+".LightingType")`;
+	        string $yafDirLight;
+	        if($yafLightingType==0)
+	        {$yafDirLight=`frameLayout -parent $yafLightingMethodSetting -label "Direct Light Setting" -width 390 -collapsable 1 -collapse false -enable true`;}
+			else
+			{$yafDirLight=`frameLayout -parent $yafLightingMethodSetting -label "Direct Light Setting" -width 390 -collapsable 1 -collapse true -enable false`;}
+			    string $yafUseCausticControl=`checkBoxGrp -parent $yafDirLight -numberOfCheckBoxes 1 -label "" -label1 "Use Caustic"`;
+			    connectControl -index 2 $yafUseCausticControl ($yafRenderSettingNode+".UseCaustic");
+				string $yafUseCaustic;
+				if(`getAttr ($yafRenderSettingNode+".UseCaustic")`==1)
+				{$yafUseCaustic=`columnLayout -parent $yafDirLight -enable true`;}
+				else
+				{$yafUseCaustic=`columnLayout -parent $yafDirLight -enable false`;}
+				    attrControlGrp -attribute ($yafRenderSettingNode+".Photons");
+				    attrControlGrp -attribute ($yafRenderSettingNode+".CausticMix");
+				    attrControlGrp -attribute ($yafRenderSettingNode+".CausticDepth");
+				    attrControlGrp -attribute ($yafRenderSettingNode+".DirCausticRadius");				    
+				string $yafUseAOControl=`checkBoxGrp -parent $yafDirLight -numberOfCheckBoxes 1 -label "" -label1 "Use AO"`;
+				connectControl -index 2 $yafUseAOControl ($yafRenderSettingNode+".UseAO");
+				string $yafUseAO;
+				if(`getAttr ($yafRenderSettingNode+".UseAO")`==1)
+				{$yafUseAO=`columnLayout -parent $yafDirLight -enable true`;}
+				else
+				{$yafUseAO=`columnLayout -parent $yafDirLight -enable false`;}
+				    attrControlGrp -attribute ($yafRenderSettingNode+".AOSamples");
+				    attrControlGrp -attribute ($yafRenderSettingNode+".AODistance");
+				    attrControlGrp -attribute ($yafRenderSettingNode+".AOColor");
+	        string $yafPathTracing;
+	        if($yafLightingType==1)
+	        {$yafPathTracing=`frameLayout -parent $yafLightingMethodSetting -label "Path Tracing Setting" -width 390 -collapsable 1 -collapse false -enable true`;}
+			else
+			{$yafPathTracing=`frameLayout -parent $yafLightingMethodSetting -label "Path Tracing Setting" -width 390 -collapsable 1 -collapse true -enable false`;}
+			    string $yafCausticEnum=`attrEnumOptionMenu -parent $yafPathTracing -label "           Caustic Method" -attribute ($yafRenderSettingNode+".CausticTypes")`;
+			    int $yafCausticType=`getAttr ($yafRenderSettingNode+".CausticTypes")`;
+			    string $yafPathPhoton;
+			    if(($yafCausticType==2)||($yafCausticType==3))
+				{$yafPathPhoton=`columnLayout -parent $yafPathTracing -enable true`;}
+				else
+				{$yafPathPhoton=`columnLayout -parent $yafPathTracing -enable false`;}
+				    attrControlGrp -attribute ($yafRenderSettingNode+".Photons");
+				    attrControlGrp -attribute ($yafRenderSettingNode+".CausticMix");
+				    attrControlGrp -attribute ($yafRenderSettingNode+".CausticDepth");
+				    attrControlGrp -attribute ($yafRenderSettingNode+".DirCausticRadius");
+					setParent ..;
+				attrControlGrp -attribute ($yafRenderSettingNode+".GIDepth");
+				attrControlGrp -attribute ($yafRenderSettingNode+".PathSamples");	
+				attrControlGrp -attribute ($yafRenderSettingNode+".NoRecursive");					    
+	        string $yafPhotonMapping;
+	        if($yafLightingType==2)
+	        {$yafPhotonMapping=`frameLayout -parent $yafLightingMethodSetting -label "Photon Mapping Setting" -width 390 -collapsable 1 -collapse false -enable true`;}
+			else
+			{$yafPhotonMapping=`frameLayout -parent $yafLightingMethodSetting -label "Photon Mapping Setting" -width 390 -collapsable 1 -collapse true -enable false`;}
+			    attrControlGrp -attribute ($yafRenderSettingNode+".GIDepth")-label "GI Depth";
+			    attrControlGrp -attribute ($yafRenderSettingNode+".Photons") -label "Diffuse Photons";
+			    attrControlGrp -attribute ($yafRenderSettingNode+".DiffuseRadius");	
+				attrControlGrp -attribute ($yafRenderSettingNode+".CausticPhotons");	
+			    attrControlGrp -attribute ($yafRenderSettingNode+".PhotonCausticRadius") -label "Caustic Radius";	
+			    attrControlGrp -attribute ($yafRenderSettingNode+".CausticMix");
+			    attrControlGrp -attribute ($yafRenderSettingNode+".Search");	
+			    attrControlGrp -attribute ($yafRenderSettingNode+".FinalGather");	
+			    attrControlGrp -attribute ($yafRenderSettingNode+".FGBounces") -label "FG Bounces";	
+			    attrControlGrp -attribute ($yafRenderSettingNode+".FGSamples") -label "FG Samples";	
+			    attrControlGrp -attribute ($yafRenderSettingNode+".ShowMap");	
+	        string $yafDebugRender;
+	        if($yafLightingType==3)
+	        {$yafDebugRender=`frameLayout -parent $yafLightingMethodSetting -label "Debug Setting" -width 390 -collapsable 1 -collapse false -enable true`;}
+			else
+			{$yafDebugRender=`frameLayout -parent $yafLightingMethodSetting -label "Debug Setting" -width 390 -collapsable 1 -collapse true -enable false`;}
+			    attrControlGrp -attribute ($yafRenderSettingNode+".DebugType");
+			    attrControlGrp -attribute ($yafRenderSettingNode+".PerturbedNormals");
+	        separator -parent $yafLightingMethodSetting -height 15 -style "in";
+	        //GUI events for lighting type framelayout
+	        attrEnumOptionMenu -edit
+	                           -changeCommand ("yLightingTypeChange"+" "+$yafRenderSettingNode+" "+$yafDirLight+" "+$yafPathTracing+" "+$yafPhotonMapping+" "+$yafDebugRender)
+	                           $yafLightingTypeEnum;
+	        checkBoxGrp -edit
+			            -onCommand1 ("columnLayout -edit -enable true "+$yafUseCaustic)
+						-offCommand1 ("columnLayout -edit -enable false "+$yafUseCaustic)    
+						$yafUseCausticControl;
+	        checkBoxGrp -edit
+			            -onCommand1 ("columnLayout -edit -enable true "+$yafUseAO)
+						-offCommand1 ("columnLayout -edit -enable false "+$yafUseAO)    
+						$yafUseAOControl;
+			attrEnumOptionMenu -edit
+	                           -changeCommand ("yCausticEnumChange"+" "+$yafRenderSettingNode+" "+$yafPathPhoton)
+	                           $yafCausticEnum;
+	        
+		string $yafGeneralSetting=`frameLayout -parent $yafRenderScroll -label "General Render Setting" -width 390 -collapsable 1`;
+	        separator -parent $yafGeneralSetting -height 15 -style "in";
+			attrControlGrp -attribute ($yafRenderSettingNode+".RayDepth");
+	        attrControlGrp -attribute ($yafRenderSettingNode+".ClayRender");
+	        separator -parent $yafGeneralSetting -height 8 -style "in";
+	        string $yafTransShadowControl=`checkBoxGrp -parent $yafGeneralSetting -numberOfCheckBoxes 1 -label "" -label1 "Transparent Shadows"`;
+            connectControl -index 2 $yafTransShadowControl ($yafRenderSettingNode+".TransparentShadows");	
+			
+			string $yafShadowDepth;
+			if(`getAttr ($yafRenderSettingNode+".TransparentShadows")`==1 )
+	         {$yafShadowDepth=`attrControlGrp -attribute ($yafRenderSettingNode+".ShadowDepth") -label "Shadow Depth" -enable true`;}
+	        else 
+	          {$yafShadowDepth=`attrControlGrp -attribute ($yafRenderSettingNode+".ShadowDepth") -label "Shadow Depth" -enable false`;}
+	        separator -parent $yafGeneralSetting -height 8 -style "in";  
+			checkBoxGrp -edit
+			            -onCommand1 ("attrControlGrp -edit -enable true "+$yafShadowDepth)
+						-offCommand1 ("attrControlGrp -edit -enable false "+$yafShadowDepth)    
+						$yafTransShadowControl;
+			      
+	        string $yafAutoThreadsControl=`checkBoxGrp -parent $yafGeneralSetting -numberOfCheckBoxes 1 -label "" -label1 "Auto Threads"`;
+	        connectControl -index 2 $yafAutoThreadsControl ($yafRenderSettingNode+".AutoThreads");
+			string $yafThreads;
+			if(`getAttr ($yafRenderSettingNode+".AutoThreads")`==1 )
+	         {$yafThreads=`attrControlGrp -attribute ($yafRenderSettingNode+".Threads") -label "Threads" -enable false`;}
+	        else 
+	          {$yafThreads=`attrControlGrp -attribute ($yafRenderSettingNode+".Threads") -label "Threads" -enable true`;}	        
+	        separator -parent $yafGeneralSetting -height 8 -style "in";
+	        checkBoxGrp -edit
+			            -onCommand1 ("attrControlGrp -edit -enable false "+$yafThreads)
+						-offCommand1 ("attrControlGrp -edit -enable true "+$yafThreads)    
+						$yafAutoThreadsControl;
+			attrControlGrp -attribute ($yafRenderSettingNode+".RenderZBuffer");
+	        separator -parent $yafGeneralSetting -height 15 -style "in";
+	        
+	    string $yafOutputSetting=`frameLayout -parent $yafRenderScroll -label "Output Setting" -width 390 -collapsable 1`;
+	        separator -parent $yafOutputSetting -height 15 -style "in";
+	        attrControlGrp -attribute ($yafRenderSettingNode+".Gamma");
+	        attrControlGrp -attribute ($yafRenderSettingNode+".GammaInput");
+	        attrControlGrp -attribute ($yafRenderSettingNode+".ClampRGB");
+	        attrControlGrp -attribute ($yafRenderSettingNode+".PremultAlpha");
+	        string $yafOutMethod=`frameLayout -parent $yafOutputSetting -label "Output Method Setting" -width 390 -collapsable 0`;	            
+	            separator -parent $yafOutMethod -height 15 -style "in";
+	            button -parent $yafOutMethod -label "Result to Maya";
+				string $yafDrawRenderParamControl=`checkBoxGrp -parent $yafOutMethod -numberOfCheckBoxes 1 -label "" -label1 "Draw Render Params"`;
+	            connectControl -index 2 $yafTransShadowControl ($yafRenderSettingNode+".DrawRenderParams");
+	            string $yafOutCustomString;
+	            if(`getAttr ($yafRenderSettingNode+".DrawRenderParams")`==1 )
+	            {$yafOutCustomString=`textFieldGrp -parent $yafOutMethod -label "Custom String" -enable true`;}
+	            else 
+	            {$yafOutCustomString=`textFieldGrp -parent $yafOutMethod -label "Custom String" -enable false`;}
+	            checkBoxGrp -edit
+			            -onCommand1 ("textFieldGrp -edit -enable true "+$yafOutCustomString)
+						-offCommand1 ("textFieldGrp -edit -enable false "+$yafOutCustomString)    
+						$yafDrawRenderParamControl;
+	            separator -parent $yafOutMethod -height 15 -style "in";
+	            string $yafOutMethodEnum=`attrEnumOptionMenu -parent $yafOutMethod -label "                Output Method" -attribute ($yafRenderSettingNode+".OutputMethod")`;
+	            int $yafOutMethodTest=`getAttr ($yafRenderSettingNode+".OutputMethod")`;
+	            string $yafGUI;
+	            if($yafOutMethodTest==0)
+	            {$yafGUI=`frameLayout -parent $yafOutMethod -label "GUI Setting" -width 390 -collapsable 0 -collapse false -enable true`;}
+	            else
+	            {$yafGUI=`frameLayout -parent $yafOutMethod -label "GUI Setting" -width 390 -collapsable 0 -collapse true -enable false`;}
+	                attrControlGrp -attribute ($yafRenderSettingNode+".TileOrder");
+	                attrControlGrp -attribute ($yafRenderSettingNode+".TileSize");
+	                attrControlGrp -attribute ($yafRenderSettingNode+".AutoSave");
+	                attrControlGrp -attribute ($yafRenderSettingNode+".AlphaOnAutosave");
+	                attrControlGrp -attribute ($yafRenderSettingNode+".ShowResampleMask");
+	            string $yafImage;
+	            if($yafOutMethodTest==1)
+				{$yafImage=`frameLayout -parent $yafOutMethod -label "Image Setting" -width 390 -collapsable 0 -collapse false -enable true`;}
+				else
+				{$yafImage=`frameLayout -parent $yafOutMethod -label "Image Setting" -width 390 -collapsable 0 -collapse true -enable false`;}
+	                attrControlGrp -attribute ($yafRenderSettingNode+".OutputFileType");
+	            string $yafXML;
+	            if($yafOutMethodTest==2)
+				{$yafXML=`frameLayout -parent $yafOutMethod -label "XML Setting" -width 390 -collapsable 0 -collapse false -enable true`;}
+				else
+				{$yafXML=`frameLayout -parent $yafOutMethod -label "XML Setting" -width 390 -collapsable 0 -collapse true -enable false`;}
+	                separator -parent $yafXML -height 15 -style "in";
+	                text -parent $yafXML -label "here is bland till now";
+	                separator -parent $yafXML -height 15 -style "in";
+                    setParent ..;
+                attrEnumOptionMenu -edit
+                                   -changeCommand ("yOutputMethodChange"+" "+$yafRenderSettingNode+" "+$yafGUI+" "+$yafImage+" "+$yafXML)
+                                   $yafOutMethodEnum;
+	        separator -parent $yafOutputSetting -height 15 -style "in";
+	    string $yafAASetting=`frameLayout -parent $yafRenderScroll -label "AA setting" -width 390 -collapsable 1`;
+	        string $yafAAPassControl=`attrFieldSliderGrp -parent $yafAASetting -label "AA Passes" -attribute ($yafRenderSettingNode+".AAPasses")`;
+	        attrControlGrp -attribute ($yafRenderSettingNode+".AASamples")-label "AA Samples";
+	        string $yafAAThrSam;
+			if(`getAttr ($yafRenderSettingNode+".AAPasses")`==1 )
+			{$yafAAThrSam=`columnLayout -parent $yafAASetting -enable false`;}
+			else
+			{$yafAAThrSam=`columnLayout -parent $yafAASetting -enable true`;}
+	            attrControlGrp -attribute ($yafRenderSettingNode+".AAThreshold") -label "AA Threshhold";
+	            attrControlGrp -attribute ($yafRenderSettingNode+".AAIncSamples") -label "AA Inc Samples";
+	            setParent ..;
+	        attrFieldSliderGrp -edit
+	                           -changeCommand ("yAAPassChange"+" "+$yafRenderSettingNode+" "+$yafAAThrSam)
+	                           $yafAAPassControl;
+	        attrControlGrp -attribute ($yafRenderSettingNode+".FilterType");
+	        attrControlGrp -attribute ($yafRenderSettingNode+".AAPixelWidth") -label "AA Pixel Width";
 
 
 
+}
+global proc yOutputMethodChange(string $nodeName,string $gui,string $image,string $xml)
+{
+	int $type;
+	$type=`getAttr ($nodeName+".OutputMethod")`;
+	switch($type)
+	{
+		case 0:
+			frameLayout -edit -enable true -collapse false $gui;
+			frameLayout -edit -enable false -collapse true $image;
+			frameLayout -edit -enable false -collapse true $xml;
+			break;
+		case 1:
+			frameLayout -edit -enable false -collapse true $gui;
+			frameLayout -edit -enable true -collapse false $image;
+			frameLayout -edit -enable false -collapse true $xml;
+			break;
+		case 2:
+			frameLayout -edit -enable false -collapse true $gui;
+			frameLayout -edit -enable false -collapse true $image;
+			frameLayout -edit -enable true -collapse false $xml;
+			break;
+		default:
+			break;			
+	}
+	
+}
+global proc yAAPassChange(string $nodeName,string $columnName)
+{
+	int $AAPass;
+	$AAPass=`getAttr ($nodeName+".AAPasses")`;
+	if($AAPass>1)
+	columnLayout -edit -enable true $columnName;
+	else
+	columnLayout -edit -enable false $columnName;	
+}
+global proc yLightingTypeChange(string $nodeName,string $direct,string $pathtracing,string $photon,string $debug)
+{
+	int $lightType;
+	$lightType=`getAttr ($nodeName+".LightingType")`;
+	switch($lightType)
+	{
+		case 0:
+			frameLayout -edit -enable true -collapse false $direct;
+			frameLayout -edit -enable false -collapse true $pathtracing;
+			frameLayout -edit -enable false -collapse true $photon;
+			frameLayout -edit -enable false -collapse true $debug;
+			break;
+		case 1:
+			frameLayout -edit -enable false -collapse true $direct;
+			frameLayout -edit -enable true -collapse false $pathtracing;
+			frameLayout -edit -enable false -collapse true $photon;
+			frameLayout -edit -enable false -collapse true $debug;
+			break;
+		case 2:
+			frameLayout -edit -enable false -collapse true $direct;
+			frameLayout -edit -enable false -collapse true $pathtracing;
+			frameLayout -edit -enable true -collapse false $photon;
+			frameLayout -edit -enable false -collapse true $debug;
+			break;
+		case 3:
+			frameLayout -edit -enable false -collapse true $direct;
+			frameLayout -edit -enable false -collapse true $pathtracing;
+			frameLayout -edit -enable false -collapse true $photon;
+			frameLayout -edit -enable true -collapse false $debug;
+			break;
+		default:
+			break;
+	}
+}
+
+global proc yCausticEnumChange(string $nodeName,string $columnName)
+{
+	int $causticType;
+	$causticType=`getAttr ($nodeName+".CausticTypes")`;
+	switch($causticType)
+	{
+		case 0:
+			columnLayout -edit -enable false $columnName;
+			break;
+		case 1:
+			columnLayout -edit -enable false $columnName;
+			break;
+		case 2:
+			columnLayout -edit -enable true $columnName;
+			break;
+		case 3:
+			columnLayout -edit -enable true $columnName;
+			break;
+		default:
+			break;
+	}
+
+}
 
 
 
