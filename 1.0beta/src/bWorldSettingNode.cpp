@@ -62,6 +62,14 @@ const MTypeId worldSettingNode::id(0x75301);
 	  MObject worldSettingNode::backgoundCaustic;
 	  MObject worldSettingNode::backgoundPower;
 
+	//volume settings
+	MObject worldSettingNode::volumeStepSize;
+	MObject worldSettingNode::volumeAdaptive;
+	MObject worldSettingNode::volumeOptimize;
+	MObject worldSettingNode::volumeAttMapScale;
+    MObject worldSettingNode::volumeSkyST;
+	MObject worldSettingNode::volumeAlpha;
+
 	//the node needs an output, even we dont need it...
 	  MObject worldSettingNode::worldOutput;
 
@@ -95,15 +103,16 @@ MStatus worldSettingNode::initialize()
 	volumeInitTypes=enumAttr.create("VolumeTypes","wvoty",0);
 	enumAttr.addField("None",0);
 	enumAttr.addField("Single Scatter",1);
+    enumAttr.addField("Sky",2);
 	//MCHECKERROR(stat, "create volume types");
 	enumAttr.setKeyable(true);
 	enumAttr.setStorable(true);
 
-	DSSkyColorSpaces=enumAttr.create("DarkTide'sSunskyColorSpaces","wdasu",0);
-	enumAttr.addField("CIE(E)",0);
-	enumAttr.addField("CIE(D50)",1);
-	enumAttr.addField("sRBG(D65)",2);
-	enumAttr.addField("sRGB(D50)",3);
+	DSSkyColorSpaces=enumAttr.create("DarkTideSunskyColorSpaces","wdasu",0);
+	enumAttr.addField("CIEE",0);
+	enumAttr.addField("CIED50",1);
+	enumAttr.addField("sRBGD65",2);
+	enumAttr.addField("sRGBD50",3);
 	//MCHECKERROR(stat, "create DarkTide's sunsky color spaces");
 	enumAttr.setKeyable(true);
 	enumAttr.setStorable(true);
@@ -148,31 +157,31 @@ MStatus worldSettingNode::initialize()
 	numAttr.setMin(1.0f);
 	numAttr.setMax(20.0f);
 
-	AHorBrght=numAttr.create("A(HorBrght)","wahb",MFnNumericData::kFloat,0.0);
+	AHorBrght=numAttr.create("AHorBrght","wahb",MFnNumericData::kFloat,0.0);
 	numAttr.setKeyable(true);
 	numAttr.setStorable(true);
 	numAttr.setMin(0.0f);
 	numAttr.setMax(10.0f);
 
-	BHorSprd=numAttr.create("B(HorSprd)","wbhs",MFnNumericData::kFloat,0.0);
+	BHorSprd=numAttr.create("BHorSprd","wbhs",MFnNumericData::kFloat,0.0);
 	numAttr.setKeyable(true);
 	numAttr.setStorable(true);
 	numAttr.setMin(0.0f);
 	numAttr.setMax(10.0f);
 
-	CSunBrght=numAttr.create("C(SunBrght)","wcsb",MFnNumericData::kFloat,0.0);
+	CSunBrght=numAttr.create("CSunBrght","wcsb",MFnNumericData::kFloat,0.0);
 	numAttr.setKeyable(true);
 	numAttr.setStorable(true);
 	numAttr.setMin(0.0f);
 	numAttr.setMax(10.0f);
 
-	DSunSize=numAttr.create("D(Sunsize)","wdss",MFnNumericData::kFloat,0.0);
+	DSunSize=numAttr.create("DSunsize","wdss",MFnNumericData::kFloat,0.0);
 	numAttr.setKeyable(true);
 	numAttr.setStorable(true);
 	numAttr.setMin(0.0f);
 	numAttr.setMax(10.0f);
 
-	EBacklight=numAttr.create("E(Backlight)","webl",MFnNumericData::kFloat,0.0);
+	EBacklight=numAttr.create("EBacklight","webl",MFnNumericData::kFloat,0.0);
 	numAttr.setKeyable(true);
 	numAttr.setStorable(true);
 	numAttr.setMin(0.0f);
@@ -218,7 +227,7 @@ MStatus worldSettingNode::initialize()
 	numAttr.setMax(128);
 
 	//DarkTide's sunsky attribute
-	DSTurbidity=numAttr.create("DarkTide'sTurbidity","wdatu",MFnNumericData::kFloat,2.0);
+	DSTurbidity=numAttr.create("DarkTideTurbidity","wdatu",MFnNumericData::kFloat,2.0);
 	numAttr.setKeyable(true);
 	numAttr.setStorable(true);
 	numAttr.setMin(2.0);
@@ -332,6 +341,38 @@ MStatus worldSettingNode::initialize()
 	 numAttr.setMin(0.0);
 	 numAttr.setMax(10000.0);
 
+	volumeStepSize=numAttr.create("StepSize","wvstsi",MFnNumericData::kInt,0);
+	 numAttr.setKeyable(true);
+	 numAttr.setStorable(true);
+	 numAttr.setMin(0);
+	 numAttr.setMax(100);
+
+	volumeAdaptive=numAttr.create("Adaptive","wvad",MFnNumericData::kBoolean,0);
+	 numAttr.setKeyable(true);
+	 numAttr.setStorable(true);
+
+	volumeOptimize=numAttr.create("Optimize","wvop",MFnNumericData::kBoolean,0);
+	 numAttr.setKeyable(true);
+	 numAttr.setStorable(true);
+
+	volumeAttMapScale=numAttr.create("AttGridResolution","wvagr",MFnNumericData::kInt,1);
+	 numAttr.setKeyable(true);
+	 numAttr.setStorable(true);
+	 numAttr.setMin(1);
+	 numAttr.setMax(50);
+
+	 volumeSkyST=numAttr.create("Scale","wvsc",MFnNumericData::kDouble,0.0);
+	 numAttr.setKeyable(true);
+	 numAttr.setStorable(true);
+	 numAttr.setMin(0.0001);
+	 numAttr.setMax(10.000);
+
+	volumeAlpha=numAttr.create("Alpha","wval",MFnNumericData::kDouble,0.0);
+	 numAttr.setKeyable(true);
+	 numAttr.setStorable(true);
+	 numAttr.setMin(0.0001);
+	 numAttr.setMax(10.000);
+
 	//the node needs an output, even we dont need it...
 	worldOutput=numAttr.create("WorldSettingOutput","wwso",MFnNumericData::kBoolean);
 	numAttr.setDefault(true);
@@ -399,6 +440,13 @@ void worldSettingNode::setAttribute()
 	addAttribute(backgoundCaustic);
 	addAttribute(backgoundPower);
 
+	addAttribute(volumeStepSize);
+	addAttribute(volumeAdaptive);
+	addAttribute(volumeOptimize);
+	addAttribute(volumeAttMapScale);
+    addAttribute(volumeSkyST);
+	addAttribute(volumeAlpha);
+
 	//the node needs an output, even we dont need it...
 	addAttribute(worldOutput);
 
@@ -450,5 +498,12 @@ void worldSettingNode::setAttribute()
 	attributeAffects(backgroundDiffuse,worldOutput);
 	attributeAffects(backgoundCaustic,worldOutput);
 	attributeAffects(backgoundPower,worldOutput);
+
+	attributeAffects(volumeStepSize,worldOutput);
+	attributeAffects(volumeAdaptive,worldOutput);
+	attributeAffects(volumeOptimize,worldOutput);
+	attributeAffects(volumeAttMapScale,worldOutput);
+    attributeAffects(volumeSkyST,worldOutput);
+	attributeAffects(volumeAlpha,worldOutput);
 }
 

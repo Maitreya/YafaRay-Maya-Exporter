@@ -78,6 +78,16 @@ private:
 	static MObject backgoundCaustic;
 	static MObject backgoundPower;
 
+	//volume settings
+//	static MObject volumeIntType;//enum
+	static MObject volumeStepSize;
+	static MObject volumeAdaptive;
+	static MObject volumeOptimize;
+	static MObject volumeAttMapScale;
+    static MObject volumeSkyST;
+	static MObject volumeAlpha;
+
+
 	//the node needs an output, even we dont need it...
 	static MObject worldOutput;
 

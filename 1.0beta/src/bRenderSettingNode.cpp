@@ -173,6 +173,16 @@ MStatus renderSettingNode::initialize()
 	 numAttr.setStorable(true);
 	 numAttr.setKeyable(true);
 
+	 renderOutputFileType=enumAttr.create("OutputFileType","ropft",0);
+	 enumAttr.addField("TIFF",0);
+	 enumAttr.addField("TGA",1);
+	 enumAttr.addField("PNG",2);
+	 enumAttr.addField("JPEG",3);
+	 enumAttr.addField("HDR",4);
+	 enumAttr.addField("EXR",5);
+	 numAttr.setKeyable(true);
+	 numAttr.setStorable(true);
+
 	 renderShowSampleMask=numAttr.create("ShowResampleMask","rsram",MFnNumericData::kBoolean,0);
 	 numAttr.setStorable(true);
 	 numAttr.setKeyable(true);
@@ -227,10 +237,10 @@ MStatus renderSettingNode::initialize()
 	 numAttr.setMin(1);
 	 numAttr.setMax(20);
 
-	 renderLightType=enumAttr.create("LightingType","rlity",0);//this is AA type actually....
+	 renderLightType=enumAttr.create("LightingType","rlity",0);
 	 enumAttr.addField("Direct Lighting",0);
-	 enumAttr.addField("Photon Mapping",1);
-	 enumAttr.addField("Bidirectional(EXPERIMENTAL)",2);
+	 enumAttr.addField("Path Tracing",1);
+	 enumAttr.addField("Photon Mapping",2);
 	 enumAttr.addField("Debug",3);
 	 numAttr.setKeyable(true);
 	 numAttr.setStorable(true);

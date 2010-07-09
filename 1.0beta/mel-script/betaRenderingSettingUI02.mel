@@ -12,96 +12,14 @@ global proc ySettingUI()
         string $yafSetting = `tabLayout -parent $yafRenderSettingWindow -width 430 /*-height 500*/ -innerMarginWidth 5 -innerMarginHeight 5`;
 
 		  string $yafObjSetting = `columnLayout -parent $yafSetting`;
-		   yObjectSettingUI($yafObjSetting);
-		    
-            
+		   yObjectSettingUI($yafObjSetting);     
               //setParent ..;
             //setParent ..;
           string $yafCameraSetting = `columnLayout -parent $yafSetting`;
-            string $yafCameraScroll = `scrollLayout -parent $yafCameraSetting -width 420 -height 550`;
-              separator -parent $yafCameraScroll -height 10 -style "none";
-              text -parent $yafCameraScroll -label "     this menu is for create and edit cameras";
-              separator -parent $yafCameraScroll -height 10 -style "none";
-              string $yafPerspective = `frameLayout -parent $yafCameraScroll -label "Perspective Camera" -width 390 -collapsable 1`;
-                string $yafPerspCreateButton = `columnLayout -parent $yafPerspective`;
-                  button -parent $yafPerspCreateButton -label "Create Perspective Camera" -width 200
-				         -command "columnLayout -edit -enable true $yafPerspDetail";
-                separator -parent $yafPerspective -height 15 -style "in";
-                string $yafPerspDetail = `columnLayout -parent $yafPerspective -enable false`;
-                  attrEnumOptionMenuGrp -parent $yafPerspDetail -label "Bokeh Type" //here needed an attribute
-                                        -enumeratedItem 0 "disk1"
-                                        -enumeratedItem 1 "disk2"
-                                        -enumeratedItem 2 "triangle"
-                                        -enumeratedItem 3 "square"
-                                        -enumeratedItem 4 "pentagon"
-                                        -enumeratedItem 5 "hexagon"
-                                        -enumeratedItem 6 "ring";
-				  floatSliderGrp -parent $yafPerspDetail -label "Rotation" -minValue 0.0 -maxValue 180.0 -field true;
-				  intSliderGrp -parent $yafPerspDetail -label "Aperture Size" -minValue 0 -maxValue 20 -field true;
-				  attrEnumOptionMenuGrp -parent $yafPerspDetail -label "Bokeh Bias"
-				                        -enumeratedItem 0 "uniform"
-										-enumeratedItem 1 "edge"
-										-enumeratedItem 2 "center";
-				  //separator -parent $yafPerspDetail -height 15 -style "in";
-				  floatSliderGrp -parent $yafPerspDetail -label "Dof Distance" -minValue 0.0 -maxValue 1000.0 -field true;
-				  checkBoxGrp -parent $yafPerspDetail -numberOfCheckBoxes 1 -label "" -label1 "Object Focus"
-				              -onCommand1 "textFieldGrp -edit -enable true $yafPerspText"
-							  -offCommand1 "textFieldGrp -edit -enable false $yafPerspText";
-				  string $yafPerspText = `textFieldGrp -parent $yafPerspDetail -label "Dof Object" -editable true -enable false`;                                    
-                separator -parent $yafPerspective -height 15 -style "in";
-                
-              string $yafOrthographic = `frameLayout -parent $yafCameraScroll -label "Orthographic Camera" -width 390 -collapsable 1`;
-                string $yafOrthoCreateButton = `columnLayout -parent $yafOrthographic`;
-                  button -parent $yafOrthoCreateButton -label "Create Orthographic Camera" -width 200
-				         -command "columnLayout -edit -enable true $yafOrthoDetail";
-                separator -parent $yafOrthographic -height 15 -style "in";
-                string $yafOrthoDetail = `columnLayout -parent $yafOrthographic -enable false`;
-                   intSliderGrp -parent $yafOrthoDetail -label "Scale" -minValue 0 -maxValue 10000 -field true;
-                separator -parent $yafOrthographic -height 15 -style "in";
-                
-              string $yafAngular = `frameLayout -parent $yafCameraScroll -label "Angular Camera" -width 390 -collapsable 1`;
-                string $yafAngularCreateButton = `columnLayout -parent $yafAngular`;
-                  button -parent $yafAngularCreateButton -label "Create Angular Camera" -width 200
-				         -command "columnLayout -edit -enable true $yafAngularDetail";
-                separator -parent $yafAngular -height 15 -style "in";
-                string $yafAngularDetail = `columnLayout -parent $yafAngular -enable false`;
-                  checkBoxGrp -parent $yafAngularDetail -label "" -label1 "Mirrored" -numberOfCheckBoxes 1;
-                  checkBoxGrp -parent $yafAngularDetail -label "" -label1 "Circular" -numberOfCheckBoxes 1;
-                  floatSliderGrp -parent $yafAngularDetail -label "Angle" -minValue 0.0 -maxValue 180.0 -field true;
-                  floatSliderGrp -parent $yafAngularDetail -label "Max Angle" -minValue 0.0 -maxValue 180.0 -field true;
-                separator -parent $yafAngular -height 15 -style "in";
-                
-              string $yafArchitect = `frameLayout -parent $yafCameraScroll -label "Architect Camera" -width 390 -collapsable 1`;
-                string $yafArchitectCreateButton = `columnLayout -parent $yafArchitect`;
-                  button -parent $yafArchitectCreateButton -label "Create Architect Camera" -width 200
-				         -command "columnLayout -edit -enable true $yafArchDetail";
-                separator -parent $yafArchitect -height 15 -style "in";
-                string $yafArchDetail = `columnLayout -parent $yafArchitect`;
-                  attrEnumOptionMenuGrp -parent $yafArchDetail -label "Bokeh Type" //here needed an attribute
-                                        -enumeratedItem 0 "disk1"
-                                        -enumeratedItem 1 "disk2"
-                                        -enumeratedItem 2 "triangle"
-                                        -enumeratedItem 3 "square"
-                                        -enumeratedItem 4 "pentagon"
-                                        -enumeratedItem 5 "hexagon"
-                                        -enumeratedItem 6 "ring";
-                  floatSliderGrp -parent $yafArchDetail -label "Bokeh Rtation" -minValue 0.0 -maxValue 180.0 -field true;
-                  intSliderGrp -parent $yafArchDetail -label "Aperture Size" -minValue 0 -maxValue 20 -field true;
-                  attrEnumOptionMenuGrp -parent $yafArchDetail -label "Bokeh Bias"
-				                        -enumeratedItem 0 "uniform"
-										-enumeratedItem 1 "edge"
-										-enumeratedItem 2 "center";
-				  floatSliderGrp -parent $yafArchDetail -label "Dof Distance" -minValue 0.0 -maxValue 1000.0 -field true;
-				  checkBoxGrp -parent $yafArchDetail -numberOfCheckBoxes 1 -label "" -label1 "Object Focus"
-				              -onCommand1 "textFieldGrp -edit -enable true $yafPerspText"
-							  -offCommand1 "textFieldGrp -edit -enable false $yafPerspText";
-				  string $yafPerspText = `textFieldGrp -parent $yafArchDetail -label "Dof Object" -editable true -enable false`;  
-				  
-                separator -parent $yafArchitect -height 15 -style "in";
-                
-
+            yCameraSettingUI($yafCameraSetting);
+                       
           string $yafWorldSetting = `columnLayout -parent $yafSetting`;
-            //setParent ..;
+            yWorldSettingUI($yafWorldSetting);
 
           string $yafRenderSetting = `columnLayout -parent $yafSetting`;
             //setParent ..;
@@ -125,9 +43,9 @@ global proc yObjectSettingUI(string $objSettingTab)
             
             string $yafMeshLight =` frameLayout -parent $yafObjScroll -label "Meshlight" -width 390 -collapsable 1`;
               string $yafMeshLightEditor = `columnLayout -parent $yafMeshLight -adj 1`;
-                checkBox -parent $yafMeshLightEditor -label "enable meshlight" -value false 
-				         -onCommand "columnLayout -edit -enable true $yafMeshLightDetailEditor"
-						 -offCommand "columnLayout -edit -enable false $yafMeshLightDetailEditor";
+                string $yafMeshCheckbox = `checkBox -parent $yafMeshLightEditor -label "enable meshlight" -value false `;
+				        // -onCommand "columnLayout -edit -enable true $yafMeshLightDetailEditor"
+						 //-offCommand "columnLayout -edit -enable false $yafMeshLightDetailEditor";
 			  separator -parent $yafMeshLight -height 15 -style "in";
               string $yafMeshLightDetailEditor = `columnLayout -parent $yafMeshLight -enable false`;
                 colorSliderGrp -parent $yafMeshLightDetailEditor -label "Meshlight Color" -rgb 1 1 1;
@@ -139,9 +57,9 @@ global proc yObjectSettingUI(string $objSettingTab)
               //setParent ..;
             string $yafBGP = `frameLayout -parent $yafObjScroll -label "BGPLight" -width 390 -collapsable 1`;
               string $yafBGPEditor = `columnLayout -parent $yafBGP -adj 1`;
-                checkBox -parent $yafBGPEditor -label "enable BG Portal Light" -value false
-				         -onCommand "columnLayout -edit -enable true $yafBGPDetailEditor"
-						 -offCommand "columnLayout -edit -enable false $yafBGPDetailEditor";
+                string $yafBGPCheckbox = `checkBox -parent $yafBGPEditor -label "enable BG Portal Light" -value false`;
+				         //-onCommand ("columnLayout -edit -enable true "+$yafBGPDetailEditor)
+						 //-offCommand ("columnLayout -edit -enable false "+$yafBGPDetailEditor);
                 
               separator -parent $yafBGP -height 15 -style "in";
               string $yafBGPDetailEditor = `columnLayout -parent $yafBGP -enable false`;
@@ -151,13 +69,13 @@ global proc yObjectSettingUI(string $objSettingTab)
                 checkBoxGrp -parent $yafBGPDetailEditor -label "" -label1 "Caustic Photons" -numberOfCheckBoxes 1;
                 checkBoxGrp -parent $yafBGPDetailEditor -label "" -label1 "Photon Only" -numberOfCheckBoxes 1;
               separator -parent $yafBGP -height 15 -style "in";
-			     
+
               
 			string $yafVolume = `frameLayout -parent $yafObjScroll -label "Volume" -width 390 -collapsable 1`;
 			  string $yafVolumeEditor = `columnLayout -parent $yafVolume -adj 1`;
-			    checkBox -parent $yafVolumeEditor -label "enable Volume" -value false
-				         -onCommand "columnLayout -edit -enable true $yafVolumeDetailEditor"
-						 -offCommand "columnLayout -edit -enable false $yafVolumeDetailEditor";
+			    string $yafVolumeCheckbox=`checkBox -parent $yafVolumeEditor -label "enable Volume" -value false`;
+				         //-onCommand "columnLayout -edit -enable true $yafVolumeDetailEditor"
+						 //-offCommand "columnLayout -edit -enable false $yafVolumeDetailEditor";
 			  separator -parent $yafVolume -height 15 -style "in";
 			  string $yafVolumeDetailEditor = `columnLayout -parent $yafVolume -enable false`;
 			    attrEnumOptionMenuGrp -parent $yafVolumeDetailEditor -label "Volume Region" //here an attribute should be added
@@ -174,4 +92,465 @@ global proc yObjectSettingUI(string $objSettingTab)
 			      floatSliderGrp -parent $yafNoiseVolume -label "Cover" -minValue 0.0 -maxValue 1.0 -field true;
 			      floatSliderGrp -parent $yafNoiseVolume -label "Density" -minValue 0.1 -maxValue 100.0 -field true;
 			  separator -parent $yafVolume -height 15 -style "in";
+		  checkBox -edit 
+		           -onCommand ("columnLayout -edit -enable true " +$yafMeshLightDetailEditor)
+		           -offCommand ("columnLayout -edit -enable false " +$yafMeshLightDetailEditor)
+				   $yafMeshCheckbox;
+		  checkBox -edit 
+		           -onCommand ("columnLayout -edit -enable true "+$yafBGPDetailEditor)
+				   -offCommand ("columnLayout -edit -enable false "+$yafBGPDetailEditor)
+				   $yafBGPCheckbox;
+		  checkBox -edit 
+		           -onCommand ("columnLayout -edit -enable true "+$yafVolumeDetailEditor)
+				   -offCommand ("columnLayout -edit -enable false "+$yafVolumeDetailEditor)
+				   $yafVolumeCheckbox;
 }
+global proc yCameraSettingUI(string $camSettingTab)
+{
+	        string $yafCameraScroll = `scrollLayout -parent $camSettingTab -width 420 -height 550`;
+              separator -parent $yafCameraScroll -height 10 -style "none";
+              text -parent $yafCameraScroll -label "     this menu is for create and edit cameras";
+              separator -parent $yafCameraScroll -height 10 -style "none";
+              string $yafPerspective = `frameLayout -parent $yafCameraScroll -label "Perspective Camera" -width 390 -collapsable 1`;
+                string $yafPerspCreateButton = `columnLayout -parent $yafPerspective`;
+                  string $yafPerspButton=`button -parent $yafPerspCreateButton -label "Create Perspective Camera" -width 200`;
+				         //-command "columnLayout -edit -enable true $yafPerspDetail";
+                separator -parent $yafPerspective -height 15 -style "in";
+                string $yafPerspDetail = `columnLayout -parent $yafPerspective -enable false`;
+                  attrEnumOptionMenuGrp -parent $yafPerspDetail -label "Bokeh Type" //here needed an attribute
+                                        -enumeratedItem 0 "disk1"
+                                        -enumeratedItem 1 "disk2"
+                                        -enumeratedItem 2 "triangle"
+                                        -enumeratedItem 3 "square"
+                                        -enumeratedItem 4 "pentagon"
+                                        -enumeratedItem 5 "hexagon"
+                                        -enumeratedItem 6 "ring";
+				  floatSliderGrp -parent $yafPerspDetail -label "Rotation" -minValue 0.0 -maxValue 180.0 -field true;
+				  intSliderGrp -parent $yafPerspDetail -label "Aperture Size" -minValue 0 -maxValue 20 -field true;
+				  attrEnumOptionMenuGrp -parent $yafPerspDetail -label "Bokeh Bias"
+				                        -enumeratedItem 0 "uniform"
+										-enumeratedItem 1 "edge"
+										-enumeratedItem 2 "center";
+				  //separator -parent $yafPerspDetail -height 15 -style "in";
+				  floatSliderGrp -parent $yafPerspDetail -label "Dof Distance" -minValue 0.0 -maxValue 1000.0 -field true;
+				  string $yafFocusCheckbox=`checkBoxGrp -parent $yafPerspDetail -numberOfCheckBoxes 1 -label "" -label1 "Object Focus"`;
+				              //-onCommand1 "textFieldGrp -edit -enable true $yafPerspText"
+							  //-offCommand1 "textFieldGrp -edit -enable false $yafPerspText";
+				  string $yafPerspText = `textFieldGrp -parent $yafPerspDetail -label "Dof Object" -editable true -enable false`;                                    
+                separator -parent $yafPerspective -height 15 -style "in";
+                
+              string $yafOrthographic = `frameLayout -parent $yafCameraScroll -label "Orthographic Camera" -width 390 -collapsable 1`;
+                string $yafOrthoCreateButton = `columnLayout -parent $yafOrthographic`;
+                  string $yafOrthoButton=`button -parent $yafOrthoCreateButton -label "Create Orthographic Camera" -width 200`;
+				         //-command "columnLayout -edit -enable true $yafOrthoDetail";
+                separator -parent $yafOrthographic -height 15 -style "in";
+                string $yafOrthoDetail = `columnLayout -parent $yafOrthographic -enable false`;
+                   intSliderGrp -parent $yafOrthoDetail -label "Scale" -minValue 0 -maxValue 10000 -field true;
+                separator -parent $yafOrthographic -height 15 -style "in";
+                
+              string $yafAngular = `frameLayout -parent $yafCameraScroll -label "Angular Camera" -width 390 -collapsable 1`;
+                string $yafAngularCreateButton = `columnLayout -parent $yafAngular`;
+                  string $yafAngularButton=`button -parent $yafAngularCreateButton -label "Create Angular Camera" -width 200`;
+				         //-command "columnLayout -edit -enable true $yafAngularDetail";
+                separator -parent $yafAngular -height 15 -style "in";
+                string $yafAngularDetail = `columnLayout -parent $yafAngular -enable false`;
+                  checkBoxGrp -parent $yafAngularDetail -label "" -label1 "Mirrored" -numberOfCheckBoxes 1;
+                  checkBoxGrp -parent $yafAngularDetail -label "" -label1 "Circular" -numberOfCheckBoxes 1;
+                  floatSliderGrp -parent $yafAngularDetail -label "Angle" -minValue 0.0 -maxValue 180.0 -field true;
+                  floatSliderGrp -parent $yafAngularDetail -label "Max Angle" -minValue 0.0 -maxValue 180.0 -field true;
+                separator -parent $yafAngular -height 15 -style "in";
+                
+              string $yafArchitect = `frameLayout -parent $yafCameraScroll -label "Architect Camera" -width 390 -collapsable 1`;
+                string $yafArchitectCreateButton = `columnLayout -parent $yafArchitect`;
+                  string $yafArchitectButton=`button -parent $yafArchitectCreateButton -label "Create Architect Camera" -width 200`;
+				         //-command "columnLayout -edit -enable true $yafArchDetail";
+                separator -parent $yafArchitect -height 15 -style "in";
+                string $yafArchDetail = `columnLayout -parent $yafArchitect`;
+                  attrEnumOptionMenuGrp -parent $yafArchDetail -label "Bokeh Type" //here needed an attribute
+                                        -enumeratedItem 0 "disk1"
+                                        -enumeratedItem 1 "disk2"
+                                        -enumeratedItem 2 "triangle"
+                                        -enumeratedItem 3 "square"
+                                        -enumeratedItem 4 "pentagon"
+                                        -enumeratedItem 5 "hexagon"
+                                        -enumeratedItem 6 "ring";
+                  floatSliderGrp -parent $yafArchDetail -label "Bokeh Rtation" -minValue 0.0 -maxValue 180.0 -field true;
+                  intSliderGrp -parent $yafArchDetail -label "Aperture Size" -minValue 0 -maxValue 20 -field true;
+                  attrEnumOptionMenuGrp -parent $yafArchDetail -label "Bokeh Bias"
+				                        -enumeratedItem 0 "uniform"
+										-enumeratedItem 1 "edge"
+										-enumeratedItem 2 "center";
+				  floatSliderGrp -parent $yafArchDetail -label "Dof Distance" -minValue 0.0 -maxValue 1000.0 -field true;
+				  checkBoxGrp -parent $yafArchDetail -numberOfCheckBoxes 1 -label "" -label1 "Object Focus"
+				              -onCommand1 "textFieldGrp -edit -enable true $yafPerspText"
+							  -offCommand1 "textFieldGrp -edit -enable false $yafPerspText";
+				  string $yafPerspText = `textFieldGrp -parent $yafArchDetail -label "Dof Object" -editable true -enable false`;  
+
+                separator -parent $yafArchitect -height 15 -style "in";
+            button -edit
+                   -command ("columnLayout -edit -enable true "+$yafPerspDetail)
+                   $yafPerspButton;
+            checkBoxGrp -edit
+                        -onCommand1 ("textFieldGrp -edit -enable true "+$yafPerspText)
+						-offCommand1 ("textFieldGrp -edit -enable false "+$yafPerspText)
+						$yafFocusCheckbox;
+			button -edit
+                   -command ("columnLayout -edit -enable true "+$yafOrthoDetail)
+                   $yafOrthoButton;
+            button -edit
+                   -command ("columnLayout -edit -enable true "+$yafAngularDetail)
+                   $yafAngularButton;
+            button -edit
+                   -command ("columnLayout -edit -enable true "+$yafArchDetail)
+                   $yafArchitectButton;
+}
+global proc yWorldSettingUI(string $worldSettingTab)
+{
+	string $nodeTemp[]=`ls -type "worldSetting"`;
+	string $yafWorldSettingNode;
+	if(size($nodeTemp)==0)
+	      {
+				$yafWorldSettingNode = `createNode worldSetting`;
+				select -deselect $yafWorldSettingNode;
+		  }
+	else
+	  {$yafWorldSettingNode=$nodeTemp[0];}
+		    
+	string $yafWorldScroll = `scrollLayout -parent $worldSettingTab -width 420 -height 550`;
+	  separator -parent $yafWorldScroll -height 10 -style "none";
+            text -parent $yafWorldScroll -label "     this menu is for setting background and volume";
+      separator -parent $yafWorldScroll -height 10 -style "none";
+      
+     string $yafBG = `frameLayout -parent $yafWorldScroll -label "Background Settings"-collapsable 1`;
+      separator -parent $yafBG -height 10 -style "none";
+      string $yafBackGType=`attrEnumOptionMenu -parent $yafBG -label "         Background Type" -attribute ($yafWorldSettingNode+".BackgroundTypes")`;
+//	                        -changeCommand ("backgroundChange"+" "+$yafWorldSettingNode)`;
+	  separator -parent $yafBG -height 15 -style "in";
+	  attrControlGrp -attribute ($yafWorldSettingNode+".BackgroundPower");
+	  separator -parent $yafBG -height 15 -style "in";
+	  //this is for draw the frames first
+	  int $yafBGTypeTest=`getAttr ($yafWorldSettingNode+".BackgroundTypes")`;
+	  string $yafSingleColor;
+	  if($yafBGTypeTest==0)	  
+	  {$yafSingleColor = `frameLayout -parent $yafBG -label "Single Color Setting" -width 390 -collapsable 1 -collapse false -enable true`;}
+	  else
+	    {$yafSingleColor = `frameLayout -parent $yafBG -label "Single Color Setting" -width 390 -collapsable 1 -collapse true -enable false`;}
+	      separator -parent $yafSingleColor -height 15 -style "in";
+	      attrControlGrp -attribute ($yafWorldSettingNode+".BackgroundColor");
+//	      string $yafIBLControl=`checkBoxGrp -parent $yafSingleColor -numberOfCheckBoxes 1 -label "" -label1 "Use IBL" 
+//		                                     -value1 ($yafWorldSettingNode+".UseIBL")`;
+//	      string $yafIBLControl=`attrControlGrp -attribute ($yafWorldSettingNode+".UseIBL") -label "Use IBL"`;
+          string $yafSingleIBLControl=`checkBoxGrp -parent $yafSingleColor -numberOfCheckBoxes 1 -label "" -label1 "Use IBL"`;
+          connectControl -index 2 $yafSingleIBLControl ($yafWorldSettingNode+".UseIBL") ;
+//	      string $yafIBLSamples=`attrControlGrp -attribute ($yafWorldSettingNode+".IBLSamples") -label "IBL Samples" -enable false`;
+//	      if(`getAttr ($yafWorldSettingNode+".UseIBL")`==1 )
+//	         {attrControlGrp -edit -enable true
+//                                               $yafIBLSamples;}
+//	        else 
+//	          {attrControlGrp -edit -enable false
+//                                               $yafIBLSamples;}
+          string $yafSingleIBLSamples;
+	      if(`getAttr ($yafWorldSettingNode+".UseIBL")`==1 )
+	         {$yafSingleIBLSamples=`attrControlGrp -attribute ($yafWorldSettingNode+".IBLSamples") -label "IBL Samples" -enable true`;}
+	        else 
+	          {$yafSingleIBLSamples=`attrControlGrp -attribute ($yafWorldSettingNode+".IBLSamples") -label "IBL Samples" -enable false`;}
+	      separator -parent $yafSingleColor -height 15 -style "in";
+	      checkBoxGrp -edit
+                        -onCommand1 ("attrControlGrp -edit -enable true "+$yafSingleIBLSamples)
+						-offCommand1 ("attrControlGrp -edit -enable false "+$yafSingleIBLSamples)
+						$yafSingleIBLControl;
+
+//	      int $yafIBLBool=(!($yafWorldSettingNode+".UseIBL"));
+//		  attrControlGrp -edit 
+//					     -changeCommand ("changeIBL"+$yafWorldSettingNode+" "+$yafIBLSamples)
+//						 $yafIBLControl; 
+//           checkBoxGrp -edit
+//                        -onCommand1 ("attrControlGrp -edit -enable true "+$yafIBLSamples)
+//						-offCommand1 ("attrControlGrp -edit -enable false "+$yafIBLSamples)
+//						$yafIBLControl;
+          //setParent ..;
+
+      string $yafGradient;
+      if($yafBGTypeTest==1)	  
+	  {$yafGradient = `frameLayout -parent $yafBG -label "Gradient Setting" -width 390 -collapsable 1 -collapse false -enable true`;}
+	  else
+	    {$yafGradient = `frameLayout -parent $yafBG -label "Gradient Setting" -width 390 -collapsable 1 -collapse true -enable false`;}
+//	  string $yafGradient = `frameLayout -parent $yafBG -label "Gradient Setting" -width 390 -collapsable 1 -enable false -collapse true`;
+          separator -parent $yafGradient -height 15 -style "in";
+          attrControlGrp -attribute ($yafWorldSettingNode+".HorizonColor");
+          attrControlGrp -attribute ($yafWorldSettingNode+".HorGroundColor");
+          attrControlGrp -attribute ($yafWorldSettingNode+".ZenithColor");
+          attrControlGrp -attribute ($yafWorldSettingNode+".ZenGroundColor");
+          string $yafGradientIBLControl=`checkBoxGrp -parent $yafGradient -numberOfCheckBoxes 1 -label "" -label1 "Use IBL"`;
+          connectControl -index 2 $yafGradientIBLControl ($yafWorldSettingNode+".UseIBL") ;
+          string $yafGradientIBLSamples;
+	      if(`getAttr ($yafWorldSettingNode+".UseIBL")`==1 )
+	         {$yafGradientIBLSamples=`attrControlGrp -attribute ($yafWorldSettingNode+".IBLSamples") -label "IBL Samples" -enable true`;}
+	        else 
+	          {$yafGradientIBLSamples=`attrControlGrp -attribute ($yafWorldSettingNode+".IBLSamples") -label "IBL Samples" -enable false`;}
+	      separator -parent $yafSingleColor -height 15 -style "in";
+	      checkBoxGrp -edit
+                        -onCommand1 ("attrControlGrp -edit -enable true "+$yafGradientIBLSamples)
+						-offCommand1 ("attrControlGrp -edit -enable false "+$yafGradientIBLSamples)
+						$yafGradientIBLControl;
+          separator -parent $yafGradient -height 15 -style "in";
+          
+          //here IBL again
+          //setParent ..;
+      string $yafTexture;
+      if($yafBGTypeTest==2)	  
+	  {$yafTexture = `frameLayout -parent $yafBG -label "Texture Setting" -width 390 -collapsable 1 -collapse false -enable true`;}
+	  else
+	    {$yafTexture = `frameLayout -parent $yafBG -label "Texture Setting" -width 390 -collapsable 1 -collapse true -enable false`;}          
+//      string $yafTexture = `frameLayout -parent $yafBG -label "Texture Setting" -width 390 -collapsable 1 -enable false -collapse true`;
+          separator -parent $yafTexture -height 15 -style "in";
+          attrControlGrp -attribute ($yafWorldSettingNode+".TextureRotation");
+          string $yafTextureIBLControl=`checkBoxGrp -parent $yafTexture -numberOfCheckBoxes 1 -label "" -label1 "Use IBL"`;
+          connectControl -index 2 $yafTextureIBLControl ($yafWorldSettingNode+".UseIBL") ;
+          string $yafTextureIBLSetting;
+          if(`getAttr ($yafWorldSettingNode+".UseIBL")`==1 )
+	         {$yafTextureIBLSetting=`columnLayout -parent $yafTexture -enable true`;}
+	        else 
+	          {$yafTextureIBLSetting=`columnLayout -parent $yafTexture -enable false`;}
+	          attrControlGrp -attribute ($yafWorldSettingNode+".IBLSamples") -label "IBL Samples";
+	          attrControlGrp -attribute ($yafWorldSettingNode+".DiffusePhotons");
+	          attrControlGrp -attribute ($yafWorldSettingNode+".CausticPhotons");
+	      checkBoxGrp -edit
+                        -onCommand1 ("columnLayout -edit -enable true "+$yafTextureIBLSetting)
+						-offCommand1 ("columnLayout -edit -enable false "+$yafTextureIBLSetting)
+						$yafTextureIBLControl;
+          
+          
+          separator -parent $yafTexture -height 15 -style "in";
+          
+          //here IBL again
+          //setParent ..;
+      string $yafSunsky;
+      if($yafBGTypeTest==3)	  
+	  {$yafSunsky = `frameLayout -parent $yafBG -label "Sunsky Setting" -width 390 -collapsable 1 -collapse false -enable true`;}
+	  else
+	    {$yafSunsky = `frameLayout -parent $yafBG -label "Sunsky Setting" -width 390 -collapsable 1 -collapse true -enable false`;}          
+//      string $yafSunsky = `frameLayout -parent $yafBG -label "Sunsky Setting" -width 390 -collapsable 1 -enable false -collapse true`;
+          separator -parent $yafSunsky -height 15 -style "in";
+		  attrControlGrp -attribute ($yafWorldSettingNode+".Turbidity");
+          attrControlGrp -attribute ($yafWorldSettingNode+".AHorBrght") -label "A(HorBrght)";
+          attrControlGrp -attribute ($yafWorldSettingNode+".BHorSprd") -label "B(HorSprd)";
+          attrControlGrp -attribute ($yafWorldSettingNode+".CSunBrght") -label "C(SunBrght)";
+          attrControlGrp -attribute ($yafWorldSettingNode+".DSunsize") -label "D(Sunsize)";
+          attrControlGrp -attribute ($yafWorldSettingNode+".EBacklight") -label "E(Backlight)";
+          attrControlGrp -attribute ($yafWorldSettingNode+".xDirection");
+          attrControlGrp -attribute ($yafWorldSettingNode+".yDirection");
+          attrControlGrp -attribute ($yafWorldSettingNode+".zDirection");
+          attrControlGrp -attribute ($yafWorldSettingNode+".AddRealSun");
+          attrControlGrp -attribute ($yafWorldSettingNode+".SunPower");
+          attrControlGrp -attribute ($yafWorldSettingNode+".Skylight");
+          attrControlGrp -attribute ($yafWorldSettingNode+".SkySamples");
+          separator -parent $yafSunsky -height 15 -style "in";
+          //setParent ..;
+      string $yafDSSunsky;
+      if($yafBGTypeTest==4)	  
+	  {$yafDSSunsky= `frameLayout -parent $yafBG -label "DarkTide's Sunsky Setting" -width 390 -collapsable 1 -collapse false -enable true`;}
+	  else
+	    {$yafDSSunsky = `frameLayout -parent $yafBG -label "DarkTide's Sunsky Setting" -width 390 -collapsable 1 -collapse true -enable false`;}           
+//      string $yafDSSunsky = `frameLayout -parent $yafBG -label "DarkTide's Sunsky Setting" -width 390 -collapsable 1 -enable false -collapse true`;
+          separator -parent $yafDSSunsky -height 15 -style "in";
+		  attrControlGrp -attribute ($yafWorldSettingNode+".DarkTideTurbidity") -label "DarkTide's Turbidity";
+          attrControlGrp -attribute ($yafWorldSettingNode+".BrightnessOfHorizonGradient") -label "Brightness Of Hor. Gradient";
+          attrControlGrp -attribute ($yafWorldSettingNode+".LuminanceOfHorizon");
+          attrControlGrp -attribute ($yafWorldSettingNode+".SolarRegionIntensity");
+          attrControlGrp -attribute ($yafWorldSettingNode+".WidthOfCircumsolarRegion");
+          attrControlGrp -attribute ($yafWorldSettingNode+".BackgroundLight");
+          attrControlGrp -attribute ($yafWorldSettingNode+".xDirection");
+          attrControlGrp -attribute ($yafWorldSettingNode+".yDirection");
+          attrControlGrp -attribute ($yafWorldSettingNode+".zDirection");
+          attrControlGrp -attribute ($yafWorldSettingNode+".Altitude");
+          attrControlGrp -attribute ($yafWorldSettingNode+".Night");         
+          separator -parent $yafDSSunsky -height 15 -style "in";
+          string $yafDSRealSunControl=`checkBoxGrp -parent $yafDSSunsky -numberOfCheckBoxes 1 -label "" -label1 "Add DS Real Sun"`;
+          connectControl -index 2 $yafDSRealSunControl ($yafWorldSettingNode+".AddDSRealSun") ;
+          string $yafDSSunPower;
+	      if(`getAttr ($yafWorldSettingNode+".AddDSRealSun")`==1 )
+	         {$yafDSSunPower=`attrControlGrp -attribute ($yafWorldSettingNode+".DSSunPower") -label "DS Sun Power" -enable true`;}
+	        else 
+	          {$yafDSSunPower=`attrControlGrp -attribute ($yafWorldSettingNode+".DSSunPower") -label "DS Sun Power" -enable false`;}
+//          attrControlGrp -attribute ($yafWorldSettingNode+".AddDSRealSun");
+//          attrControlGrp -attribute ($yafWorldSettingNode+".DSSunPower");
+          separator -parent $yafDSSunsky -height 15 -style "in";
+          string $yafDSSkyLightControl=`checkBoxGrp -parent $yafDSSunsky -numberOfCheckBoxes 1 -label "" -label1 "Add DS Sun Light"`;
+          connectControl -index 2 $yafDSSkyLightControl ($yafWorldSettingNode+".AddDSSkyLight");
+          string $yafDSSkySetting;
+          if(`getAttr ($yafWorldSettingNode+".AddDSSkyLight")`==1 )
+	         {$yafDSSkySetting=`columnLayout -parent $yafDSSunsky -enable true`;}
+	        else 
+	          {$yafDSSkySetting=`columnLayout -parent $yafDSSunsky -enable false`;}     
+//          attrControlGrp -attribute ($yafWorldSettingNode+".AddDSSkyLight");
+          attrControlGrp -attribute ($yafWorldSettingNode+".DSSkyPower") -label "DS Sky Power";
+          attrControlGrp -attribute ($yafWorldSettingNode+".DiffusePhotons");
+	      attrControlGrp -attribute ($yafWorldSettingNode+".CausticPhotons");
+	      setParent ..; 
+		  separator -parent $yafDSSunsky -height 15 -style "in";
+	      string $yafDSSkySamples;
+		  if((`getAttr ($yafWorldSettingNode+".AddDSRealSun")`==0)&&(`getAttr ($yafWorldSettingNode+".AddDSSkyLight")`==0))   
+	         {$yafDSSkySamples=`attrControlGrp -attribute ($yafWorldSettingNode+".DSSkySamples") -label "DS Sun Samples" -enable false`;}
+	        else 
+	          {$yafDSSkySamples=`attrControlGrp -attribute ($yafWorldSettingNode+".DSSkySamples") -label "DS Sun Samples" -enable true`;}		       
+//          attrControlGrp -attribute ($yafWorldSettingNode+".DSSkySamples");
+          separator -parent $yafDSSunsky -height 15 -style "in";          
+          attrControlGrp -attribute ($yafWorldSettingNode+".Brightness");
+          attrControlGrp -attribute ($yafWorldSettingNode+".Exposure");
+          attrControlGrp -attribute ($yafWorldSettingNode+".GammaEncoding");
+          attrControlGrp -attribute ($yafWorldSettingNode+".DarkTideSunskyColorSpaces");          
+          separator -parent $yafDSSunsky -height 15 -style "in";
+          
+          checkBoxGrp -edit
+                        -onCommand1 ("DSSunControlOn"+" "+$yafDSSunPower+" "+$yafDSSkySamples+" "+$yafWorldSettingNode)
+						-offCommand1 ("DSSunControlOff"+" "+$yafDSSunPower+" "+$yafDSSkySamples+" "+$yafWorldSettingNode)
+						$yafDSRealSunControl;
+          checkBoxGrp -edit
+                       -onCommand1 ("DSSkyControlOn"+" "+$yafDSSkySetting+" "+$yafDSSkySamples+" "+$yafWorldSettingNode)
+						-offCommand1 ("DSSkyControlOff"+" "+$yafDSSkySetting+" "+$yafDSSkySamples+" "+$yafWorldSettingNode)
+						$yafDSSkyLightControl;
+						
+		  attrEnumOptionMenu -edit
+		                     -changeCommand ("backgroundChange"+" "+$yafWorldSettingNode+" "+$yafSingleColor+" "+$yafGradient+" "+$yafTexture+" "+$yafSunsky+" "+$yafDSSunsky)
+		                     $yafBackGType;
+          //setParent ..;
+
+}
+global proc DSSunControlOn(string $Sunpower,string $Sunsamples,string $nodeName)
+{
+	attrControlGrp -edit -enable true $Sunpower;
+//	if(`attrControlGrp -q -enable $Sunsamples`==false)
+    if(`getAttr ($nodeName+".AddDSSkyLight")`==0)
+	   attrControlGrp -edit -enable true $Sunsamples;
+}
+global proc DSSunControlOff(string $Sunpower,string $Sunsamples,string $nodeName)
+{
+	attrControlGrp -edit -enable false $Sunpower;
+	if(`getAttr ($nodeName+".AddDSSkyLight")`==0)
+	   attrControlGrp -edit -enable false $Sunsamples;
+}
+global proc DSSkyControlOn(string $Skysetting,string $Sunsamples,string $nodeName)
+{
+	columnLayout -edit -enable true $Skysetting;
+	if(`getAttr ($nodeName+".AddDSRealSun")`==0)
+	   attrControlGrp -edit -enable true $Sunsamples;
+}
+global proc DSSkyControlOff(string $Skysetting,string $Sunsamples,string $nodeName)
+{
+	columnLayout -edit -enable false $Skysetting;
+	if(`getAttr ($nodeName+".AddDSRealSun")`==0)
+	   attrControlGrp -edit -enable false $Sunsamples;
+}
+global proc backgroundChange(string $nodeName,string $frameSingle,string $frameGra,string $frameTex,string $frameSun,string $frameDT)
+{
+	int $type;
+	$type=`getAttr ($nodeName+".BackgroundTypes")`;
+	switch($type)
+	{
+		case 0:
+			frameLayout -edit -enable true -collapse false $frameSingle;
+			frameLayout -edit -enable false -collapse true $frameGra;
+			frameLayout -edit -enable false -collapse true $frameTex;
+			frameLayout -edit -enable false -collapse true $frameSun;
+			frameLayout -edit -enable false -collapse true $frameDT;
+			break;
+		case 1:
+			frameLayout -edit -enable false -collapse true $frameSingle;
+			frameLayout -edit -enable true -collapse false $frameGra;
+			frameLayout -edit -enable false -collapse true $frameTex;
+			frameLayout -edit -enable false -collapse true $frameSun;
+			frameLayout -edit -enable false -collapse true $frameDT;
+			break;
+		case 2:
+			frameLayout -edit -enable false -collapse true $frameSingle;
+			frameLayout -edit -enable false -collapse true $frameGra;
+			frameLayout -edit -enable true -collapse false $frameTex;
+			frameLayout -edit -enable false -collapse true $frameSun;
+			frameLayout -edit -enable false -collapse true $frameDT;
+			break;
+		case 3:
+			frameLayout -edit -enable false -collapse true $frameSingle;
+			frameLayout -edit -enable false -collapse true $frameGra;
+			frameLayout -edit -enable false -collapse true $frameTex;
+			frameLayout -edit -enable true -collapse false $frameSun;
+			frameLayout -edit -enable false -collapse true $frameDT;
+			break;
+		case 4:
+			frameLayout -edit -enable false -collapse true $frameSingle;
+			frameLayout -edit -enable false -collapse true $frameGra;
+			frameLayout -edit -enable false -collapse true $frameTex;
+			frameLayout -edit -enable false -collapse true $frameSun;
+			frameLayout -edit -enable true -collapse false $frameDT;
+			break;
+		default:
+			print "nothing";
+			break;
+	}
+}
+
+//global proc int testUseIBL(string $yafWorldSettingNode)
+//{
+
+//    int $temp;
+//    $temp=(`getAttr ($yafWorldSettingNode+".UseIBL")`)?0:1;
+//    return $temp;
+	
+//}
+//global proc changeIBL(string $nodeName,string $attrName)
+//{
+//		$temp=`attrControlGrp -q -enable $attrName`;
+//		if($temp==1 )
+//	         {
+//					attrControlGrp -edit -enable false $attrName;
+//					print "command excuted";
+//			 }
+//	        else 
+//	          {  
+//					attrControlGrp -edit -enable true $attrName; 
+//					print "command excuted too";
+//			  }
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
