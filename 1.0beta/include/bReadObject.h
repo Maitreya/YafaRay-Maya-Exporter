@@ -11,12 +11,12 @@ using namespace yafaray;
 class getObject
 {
 public:
-	getObject();
-	virtual ~getObject();
-	MStatus readObject( yafrayInterface_t yI,std::map<string,yafaray::material_t *> &materialMap);
+//	getObject();
+//	virtual ~getObject();
+	MStatus readObject( yafrayInterface_t &yI,std::map<const char *,yafaray::material_t *> &materialMap);
 private:
-	MStatus readMesh(yafrayInterface_t yI,std::map<string,yafaray::material_t *> &materialMap);
-	MStatus readParticle(yafrayInterface_t yI,std::map<string,yafaray::material_t *> &materialMap);
+	MStatus readMesh(yafrayInterface_t &yI,std::map<const char *,yafaray::material_t *> &materialMap);
+	MStatus readParticle(yafrayInterface_t &yI,std::map<const char *,yafaray::material_t *> &materialMap);
 
 };
 

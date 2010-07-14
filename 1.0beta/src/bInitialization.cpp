@@ -2,10 +2,11 @@
 #include"bNodeRenderSetting.h"
 #include"bNodeMaterialGlass.h"
 //#include"bReadObjectCmd.h"
-//#include"bCmdLoadPlugin.h"
+#include"bCmdLoadPlugin.h"
 #include"bNodeCameraAngular.h"
 #include"bCmdCreateCameraAngular.h"
 #include"bNodeLightPoint.h"
+#include"bCmdRender.h"
 
 #include<maya/MFnPlugin.h>
 #include<maya/MString.h>
@@ -18,8 +19,8 @@ MStatus initializePlugin(MObject obj)
 
 	MFnPlugin plugin(obj,"YafaRay","2011","Any");
 
-//	stat=plugin.registerCommand("yafLoad",loadPlugin::creator);
-//	if(!stat) stat.perror("register command yafLoad failed");
+	stat=plugin.registerCommand("yafLoad",loadPlugin::creator);
+	if(!stat) stat.perror("register command yafLoad failed");
 
 	stat=plugin.registerNode("yafWorldSetting",worldSettingNode::id,worldSettingNode::creator,worldSettingNode::initialize);
 	if(!stat) stat.perror("register node worldSetting failed");
@@ -41,6 +42,9 @@ MStatus initializePlugin(MObject obj)
 	stat=plugin.registerNode("yafPointLight",pointLightNode::id,pointLightNode::creator,pointLightNode::initialize,MPxNode::kLocatorNode,&LightClassify);
     if(!stat) stat.perror("register node yafPointLight failed");
 
+	stat=plugin.registerCommand("yafRender",renderScene::creator);
+	if(!stat) stat.perror("register command yafRender failed");
+
 
 	return stat;
 }
@@ -50,8 +54,8 @@ MStatus uninitializePlugin(MObject obj)
 	MStatus stat;
 	MFnPlugin plugin(obj);
 
-//	stat=plugin.deregisterCommand("yafLoad");
-//	if(!stat) stat.perror("deregister command yafLoad failed");
+	stat=plugin.deregisterCommand("yafLoad");
+	if(!stat) stat.perror("deregister command yafLoad failed");
 
 	stat=plugin.deregisterNode(worldSettingNode::id);
 	if(!stat) stat.perror("deregister node worldSetting failed");
@@ -73,6 +77,9 @@ MStatus uninitializePlugin(MObject obj)
 
 	stat=plugin.deregisterNode(pointLightNode::id);
 	if(!stat) stat.perror("deregister node yafPointLight failed");
+
+	stat=plugin.deregisterCommand("yafRender");
+	if(!stat) stat.perror("deregister command yafRender failed");
 
 	return stat;
 }
