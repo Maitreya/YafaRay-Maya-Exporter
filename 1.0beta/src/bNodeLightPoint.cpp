@@ -236,7 +236,6 @@ void pointLightNode::draw(M3dView &view, const MDagPath &path, M3dView::DisplayS
 
     glEnd();
 	view.endGL();
-	MGlobal::displayInfo("want to test if this fucntion is run");
 }
 bool pointLightNode::isBounded() const
 {

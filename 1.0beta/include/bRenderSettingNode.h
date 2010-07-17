@@ -39,7 +39,7 @@ private:
 	static MObject renderShowSampleMask;
 	static MObject renderOutputFileType;//enum
 	static MObject renderDrawParams;
-	//static MObject renderCustomString;//this is text field?
+	static MObject renderCustomString;//this is text field?
 
 	//AA settings
 	static MObject renderAAPasses;
@@ -49,7 +49,6 @@ private:
 	static MObject renderFilterType;//enum
 	static MObject renderAAPixelWidth;
 
-    static MObject renderLightType;
 	//direct lighting
 	static MObject renderDirCaustics;
 	static MObject renderPhPhotons;
@@ -86,11 +85,6 @@ private:
 	static MObject renderDebugType;//enum
 	static MObject renderDebugMaps;
 
-	//an output
-	static MObject renderOutput;
 
 
-
-
-};
-#endif
+}

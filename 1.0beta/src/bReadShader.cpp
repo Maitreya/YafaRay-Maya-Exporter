@@ -13,7 +13,7 @@
 using namespace yafaray;
 using namespace std;
 
-MStatus getShader::readShader(yafrayInterface_t &yI,std::map<const char *,yafaray::material_t*> &materialMap)
+MStatus getShader::readShader ( yafrayInterface_t &yI , std::map<string , yafaray::material_t*> &materialMap)
 {
 	MStatus stat=MStatus::kSuccess;
 
@@ -82,7 +82,10 @@ MStatus getShader::readShader(yafrayInterface_t &yI,std::map<const char *,yafara
 			//seems this doesn't work
 			yafaray::material_t* glassMat=yI.createMaterial(GlassFn.name().asChar());
 			const char * glassName=GlassFn.name().asChar();
-			materialMap[glassName]=glassMat;
+			string gName(glassName);
+			//test output
+			cout<<gName<<endl;
+			materialMap[gName]=glassMat;
 
 
 

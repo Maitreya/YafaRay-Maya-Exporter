@@ -17,6 +17,6 @@ public:
 	//textrue not considered yet
 	//getShader();
 	//virtual ~getShader();
-	MStatus readShader(yafrayInterface_t &yI,std::map<const char *,yafaray::material_t *> &materialMap);
+	MStatus readShader(yafrayInterface_t &yI,std::map< string ,yafaray::material_t *> &materialMap);
 };
 #endif

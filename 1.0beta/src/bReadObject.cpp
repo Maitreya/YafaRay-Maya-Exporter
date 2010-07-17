@@ -18,7 +18,7 @@
 using namespace std;
 using namespace yafaray;
 
-MStatus getObject::readObject(yafaray::yafrayInterface_t &yI,std::map<const char *,yafaray::material_t *> &materialMap)
+MStatus getObject::readObject(yafaray::yafrayInterface_t &yI , std::map<string , yafaray::material_t *> &materialMap)
 {
 	MStatus stat=MStatus::kSuccess;
 
@@ -29,7 +29,7 @@ MStatus getObject::readObject(yafaray::yafrayInterface_t &yI,std::map<const char
 
 	return stat;
 }
-MStatus getObject::readMesh(yafaray::yafrayInterface_t &yI,std::map<const char *,yafaray::material_t *> &materialMap)
+MStatus getObject::readMesh(yafaray::yafrayInterface_t &yI,std::map<string , yafaray::material_t *> &materialMap)
 {
 	MStatus stat=MStatus::kSuccess;
 
@@ -64,12 +64,12 @@ MStatus getObject::readMesh(yafaray::yafrayInterface_t &yI,std::map<const char *
 
 		//find the material of the mesh
 		//not good method till now, use a stupid one....
-//		std::map<const char *,yafaray::material_t *>::iterator iter=materialMap.find("yafGlass1");
-//		if(iter==materialMap.end())
-//		{
-//			MGlobal::displayError("iterator is useless");
-//			return MStatus::kFailure;
-//		}
+		std::map<string , yafaray::material_t *>::iterator iter=materialMap.find("yafGlass1");
+		if(iter==materialMap.end())
+		{
+			MGlobal::displayError("iterator is useless");
+			return MStatus::kFailure;
+		}
 
 		yI.paramsClearAll();
 		yI.startGeometry();
@@ -105,7 +105,7 @@ MStatus getObject::readMesh(yafaray::yafrayInterface_t &yI,std::map<const char *
 			for(unsigned int i=0;i<pointIndices.length();i++)
 			{
 				cout<<pointIndices[i]<<"-"<<pointIndices[i+1]<<"-"<<pointIndices[i+2]<<endl;
-				yI.addTriangle(pointIndices[i],pointIndices[i+1],pointIndices[i+2],NULL/*iter->second*/);
+				yI.addTriangle(pointIndices[i],pointIndices[i+1],pointIndices[i+2],iter->second);
 				i=i+2;
 			}
 
@@ -118,7 +118,7 @@ MStatus getObject::readMesh(yafaray::yafrayInterface_t &yI,std::map<const char *
 
 	return stat;
 }
-MStatus getObject::readParticle(yafrayInterface_t &yI,std::map<const char *,yafaray::material_t *> &materialMap)
+MStatus getObject::readParticle(yafrayInterface_t &yI,std::map<string , yafaray::material_t *> &materialMap)
 {
 	MStatus stat=MStatus::kSuccess;
 	return stat;

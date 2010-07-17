@@ -3,6 +3,7 @@
 #include<maya/MPxCommand.h>
 #include<maya/MGlobal.h>
 #include<interface/yafrayinterface.h>
+#include <yafraycore/memoryIO.h>
 using namespace yafaray;
 using namespace std;
 
@@ -14,10 +15,11 @@ class renderScene:public MPxCommand
 public:
 	virtual MStatus doIt(const MArgList& args);
 	static void *creator(){return new renderScene;}
+	static yafrayInterface_t * getyI();
 	MStatus beginRender();
 private:
-	yafrayInterface_t yI;
-	std::map<const char *,yafaray::material_t*> materialMap;
+	static yafrayInterface_t yI;
+	static std::map<string , yafaray::material_t*> materialMap;
 	
 };
 #endif

@@ -341,11 +341,11 @@ MStatus worldSettingNode::initialize()
 	 numAttr.setMin(0.0);
 	 numAttr.setMax(10000.0);
 
-	volumeStepSize=numAttr.create("StepSize","wvstsi",MFnNumericData::kInt,0);
+	 volumeStepSize=numAttr.create("StepSize","wvstsi",MFnNumericData::kFloat,0.0);
 	 numAttr.setKeyable(true);
 	 numAttr.setStorable(true);
-	 numAttr.setMin(0);
-	 numAttr.setMax(100);
+	 numAttr.setMin(0.0);
+	 numAttr.setMax(100.0);
 
 	volumeAdaptive=numAttr.create("Adaptive","wvad",MFnNumericData::kBoolean,0);
 	 numAttr.setKeyable(true);

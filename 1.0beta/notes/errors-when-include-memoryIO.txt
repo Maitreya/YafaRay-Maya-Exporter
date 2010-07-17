@@ -1,0 +1,33 @@
+1 >------ Build started: Project: beta, Configuration: Debug Win32 ------ 
+1> Compiling ... 
+1> cl: Command line warning D9025: is being rewritten "/ EHs" (with "/ EHa") 
+1> bCmdLoadPlugin.cpp 
+1> bCmdRender.cpp 
+1> d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ utilities \ mathoptimizations.h (92): error C2589: "(": "::" the right of illegal tags 
+1> d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ utilities \ mathoptimizations.h (92): error C2059: syntax error: "::" 
+1> d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ utilities \ mathoptimizations.h (93): error C2589: "(": "::" the right of illegal tags 
+1> d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ utilities \ mathoptimizations.h (93): error C2059: syntax error: "::" 
+1> d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ utilities \ mathoptimizations.h (150): error C2065: "M_LOG2E": undeclared identifier 
+1> d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ utilities \ mathoptimizations.h (210): error C2065: "M_PI_2": undeclared identifier 
+1> d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ utilities \ mathoptimizations.h (233): error C2065: "M_PI_2": undeclared identifier 
+1> d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ core_api \ color.h (96): error C2589: "(": "::" the right of illegal tags 
+1> d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ core_api \ color.h (96): error C2059: syntax error: "::" 
+1> d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ core_api \ color.h (96): error C2589: "(": "::" the right of illegal tags 
+1> d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ core_api \ color.h (96): error C2589: "(": "::" the right of illegal tags 
+1> d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ core_api \ color.h (97): error C2589: "(": "::" the right of illegal tags 
+1> d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ core_api \ color.h (97): error C2059: syntax error: "::" 
+1> d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ core_api \ color.h (97): error C2589: "(": "::" the right of illegal tags 
+1> d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ core_api \ color.h (97): error C2589: "(": "::" the right of illegal tags 
+1> d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ core_api \ color.h (98): error C2589: "(": "::" the right of illegal tags 
+1> d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ core_api \ color.h (98): error C2059: syntax error: "::" 
+1> d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ core_api \ color.h (98): error C2589: "(": "::" the right of illegal tags 
+1> d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ core_api \ color.h (98): error C2589: "(": "::" the right of illegal tags 
+1> d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ core_api \ color.h (296): warning C4244: "=": from "double" switch to "yafaray:: CFLOAT", possible loss of data 
+1> d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ yafraycore \ memoryio.h (11): warning C4275: non dll interface to class "yafaray:: colorOutput_t" for dll interface to class "yafaray :: memoryIO_t "base 
+1> d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ core_api \ output.h (33): See "yafaray:: colorOutput_t" the statement 
+1> d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ yafraycore \ memoryio.h (10): See "yafaray:: memoryIO_t" statement 
+1> bInitialization.cpp 
+1> Generating Code ... 
+1> Build log was saved at "file: / / d: \ fish \ fish \ for_other_use \ Process \ vsprojs \ beta \ beta \ Debug \ BuildLog.htm" 
+1> beta - 19 error, 2 warnings 
+========== Build: 0 succeeded, 1 failed, the latest 0, 0 skipped ==========

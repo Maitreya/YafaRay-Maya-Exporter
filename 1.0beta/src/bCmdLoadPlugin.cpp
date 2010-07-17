@@ -1,4 +1,5 @@
 #include "bCmdLoadPlugin.h"
+#include "bCmdRender.h"
 
 #include<maya/MGlobal.h>
 #include<maya/MString.h>
@@ -36,8 +37,8 @@ MStatus loadPlugin::doIt(const MArgList &args)
 	MString pluginPath;
 	MGlobal::executeCommand(getPath,pluginPath);
 
-	yafrayInterface_t yafLoad;
-	yafLoad.loadPlugins(pluginPath.asChar());
+    yafrayInterface_t * yafLoad=renderScene::getyI();
+	yafLoad->loadPlugins(pluginPath.asChar());
 	MGlobal::displayInfo("load yafaray components succeeded!");
 
 
