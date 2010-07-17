@@ -1,0 +1,52 @@
+Build Log 
+  
+Build started: Project: beta, Configuration: Debug | Win32 
+
+
+Command line 
+  
+Creating temporary file "d: \ fish \ fish \ for_other_use \ Process \ vsprojs \ beta \ beta \ Debug \ RSP00000511361900.rsp", its contents 
+[ 
+/ Od / I "C: \ Program Files \ Autodesk \ Maya2011 \ include" / I "D: \ fish \ fish \ for_other_use \ Process \ h-files" / I "D: \ fish \ fish \ for_other_use \ Process \ DarkTide -YafaRay-6.25 \ include "/ D" WIN32 "/ D" _DEBUG "/ D" _WINDOWS "/ D" _AFXDLL "/ D" _MBCS "/ D" NT_PLUGIN "/ D" REQUIRE_IOSTREAM "/ D" _WINDLL "/ FD / EHsc / MDd / Fp "Debug / beta.pch" / Fo "Debug \ \" / Fd "Debug \ vc90.pdb" / W3 / c / TP / GR / GS / Gm / EHac / ZI / I "." / D "WIN32" / D "_DEBUG" / RTC1 / c 
+
+.. \ .. \ .. \ Codes \ bCmdRender.cpp 
+] 
+Creating command line "cl.exe @ d: \ fish \ fish \ for_other_use \ Process \ vsprojs \ beta \ beta \ Debug \ RSP00000511361900.rsp / nologo / errorReport: prompt" 
+
+
+
+Output window 
+  
+Compiling ... 
+cl: Command line warning D9025: is being rewritten "/ EHs" (with "/ EHa") 
+bCmdRender.cpp 
+d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ utilities \ mathoptimizations.h (92): error C2589: "(": "::" the right of illegal tags 
+d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ utilities \ mathoptimizations.h (92): error C2059: syntax error: "::" 
+d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ utilities \ mathoptimizations.h (93): error C2589: "(": "::" the right of illegal tags 
+d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ utilities \ mathoptimizations.h (93): error C2059: syntax error: "::" 
+d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ utilities \ mathoptimizations.h (150): error C2065: "M_LOG2E": undeclared identifier 
+d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ utilities \ mathoptimizations.h (210): error C2065: "M_PI_2": undeclared identifier 
+d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ utilities \ mathoptimizations.h (233): error C2065: "M_PI_2": undeclared identifier 
+d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ core_api \ color.h (96): error C2589: "(": "::" the right of illegal tags 
+d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ core_api \ color.h (96): error C2059: syntax error: "::" 
+d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ core_api \ color.h (96): error C2589: "(": "::" the right of illegal tags 
+d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ core_api \ color.h (96): error C2589: "(": "::" the right of illegal tags 
+d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ core_api \ color.h (97): error C2589: "(": "::" the right of illegal tags 
+d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ core_api \ color.h (97): error C2059: syntax error: "::" 
+d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ core_api \ color.h (97): error C2589: "(": "::" the right of illegal tags 
+d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ core_api \ color.h (97): error C2589: "(": "::" the right of illegal tags 
+d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ core_api \ color.h (98): error C2589: "(": "::" the right of illegal tags 
+d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ core_api \ color.h (98): error C2059: syntax error: "::" 
+d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ core_api \ color.h (98): error C2589: "(": "::" the right of illegal tags 
+d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ core_api \ color.h (98): error C2589: "(": "::" the right of illegal tags 
+d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ core_api \ color.h (296): warning C4244: "=": from "double" switch to "yafaray:: CFLOAT", may be missing data 
+d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ yafraycore \ memoryio.h (11): warning C4275: non dll interface to class "yafaray:: colorOutput_t" for dll interface to class "yafaray:: memoryIO_t "base 
+        d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ core_api \ output.h (33): See "yafaray:: colorOutput_t" statement 
+        d: \ fish \ fish \ for_other_use \ process \ darktide-yafaray-6.25 \ include \ yafraycore \ memoryio.h (10): See "yafaray:: memoryIO_t" statement 
+
+
+
+Result 
+  
+Build log saved in the "file: / / d: \ fish \ fish \ for_other_use \ Process \ vsprojs \ beta \ beta \ Debug \ BuildLog.htm" 
+beta - 19 error, 2 warnings
