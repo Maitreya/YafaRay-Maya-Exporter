@@ -1,0 +1,193 @@
+//=====================================================
+Maya Crash Report
+//=====================================================
+
+Exception code: C0000094: INT_DIVIDE_BY_ZERO 
+Fault address:  30048470 in D:\fish\fish\for_other_use\Process\extradlls\yafaraycore.dll
+0001:00037470 Logical offset (see .map file for location)
+
+Registers:
+EAX:0000027F
+EBX:00000000
+ECX:00000000
+EDX:00000000
+ESI:2C29D738
+EDI:2C29D730
+CS:EIP:001B:30048470
+SS:ESP:0023:0164BA14  EBP:2C1B1FF0
+DS:0023  ES:0023  FS:003B  GS:0000
+Flags:00210202
+
+Call stack:
+(0) section:offset       Address        Frame
+     0001:00037470   0x30048470 0x00000000
+	Module:  D:\fish\fish\for_other_use\Process\extradlls\yafaraycore.dll (-exported-)
+	Location: yafaray::imageFilm_t::flush + 0x5490 bytes
+	Decl: public: void yafaray::imageFilm_t::flush(int,class yafaray::colorOutput_t *)
+(1) section:offset       Address        Frame
+     0001:000314B7   0x300424B7 0x00000000
+	Module:  D:\fish\fish\for_other_use\Process\extradlls\yafaraycore.dll (-exported-)
+	Location: yafaray::imageFilm_t::init + 0xC7 bytes
+	Decl: public: void yafaray::imageFilm_t::init(int)
+(2) section:offset       Address        Frame
+     0001:0008B7BE   0x3009C7BE 0x00000000
+	Module:  D:\fish\fish\for_other_use\Process\extradlls\yafaraycore.dll (-exported-)
+	Location: yafaray::memoryIO_t::operator= + 0x4171E bytes
+	Decl: public: class yafaray::memoryIO_t & yafaray::memoryIO_t::operator=(class yafaray::memoryIO_t const &)
+(3) section:offset       Address        Frame
+     0001:00029AC4   0x3003AAC4 0x00000000
+	Module:  D:\fish\fish\for_other_use\Process\extradlls\yafaraycore.dll (-exported-)
+	Location: yafaray::scene_t::render + 0x44 bytes
+	Decl: public: bool yafaray::scene_t::render(void)
+(4) section:offset       Address        Frame
+     0002:000032FF   0x1D9802FF 0x00000000
+	Module:  D:\fish\fish\for_other_use\Process\vsprojs\beta\beta\Debug\beta.mll (PDB)
+	Location: renderScene::doIt + 0x1FF bytes
+	Decl: renderScene::doIt
+(5) section:offset       Address        Frame
+     0002:0002D905   0x1D9AA905 0x00000000
+	Module:  D:\fish\fish\for_other_use\Process\vsprojs\beta\beta\Debug\beta.mll (PDB)
+	Location: FreeLibrary + 0x1061 bytes
+	Decl: FreeLibrary
+(6) section:offset       Address        Frame
+     0001:0001157E   0x01E4257E 0x00000000
+	Module:  C:\Program Files\Autodesk\Maya2011\bin\CommandEngine.dll (-exported-)
+	Location: TmetaCommand::doCommand + 0x6E bytes
+	Decl: public: virtual bool TmetaCommand::doCommand(class TargList &)
+(7) section:offset       Address        Frame
+     0001:00011CA7   0x01E42CA7 0x00000000
+	Module:  C:\Program Files\Autodesk\Maya2011\bin\CommandEngine.dll (-exported-)
+	Location: TmetaCommand::newSyntax + 0x2E7 bytes
+	Decl: private: virtual class Tsyntax * TmetaCommand::newSyntax(void)
+(8) section:offset       Address        Frame
+     0001:00027522   0x01E58522 0x00000000
+	Module:  C:\Program Files\Autodesk\Maya2011\bin\CommandEngine.dll (-exported-)
+	Location: TmelVariableList::`default constructor closure' + 0xD2 bytes
+	Decl: public: void TmelVariableList::`default constructor closure'(void)
+(9) section:offset       Address        Frame
+     0001:001088C7   0x021998C7 0x00000000
+	Module:  C:\Program Files\Autodesk\Maya2011\bin\ExtensionLayer.dll (-exported-)
+	Location: QmayaCommandScrollFieldExecuter::dropEvent + 0xF7 bytes
+	Decl: protected: virtual void QmayaCommandScrollFieldExecuter::dropEvent(class QDropEvent *)
+(10) section:offset       Address        Frame
+     0001:000224D8   0x020B34D8 0x00000000
+	Module:  C:\Program Files\Autodesk\Maya2011\bin\ExtensionLayer.dll (-exported-)
+	Location: TcommandLine::handleReturnPressed + 0x8 bytes
+	Decl: public: void TcommandLine::handleReturnPressed(void)
+(11) section:offset       Address        Frame
+     0001:0033BCED   0x6533CCED 0x00000000
+	Module:  C:\Program Files\Autodesk\Maya2011\bin\QtGui4.dll (-exported-)
+	Location: QLineEdit::keyPressEvent + 0x85D bytes
+	Decl: protected: virtual void QLineEdit::keyPressEvent(class QKeyEvent *)
+(12) section:offset       Address        Frame
+     0001:00101AF8   0x02192AF8 0x00000000
+	Module:  C:\Program Files\Autodesk\Maya2011\bin\ExtensionLayer.dll (-exported-)
+	Location: QmayaField::keyPressEvent + 0x28 bytes
+	Decl: protected: virtual void QmayaField::keyPressEvent(class QKeyEvent *)
+(13) section:offset       Address        Frame
+     0001:0033B3B5   0x6533C3B5 0x00000000
+	Module:  C:\Program Files\Autodesk\Maya2011\bin\QtGui4.dll (-exported-)
+	Location: QLineEdit::event + 0x335 bytes
+	Decl: public: virtual bool QLineEdit::event(class QEvent *)
+(14) section:offset       Address        Frame
+     0001:0001A528   0x6501B528 0x00000000
+	Module:  C:\Program Files\Autodesk\Maya2011\bin\QtGui4.dll (-exported-)
+	Location: QApplicationPrivate::notify_helper + 0xC8 bytes
+	Decl: public: bool QApplicationPrivate::notify_helper(class QObject *,class QEvent *)
+(15) section:offset       Address        Frame
+     0001:000103D4   0x746913D4 0x00000000
+	Module:  C:\WINDOWS\system32\MSCTF.dll (-exported-)
+	Location: TF_UninitSystem + 0x9F3 bytes
+	Decl: TF_UninitSystem
+(16) section:offset       Address        Frame
+     0001:000F0C4D   0x670F1C4D 0x00000000
+	Module:  C:\Program Files\Autodesk\Maya2011\bin\QtCore4.dll (-exported-)
+	Location: QCoreApplication::notifyInternal + 0x8D bytes
+	Decl: private: bool QCoreApplication::notifyInternal(class QObject *,class QEvent *)
+(17) section:offset       Address        Frame
+     0001:0013AF12   0x6713BF12 0x00000000
+	Module:  C:\Program Files\Autodesk\Maya2011\bin\QtCore4.dll (-exported-)
+	Location: QCoreApplication::sendSpontaneousEvent + 0x22 bytes
+	Decl: private: static bool QCoreApplication::sendSpontaneousEvent(class QObject *,class QEvent *)
+(18) section:offset       Address        Frame
+     0001:0008A39D   0x6508B39D 0x00000000
+	Module:  C:\Program Files\Autodesk\Maya2011\bin\QtGui4.dll (-exported-)
+	Location: qt_translateKeyCode + 0x1B5D bytes
+	Decl: int qt_translateKeyCode(int)
+(19) section:offset       Address        Frame
+     0001:000751DE   0x650761DE 0x00000000
+	Module:  C:\Program Files\Autodesk\Maya2011\bin\QtGui4.dll (-exported-)
+	Location: QApplication::restoreOverrideCursor + 0x1C9E bytes
+	Decl: public: static void QApplication::restoreOverrideCursor(void)
+(20) section:offset       Address        Frame
+     0001:000079CD   0x77D189CD 0x00000000
+	Module:  C:\WINDOWS\system32\USER32.dll (-exported-)
+	Location: GetWindowLongW + 0x127 bytes
+	Decl: GetWindowLongW
+(21) section:offset       Address        Frame
+     0001:00007A10   0x77D18A10 0x00000000
+	Module:  C:\WINDOWS\system32\USER32.dll (-exported-)
+	Location: DispatchMessageW + 0xF bytes
+	Decl: DispatchMessageW
+(22) section:offset       Address        Frame
+     0001:0007349F   0x6507449F 0x00000000
+	Module:  C:\Program Files\Autodesk\Maya2011\bin\QtGui4.dll (-exported-)
+	Location: qWinProcessConfigRequests + 0x1FF bytes
+	Decl: void qWinProcessConfigRequests(void)
+(23) section:offset       Address        Frame
+     0001:000F3F36   0x670F4F36 0x00000000
+	Module:  C:\Program Files\Autodesk\Maya2011\bin\QtCore4.dll (-exported-)
+	Location: QCoreApplication::exec + 0x106 bytes
+	Decl: public: static int QCoreApplication::exec(void)
+(24) section:offset       Address        Frame
+     0001:000092A7   0x0209A2A7 0x00000000
+	Module:  C:\Program Files\Autodesk\Maya2011\bin\ExtensionLayer.dll (-exported-)
+	Location: Tapplication::start + 0xB7 bytes
+	Decl: public: void Tapplication::start(void)
+(25) section:offset       Address        Frame
+     0001:00003861   0x00404861 0x00000000
+	Module:  C:\Program Files\Autodesk\Maya2011\bin\maya.exe (-nosymbols-)
+(26) section:offset       Address        Frame
+     0001:0002EF50   0x0167FF50 0x00000000
+	Module:  C:\Program Files\Autodesk\Maya2011\bin\FOUNDATION.dll (-exported-)
+	Location: Tstring::setChar + 0x20 bytes
+	Decl: public: int Tstring::setChar(char const *)
+(27) section:offset       Address        Frame
+     0001:00016077   0x7C817077 0x00000000
+	Module:  C:\WINDOWS\system32\kernel32.dll (-exported-)
+	Location: RegisterWaitForInputIdle + 0x49 bytes
+	Decl: RegisterWaitForInputIdle
+(28) section:offset       Address        Frame
+     0001:00038AD8   0x7C839AD8 0x00000000
+	Module:  C:\WINDOWS\system32\kernel32.dll (-exported-)
+	Location: ValidateLocale + 0x2B0 bytes
+	Decl: ValidateLocale
+(29) section:offset       Address        Frame
+     0001:00016080   0x7C817080 0x00000000
+	Module:  C:\WINDOWS\system32\kernel32.dll (-exported-)
+	Location: RegisterWaitForInputIdle + 0x52 bytes
+	Decl: RegisterWaitForInputIdle
+End of stack
+
+//crash file  = C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\MayaCrashLog100718.1321.log
+//version     = 2010.03.19.0014
+//cut            = Fri 03/19/2010, 201003190014
+//last tool: renderWindowSelectContextItem
+//====================================================
+//panel with focus: scriptEditorPanel1
+//visible panels:
+// modelPanel4 scriptEditorPanel1 
+//====================================================
+//Memory usage:
+// 2048.000 Mb	Free Memory
+// 2048.000 Mb	Free Swap
+//  399.438 Mb	Current
+//    0.131 Mb	arguments
+//    3.333 Mb	Render Cache
+//   43.125 Mb	MEL
+//    0.313 Mb	Data Blocks
+//    0.186 Mb	Pixel Map
+//    0.124 Mb	Transforms
+//    0.006 Mb	POLY_DRAW_CACHE_STATIC_DATA
+//    0.006 Mb	POLY_DRAW_CACHE_DATA
+//====================================================
