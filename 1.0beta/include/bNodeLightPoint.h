@@ -1,3 +1,5 @@
+#define NOMINMAX
+#define _USE_MATH_DEFINES 1
 #include<maya/MPxLocatorNode.h>
 #include<maya/MTypeId.h>
 #include<maya/M3dView.h>

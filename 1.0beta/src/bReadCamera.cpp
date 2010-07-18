@@ -1,3 +1,5 @@
+#define NOMINMAX
+#define _USE_MATH_DEFINES 1
 #include"bReadCamera.h"
 
 #include<maya/M3dView.h>
@@ -37,6 +39,11 @@ MStatus getCamera::readCamera(yafaray::yafrayInterface_t &yI)
 	MVector up=currentCam.upDirection(MSpace::kWorld);
 	//test output
 	cout<<up.x<<up.y<<up.z<<endl;
+
+	//try to find resx, resy, even i don't know what do they mean......
+	MRenderData rData;
+	int resx=rData.resX;
+	int resy=rData.resY;
 
 
 	yI.paramsClearAll();

@@ -1,3 +1,5 @@
+#define NOMINMAX
+#define _USE_MATH_DEFINES 1
 #include "bNodeLightPoint.h"
 #include <maya/MPlug.h>
 #include <maya/MVector.h>

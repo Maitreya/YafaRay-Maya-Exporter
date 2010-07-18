@@ -1,3 +1,5 @@
+#define NOMINMAX
+#define _USE_MATH_DEFINES 1
 #include"bNodeWorldSetting.h"
 #include"bNodeRenderSetting.h"
 #include"bNodeMaterialGlass.h"
@@ -7,6 +9,7 @@
 #include"bCmdCreateCameraAngular.h"
 #include"bNodeLightPoint.h"
 #include"bCmdRender.h"
+#include "bCmdRenderPreview.h"
 
 #include<maya/MFnPlugin.h>
 #include<maya/MString.h>
@@ -45,6 +48,9 @@ MStatus initializePlugin(MObject obj)
 	stat=plugin.registerCommand("yafRender",renderScene::creator);
 	if(!stat) stat.perror("register command yafRender failed");
 
+	stat=plugin.registerCommand("yafRenderPreview",renderPreview::creator);
+	if(!stat) stat.perror("register command yafRenderPreview failed");
+
 
 	return stat;
 }
@@ -80,6 +86,9 @@ MStatus uninitializePlugin(MObject obj)
 
 	stat=plugin.deregisterCommand("yafRender");
 	if(!stat) stat.perror("deregister command yafRender failed");
+
+	stat=plugin.deregisterCommand("yafRenderPreview");
+	if(!stat) stat.perror("deregister command yafRenderPreview failed");
 
 	return stat;
 }

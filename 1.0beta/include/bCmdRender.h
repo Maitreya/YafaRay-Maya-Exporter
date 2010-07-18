@@ -1,9 +1,10 @@
+#define NOMINMAX
+#define _USE_MATH_DEFINES 1
 #include<map>
 #include<string>
 #include<maya/MPxCommand.h>
 #include<maya/MGlobal.h>
 #include<interface/yafrayinterface.h>
-#include <yafraycore/memoryIO.h>
 using namespace yafaray;
 using namespace std;
 

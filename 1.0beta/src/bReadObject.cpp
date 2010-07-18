@@ -1,3 +1,5 @@
+#define NOMINMAX
+#define _USE_MATH_DEFINES 1
 #include "bReadObject.h"
 
 #include<maya/MGlobal.h>
@@ -11,6 +13,10 @@
 #include<maya/MIntArray.h>
 #include<maya/MFnDependencyNode.h>
 #include<maya/MFnMesh.h>
+#include <maya/MObject.h>
+#include <maya/MObjectArray.h>
+#include <maya/MPlug.h>
+#include <maya/MPlugArray.h>
 #include<iostream>
 #include<interface/yafrayinterface.h>
 #include<map>
@@ -54,22 +60,44 @@ MStatus getObject::readMesh(yafaray::yafrayInterface_t &yI,std::map<string , yaf
 
 		//this is for getting the number of faces of the mesh
 		MFnMesh meshFn(originMesh);
-
-		unsigned int yafID=yI.getNextFreeID();
-		cout<<"the mesh id is "<<yafID<<endl;
 		
-		//itorate all the vertices and print them out
-		cout<<"position of each vertex"<<endl;
-		MItMeshVertex meshVertex(originMesh);
-
 		//find the material of the mesh
-		//not good method till now, use a stupid one....
-		std::map<string , yafaray::material_t *>::iterator iter=materialMap.find("yafGlass1");
+		//not good method till now, use a stupid one.......yohohoho!!!found the way to do this!!
+		MObjectArray sgArray;
+		MIntArray indexSG;
+		meshFn.getConnectedShaders(0, sgArray, indexSG);
+		MFnDependencyNode sgFn(sgArray[0]);
+		MPlug surfacePlug=sgFn.findPlug("surfaceShader");
+		MPlugArray sourceArray;
+		MString shaderName;
+		if (surfacePlug.connectedTo(sourceArray, true, false))
+		{
+			MPlug sourcePlug=sourceArray[0];
+			MObject sourceNode=sourcePlug.node();
+			MFnDependencyNode sourceFn(sourceNode);
+			shaderName=sourceFn.name();
+		}
+
+		string sName(shaderName.asChar());
+
+		std::map<string , yafaray::material_t *>::iterator iter=materialMap.find(sName);
 		if(iter==materialMap.end())
 		{
+			//here just a temp way
+			//actually, if searched in the map and didn't find the shader name of this object(means this object didn't use yafaray's shader)
+			//we should give it an default shader
+			//to implement this, should export a default shader first, in the read shader step
+			//implement this later
 			MGlobal::displayError("iterator is useless");
 			return MStatus::kFailure;
 		}
+
+		unsigned int yafID=yI.getNextFreeID();
+		cout<<"the mesh id is "<<yafID<<endl;
+
+		//itorate all the vertices and print them out
+		cout<<"position of each vertex"<<endl;
+		MItMeshVertex meshVertex(originMesh);
 
 		yI.paramsClearAll();
 		yI.startGeometry();

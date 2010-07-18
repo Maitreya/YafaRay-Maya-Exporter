@@ -1,3 +1,5 @@
+#define NOMINMAX
+#define _USE_MATH_DEFINES 1
 #ifndef GLASSNODE
 #define GLASSNODE
 

@@ -1,6 +1,7 @@
 #ifndef RENDERSETTING
 #define RENDERSETTING
-
+#define NOMINMAX
+#define _USE_MATH_DEFINES 1
 #include <maya/MPxNode.h>
 #include <maya/MTypeId.h>
 
