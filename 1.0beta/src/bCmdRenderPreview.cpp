@@ -3,6 +3,8 @@
 #include "bCmdRenderPreview.h"
 #include "bCmdRender.h"
 #include "bReadShader.h"
+#include "bReadObject.h"
+#include "bReadCamera.h"
 
 #include <maya/MGlobal.h>
 #include <maya/MString.h>
@@ -11,6 +13,7 @@
 #include <maya/MFnDependencyNode.h>
 #include <maya/MObject.h>
 #include <maya/MPlug.h>
+#include <maya/MRenderView.h>
 #include <interface/yafrayinterface.h>
 #include <yafraycore/memoryIO.h>
 using namespace yafaray;
@@ -48,12 +51,16 @@ MStatus renderPreview::doIt(const MArgList &args)
 	getShader previewShader;
 	previewShader.readShader(*yafPreview,materialMap);
 
-	    yafPreview->paramsClearAll();
+	getObject rObject;
+	rObject.readObject(*yafPreview,materialMap);
+
+
+	/*    yafPreview->paramsClearAll();
 	    yafPreview->paramsSetString("type", "sphere");
 		yafPreview->paramsSetPoint("center", 0, 0, 0);
 		yafPreview->paramsSetFloat("radius", 2);
 		yafPreview->paramsSetString("material", "yafGlass1");
-		yafPreview->createObject("Sphere1");
+		yafPreview->createObject("Sphere1");*/
 
 
 
@@ -79,15 +86,17 @@ MStatus renderPreview::doIt(const MArgList &args)
 		yafPreview->createBackground("world_background");
 
 
-		yafPreview->paramsClearAll();
-		yafPreview->paramsSetString("type", "perspective");
-		yafPreview->paramsSetFloat("focal", 2.4);
-		yafPreview->paramsSetPoint("from", 7, -7, 4.15);
-		yafPreview->paramsSetPoint("up", 6.12392, -6.11394, 7.20305);
-		yafPreview->paramsSetPoint("to", 4.89145, -4.88147, 2.90031);
-		yafPreview->paramsSetInt("resx", size);
-		yafPreview->paramsSetInt("resy", size);
-		yafPreview->createCamera("cam");
+		//yafPreview->paramsClearAll();
+		//yafPreview->paramsSetString("type", "perspective");
+		//yafPreview->paramsSetFloat("focal", 2.4);
+		//yafPreview->paramsSetPoint("from", 7, -7, 4.15);
+		//yafPreview->paramsSetPoint("up", 6.12392, -6.11394, 7.20305);
+		//yafPreview->paramsSetPoint("to", 4.89145, -4.88147, 2.90031);
+		//yafPreview->paramsSetInt("resx", size);
+		//yafPreview->paramsSetInt("resy", size);
+		//yafPreview->createCamera("cam");
+	getCamera cam;
+	cam.readCamera(*yafPreview);
 
 
 		yafPreview->paramsClearAll();
@@ -120,9 +129,60 @@ MStatus renderPreview::doIt(const MArgList &args)
 		yafPreview->paramsSetString("background_name","world_background");
 
 		yafPreview->render(memoryIO);
+		toRenderView( size , imageM);
 		yafPreview->clearAll();
 
 		delete [] imageM;
+
+
+	return stat;
+}
+
+MStatus renderPreview::toRenderView( const int size, const float * imageM)
+{
+	MStatus stat;
+
+	if (!MRenderView::doesRenderEditorExist())
+	{
+		MGlobal::displayError("can't push pixels to render view, cos' maya is running on batch mode");
+		return stat=MStatus::kFailure;
+	}
+	if (MRenderView::startRender(size, size , false, true)!= MStatus::kSuccess)
+	{
+		MGlobal::displayError("errors occurred when rendering start!");
+		return stat=MStatus::kFailure;
+	}
+
+	
+
+	//get pixels from yafaray image memory
+	RV_PIXEL *resultPixels=new RV_PIXEL[size*size];
+	for (unsigned int index=0 ; index<(size*size) ; index++)
+	{
+		resultPixels[index].r=imageM[index*4+0]*255;
+		resultPixels[index].g=imageM[index*4+1]*255;
+		resultPixels[index].b=imageM[index*4+2]*255;
+		resultPixels[index].a=imageM[index*4+3];
+	}
+
+	if (MRenderView::updatePixels(0 , size-1, 0 , size-1, resultPixels )!=MStatus::kSuccess)
+	{
+		MGlobal::displayError("errors occurred when updating pixels!");
+		return stat=MStatus::kFailure;
+	}
+	delete [] resultPixels;
+	if (MRenderView::refresh(0 , size-1, 0 , size-1)!=MStatus::kSuccess)
+	{
+		MGlobal::displayError("errors occurred when refresh!");
+		return stat=MStatus::kFailure;
+	}
+
+	if (MRenderView::endRender()!=MStatus::kSuccess)
+	{
+		MGlobal::displayError("errors occurred when ending render!");
+		return stat=MStatus::kFailure;
+	}
+
 
 
 	return stat;

@@ -51,6 +51,8 @@ MStatus initializePlugin(MObject obj)
 	stat=plugin.registerCommand("yafRenderPreview",renderPreview::creator);
 	if(!stat) stat.perror("register command yafRenderPreview failed");
 
+	stat=plugin.registerUI("yafCreateUI","yafDeleteUI");
+	if(!stat) stat.perror("register UI failed");
 
 	return stat;
 }

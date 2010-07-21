@@ -1,3 +1,5 @@
+#define NOMINMAX
+#define _USE_MATH_DEFINES 1
 #include<maya/MGlobal.h>
 #include<map>
 #include<string>

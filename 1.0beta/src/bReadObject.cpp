@@ -17,6 +17,8 @@
 #include <maya/MObjectArray.h>
 #include <maya/MPlug.h>
 #include <maya/MPlugArray.h>
+#include <maya/MDagPath.h>
+#include <maya/MFnDagNode.h>
 #include<iostream>
 #include<interface/yafrayinterface.h>
 #include<map>
@@ -39,8 +41,6 @@ MStatus getObject::readMesh(yafaray::yafrayInterface_t &yI,std::map<string , yaf
 {
 	MStatus stat=MStatus::kSuccess;
 
-	MFnDependencyNode selectDepend;
-
 	//select all the mesh in the scene
 	MSelectionList selectList;
 	MString matchPolygon("*");
@@ -51,18 +51,16 @@ MStatus getObject::readMesh(yafaray::yafrayInterface_t &yI,std::map<string , yaf
 	//how to find the visiability attribute of a mesh?
 	for(; !selectMesh.isDone();selectMesh.next())
 	{
-		MObject originMesh;
-		selectMesh.getDependNode(originMesh);
-
-		selectDepend.setObject(originMesh);
-		MString meshName=selectDepend.name();
-		cout<<"the mesh name is "<<meshName.asChar()<<endl;
+		MDagPath meshPath;
+		selectMesh.getDagPath(meshPath);
+		
+		MFnDagNode meshDagFn(meshPath);
+		cout<<"the mesh name is "<<meshDagFn.name().asChar()<<endl;
 
 		//this is for getting the number of faces of the mesh
-		MFnMesh meshFn(originMesh);
+		MFnMesh meshFn(meshPath);
 		
 		//find the material of the mesh
-		//not good method till now, use a stupid one.......yohohoho!!!found the way to do this!!
 		MObjectArray sgArray;
 		MIntArray indexSG;
 		meshFn.getConnectedShaders(0, sgArray, indexSG);
@@ -97,13 +95,13 @@ MStatus getObject::readMesh(yafaray::yafrayInterface_t &yI,std::map<string , yaf
 
 		//itorate all the vertices and print them out
 		cout<<"position of each vertex"<<endl;
-		MItMeshVertex meshVertex(originMesh);
+		MItMeshVertex meshVertex(meshPath);
 
 		yI.paramsClearAll();
 		yI.startGeometry();
 
 		//since MFnMesh does not provide the number of triangles directly, so have to get it in another way
-		MItMeshPolygon forCountTriangle(originMesh);
+		MItMeshPolygon forCountTriangle(meshPath);
 		int numTriangle=0;
 		int count;
 		for(;!forCountTriangle.isDone();forCountTriangle.next())
@@ -112,10 +110,10 @@ MStatus getObject::readMesh(yafaray::yafrayInterface_t &yI,std::map<string , yaf
 			numTriangle=numTriangle+count;
 		}
 
-		yI.startTriMesh(yafID,meshFn.numVertices(),numTriangle,false,false,0);
+		yI.startTriMesh(yafID, meshFn.numVertices(), numTriangle, false, false, 0);
 		for(; !meshVertex.isDone();meshVertex.next())
 		{
-			MPoint locationV=meshVertex.position(MSpace::kObject);
+			MPoint locationV=meshVertex.position(MSpace::kWorld);
 			cout<<"("<<locationV.x<<") ("<<locationV.y<<") ( "<<locationV.z<<")"<<endl;
 			yI.addVertex(locationV.x,locationV.y,locationV.z);
 			
@@ -123,12 +121,12 @@ MStatus getObject::readMesh(yafaray::yafrayInterface_t &yI,std::map<string , yaf
 
 		//find every triangle face by face
 		cout<<"indices of triangle vertice"<<endl;
-		MItMeshPolygon meshFace(originMesh);
+		MItMeshPolygon meshFace(meshPath);
 		for(;!meshFace.isDone();meshFace.next())
 		{
 			MPointArray points;
 			MIntArray pointIndices;
-			meshFace.getTriangles(points,pointIndices,MSpace::kObject);
+			meshFace.getTriangles(points,pointIndices,MSpace::kWorld);
 			//get the indices for each vertex of the triangle. the index will be correspond to the point array before
 			for(unsigned int i=0;i<pointIndices.length();i++)
 			{
