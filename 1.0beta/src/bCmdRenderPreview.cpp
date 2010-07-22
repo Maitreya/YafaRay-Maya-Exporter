@@ -23,11 +23,12 @@ std::map<string , yafaray::material_t*> renderPreview::materialMap;
 MStatus renderPreview::doIt(const MArgList &args)
 {
 	MStatus stat;
-	int size=400;
+	int sizex=640;
+	int sizey=480;
 	
 	yafrayInterface_t *yafPreview=renderScene::getyI();
 	yafPreview->clearAll();
-	yafPreview->startScene(1);
+	yafPreview->startScene(0);
 
 	//get gammainput
 	MString listRnderSetting("ls -type yafRenderSetting");
@@ -119,17 +120,17 @@ MStatus renderPreview::doIt(const MArgList &args)
 		yafPreview->paramsSetFloat("AA_pixelwidth", 1.5);
 		yafPreview->paramsSetString("filter_type", "Mitchell");
 
-		float* imageM = new float[size*size*4];
-		yafaray::memoryIO_t memoryIO(size, size, imageM);
+		float* imageM = new float[sizex*sizey*4];
+		yafaray::memoryIO_t memoryIO(sizex, sizey, imageM);
 
-		yafPreview->paramsSetInt("width",size);
-		yafPreview->paramsSetInt("height",size);
+		yafPreview->paramsSetInt("width",sizex);
+		yafPreview->paramsSetInt("height",sizey);
 		yafPreview->paramsSetBool("z_channel",false);
 
 		yafPreview->paramsSetString("background_name","world_background");
 
 		yafPreview->render(memoryIO);
-		toRenderView( size , imageM);
+		toRenderView( sizex , sizey, imageM);
 		yafPreview->clearAll();
 
 		delete [] imageM;
@@ -138,7 +139,7 @@ MStatus renderPreview::doIt(const MArgList &args)
 	return stat;
 }
 
-MStatus renderPreview::toRenderView( const int size, const float * imageM)
+MStatus renderPreview::toRenderView( const int sizex, const int sizey,  const float * imageM)
 {
 	MStatus stat;
 
@@ -147,7 +148,7 @@ MStatus renderPreview::toRenderView( const int size, const float * imageM)
 		MGlobal::displayError("can't push pixels to render view, cos' maya is running on batch mode");
 		return stat=MStatus::kFailure;
 	}
-	if (MRenderView::startRender(size, size , false, true)!= MStatus::kSuccess)
+	if (MRenderView::startRender(sizex, sizey , false, true)!= MStatus::kSuccess)
 	{
 		MGlobal::displayError("errors occurred when rendering start!");
 		return stat=MStatus::kFailure;
@@ -156,22 +157,31 @@ MStatus renderPreview::toRenderView( const int size, const float * imageM)
 	
 
 	//get pixels from yafaray image memory
-	RV_PIXEL *resultPixels=new RV_PIXEL[size*size];
-	for (unsigned int index=0 ; index<(size*size) ; index++)
+	RV_PIXEL *resultPixels=new RV_PIXEL[sizex*sizey];
+	for (unsigned int index=0 ; index<(sizex*sizey) ; index++)
 	{
 		resultPixels[index].r=imageM[index*4+0]*255;
 		resultPixels[index].g=imageM[index*4+1]*255;
 		resultPixels[index].b=imageM[index*4+2]*255;
 		resultPixels[index].a=imageM[index*4+3];
 	}
+	RV_PIXEL *resultPixelReverse= new RV_PIXEL[sizex*sizey];
+	for (unsigned int i=0; i<sizey;i++)
+	{
+		for (unsigned int j=0; j<sizex; j++)
+		{
+			resultPixelReverse[i*sizex+j]=resultPixels[(sizey-1-i)*sizex+j];
+		}
+	}
 
-	if (MRenderView::updatePixels(0 , size-1, 0 , size-1, resultPixels )!=MStatus::kSuccess)
+	if (MRenderView::updatePixels(0 , sizex-1, 0 , sizey-1, resultPixelReverse)!=MStatus::kSuccess)
 	{
 		MGlobal::displayError("errors occurred when updating pixels!");
 		return stat=MStatus::kFailure;
 	}
 	delete [] resultPixels;
-	if (MRenderView::refresh(0 , size-1, 0 , size-1)!=MStatus::kSuccess)
+	delete [] resultPixelReverse;
+	if (MRenderView::refresh(0 , sizex-1, 0 , sizey-1)!=MStatus::kSuccess)
 	{
 		MGlobal::displayError("errors occurred when refresh!");
 		return stat=MStatus::kFailure;

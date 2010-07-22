@@ -19,12 +19,6 @@ MStatus getCamera::readCamera(yafaray::yafrayInterface_t &yI)
 	M3dView currentView=M3dView::active3dView();
 	MDagPath cameraPath;
 	currentView.getCamera(cameraPath);
-	MObject cameraTransNode=cameraPath.transform();
-	MFnTransform cameraTrans(cameraTransNode);
-	MVector cameraP=cameraTrans.getTranslation(MSpace::kTransform);
-
-	//test output
-	cout<<cameraP.x<<cameraP.y<<cameraP.z<<endl;
 
 	//test output
 	MFnDagNode cameraFn(cameraPath);
@@ -32,6 +26,10 @@ MStatus getCamera::readCamera(yafaray::yafrayInterface_t &yI)
 	
 
 	MFnCamera currentCam(cameraPath);
+	MVector eyePoint=currentCam.eyePoint(MSpace::kWorld);
+	//test output
+	cout<<eyePoint.x<<eyePoint.y<<eyePoint.z<<endl;
+
 	MVector to=currentCam.viewDirection(MSpace::kWorld);
 	//test output
 	cout<<to.x<<to.y<<to.z<<endl;
@@ -48,10 +46,10 @@ MStatus getCamera::readCamera(yafaray::yafrayInterface_t &yI)
 
 	yI.paramsClearAll();
 	yI.paramsSetString("type","perspective");
-	yI.paramsSetPoint("from",cameraP.x,cameraP.y,cameraP.z);
+	yI.paramsSetPoint("from",eyePoint.x, eyePoint.y, eyePoint.z);
 	yI.paramsSetPoint("up",up.x,up.y,up.z);
 	yI.paramsSetPoint("to",to.x,to.y,to.z);
-	yI.paramsSetFloat("focal", 2.4);
+	yI.paramsSetFloat("focal", 1.0);
 
 	//cant find the damn size data of the rendering image...so find a temp way
 	yI.paramsSetInt("resx",640);

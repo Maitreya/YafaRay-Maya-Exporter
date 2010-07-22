@@ -77,8 +77,12 @@ MStatus getObject::readMesh(yafaray::yafrayInterface_t &yI,std::map<string , yaf
 		}
 
 		string sName(shaderName.asChar());
+		if (sName!="yafGlass1")
+		{
+			MGlobal::displayInfo("damn...");
+		}
 
-		std::map<string , yafaray::material_t *>::iterator iter=materialMap.find(sName);
+		std::map<string , yafaray::material_t *>::iterator iter=materialMap.find("yafGlass1");
 		if(iter==materialMap.end())
 		{
 			//here just a temp way
@@ -137,6 +141,7 @@ MStatus getObject::readMesh(yafaray::yafrayInterface_t &yI,std::map<string , yaf
 
 		}
 		yI.endTriMesh();
+		yI.smoothMesh(0, 181);
 		yI.endGeometry();
 
 		selectMesh.next();

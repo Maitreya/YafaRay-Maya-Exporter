@@ -17,7 +17,7 @@ public:
 	virtual MStatus doIt(const MArgList& args);
 	static void *creator(){return new renderPreview;}
 private:
-	MStatus toRenderView(const int size, const float * imageM);
+	MStatus toRenderView(const int sizex, const int sizey,  const float * imageM);
 	static std::map<string , yafaray::material_t*> materialMap;
 };
 
