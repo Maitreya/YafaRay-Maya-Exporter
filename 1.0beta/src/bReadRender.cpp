@@ -29,7 +29,7 @@ MStatus getRender::readRender(yafaray::yafrayInterface_t &yI)
 
 		readOutput(yI,renderFn);
 		readIntegrator(yI,renderFn);
-		readAA(yI,renderFn);
+//		readAA(yI,renderFn);
 
 
 	}
@@ -143,10 +143,10 @@ MStatus getRender::readAA(yafaray::yafrayInterface_t &yI, MFnDependencyNode &ren
 {
 	MStatus stat;
 	yI.paramsClearAll();
-	yI.paramsSetString("camera_name","cam");
-	yI.paramsSetString("integrator_name","default");
-	yI.paramsSetString("volintegrator_name","volintegr");
-	yI.paramsSetString("background_name","world_background");
+	//yI.paramsSetString("camera_name","cam");
+	//yI.paramsSetString("integrator_name","default");
+	//yI.paramsSetString("volintegrator_name","volintegr");
+	//yI.paramsSetString("background_name","world_background");
 
 	float gamma;
 	renderFn.findPlug("Gamma").getValue(gamma);
@@ -193,11 +193,12 @@ MStatus getRender::readAA(yafaray::yafrayInterface_t &yI, MFnDependencyNode &ren
 	}
 	//i don't know what's these things: xstart, ystart.....
 	//don't know how to get the size of the rendering pic now.......
-	yI.paramsSetInt("xstart",0);
-	yI.paramsSetInt("ystart",0);
+	//yI.paramsSetInt("xstart",0);
+	//yI.paramsSetInt("ystart",0);
 
-	yI.paramsSetInt("width",640);
+	/*yI.paramsSetInt("width",640);
 	yI.paramsSetInt("height",480);
+	yI.paramsSetBool("z_channel",false);*/
 
 	bool clampRGB;
 	renderFn.findPlug("ClampRGB").getValue(clampRGB);

@@ -31,34 +31,34 @@ MStatus renderScene::doIt(const MArgList &args)
 	int sizey=480;
 
 	//get gammainput
-	MString listRnderSetting("ls -type yafRenderSetting");
-	MStringArray listRenderResult;
-	MGlobal::executeCommand(listRnderSetting,listRenderResult);
+	//MString listRnderSetting("ls -type yafRenderSetting");
+	//MStringArray listRenderResult;
+	//MGlobal::executeCommand(listRnderSetting,listRenderResult);
 
-	MSelectionList list;
-	MGlobal::getSelectionListByName(listRenderResult[0],list);
-	float gammaInput;
-	for(unsigned int index=0; index<list.length(); index++)
-	{
-		MObject renderSettingNode;
-		list.getDependNode(index, renderSettingNode);
-		MFnDependencyNode renderFn(renderSettingNode);
-		renderFn.findPlug("GammaInput").getValue(gammaInput);
-	}
+	//MSelectionList list;
+	//MGlobal::getSelectionListByName(listRenderResult[0],list);
+	//float gammaInput;
+	//for(unsigned int index=0; index<list.length(); index++)
+	//{
+	//	MObject renderSettingNode;
+	//	list.getDependNode(index, renderSettingNode);
+	//	MFnDependencyNode renderFn(renderSettingNode);
+	//	renderFn.findPlug("GammaInput").getValue(gammaInput);
+	//}
 	//done
 
 	yI.clearAll();
 	yI.startScene();
 
-	yI.setInputGamma(gammaInput,true);
+	//yI.setInputGamma(gammaInput,true);
 
-	//getShader shader;
-	//shader.readShader(yI,materialMap);
-	//cout<<"shader ok"<<endl;
+	getShader shader;
+	shader.readShader(yI,materialMap);
+	cout<<"shader ok"<<endl;
 
-	//getObject object;
-	//object.readObject(yI,materialMap);
-	//cout<<"obj ok"<<endl;
+	getObject object;
+	object.readObject(yI,materialMap);
+	cout<<"obj ok"<<endl;
 
 	getLight light;
 	light.readLight(yI);
@@ -69,29 +69,29 @@ MStatus renderScene::doIt(const MArgList &args)
 	cout<<"camera ok"<<endl;
 
 	//world_background and volintegr
-	//getWorld world;
-	//world.readWorld(yI);
-	//cout<<"world ok"<<endl;
+	getWorld world;
+	world.readWorld(yI);
+	cout<<"world ok"<<endl;
 
 	//test
-	yI.paramsClearAll();
-	yI.paramsSetString("type", "sunsky");
-	yI.paramsSetPoint("from", 1, 1, 1);
-	yI.paramsSetFloat("turbidity", 3);
-	yI.createBackground("world_background");
+	//yI.paramsClearAll();
+	//yI.paramsSetString("type", "sunsky");
+	//yI.paramsSetPoint("from", 1, 1, 1);
+	//yI.paramsSetFloat("turbidity", 3);
+	//yI.createBackground("world_background");
 
-	yI.paramsClearAll();
-	yI.paramsSetString("type", "none");
-	yI.createIntegrator("volintegr");
+	//yI.paramsClearAll();
+	//yI.paramsSetString("type", "none");
+	//yI.createIntegrator("volintegr");
 
-	//getRender renderSetting;
-	//renderSetting.readRender(yI);
-	//cout<<"renderSetting ok"<<endl;
+	getRender renderSetting;
+	renderSetting.readRender(yI);
+	cout<<"renderSetting ok"<<endl;
 
 	//test
-	yI.paramsClearAll();
-	yI.paramsSetString("type", "directlighting");
-	yI.createIntegrator("default");
+	//yI.paramsClearAll();
+	//yI.paramsSetString("type", "directlighting");
+	//yI.createIntegrator("default");
 
 	yI.paramsClearAll();
 	yI.paramsSetString("camera_name", "cam");
@@ -119,7 +119,7 @@ MStatus renderScene::beginRender(const int sizex, const int sizey)
 {
 	MStatus stat=MStatus::kSuccess;
 
-    float* imageM = new float[sizex*sizey];
+    float* imageM = new float[sizex*sizey*4];
 	yafaray::memoryIO_t memoryIO(sizex,sizey,imageM);
 	yI.render(memoryIO);
 	renderToView(sizex, sizey, imageM);
@@ -129,7 +129,8 @@ MStatus renderScene::beginRender(const int sizex, const int sizey)
 }
 MStatus renderScene::renderToView(const int sizex, const int sizey, const float *imageM)
 {
-	MStatus stat=MStatus::kSuccess;
+	MStatus stat;
+
 	if (!MRenderView::doesRenderEditorExist())
 	{
 		MGlobal::displayError("can't push pixels to render view, cos' maya is running on batch mode");
@@ -152,13 +153,22 @@ MStatus renderScene::renderToView(const int sizex, const int sizey, const float 
 		resultPixels[index].b=imageM[index*4+2]*255;
 		resultPixels[index].a=imageM[index*4+3];
 	}
+	RV_PIXEL *resultPixelReverse= new RV_PIXEL[sizex*sizey];
+	for (unsigned int i=0; i<sizey;i++)
+	{
+		for (unsigned int j=0; j<sizex; j++)
+		{
+			resultPixelReverse[i*sizex+j]=resultPixels[(sizey-1-i)*sizex+j];
+		}
+	}
 
-	if (MRenderView::updatePixels(0 , sizex-1, 0 , sizey-1, resultPixels )!=MStatus::kSuccess)
+	if (MRenderView::updatePixels(0 , sizex-1, 0 , sizey-1, resultPixelReverse)!=MStatus::kSuccess)
 	{
 		MGlobal::displayError("errors occurred when updating pixels!");
 		return stat=MStatus::kFailure;
 	}
 	delete [] resultPixels;
+	delete [] resultPixelReverse;
 	if (MRenderView::refresh(0 , sizex-1, 0 , sizey-1)!=MStatus::kSuccess)
 	{
 		MGlobal::displayError("errors occurred when refresh!");
