@@ -18,7 +18,9 @@ private:
 	//what is render set?
 	//don't add it now
 
-	//general settings
+	//general render settings
+	static MObject renderGamma;
+	static MObject renderGammaInput;
 	static MObject renderRayDepth;
 	static MObject renderTranspShadow;
 	static MObject renderClayRender;
@@ -27,9 +29,18 @@ private:
 	static MObject renderZBuffer;
 	static MObject renderThreads;
 
+	static MObject renderAAPasses;
+	static MObject renderAASamples;
+	static MObject renderAAThreshold;
+	static MObject renderAAIncSamples;
+	static MObject renderFilterType;//enum
+	static MObject renderAAPixelWidth;
+
 	//output settings
-	static MObject renderGamma;
-	static MObject renderGammaInput;
+	//added width, height
+	static MObject renderWidth;
+	static MObject renderHeight;
+
 	static MObject renderClampRGB;
 	static MObject renderPremultAlpha;
 	static MObject renderOutputMethod;//enum
@@ -41,14 +52,6 @@ private:
 	static MObject renderOutputFileType;//enum
 	static MObject renderDrawParams;
 	//static MObject renderCustomString;//this is text field?
-
-	//AA settings
-	static MObject renderAAPasses;
-	static MObject renderAASamples;
-	static MObject renderAAThreshold;
-	static MObject renderAAIncSamples;
-	static MObject renderFilterType;//enum
-	static MObject renderAAPixelWidth;
 
     static MObject renderLightType;
 	//direct lighting

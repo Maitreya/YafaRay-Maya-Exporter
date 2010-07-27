@@ -27,25 +27,7 @@ std::map<string , yafaray::material_t*> renderScene::materialMap;
 MStatus renderScene::doIt(const MArgList &args)
 {
 	MStatus stat=MStatus::kSuccess;
-	int sizex=640;
-	int sizey=480;
-
-	//get gammainput
-	//MString listRnderSetting("ls -type yafRenderSetting");
-	//MStringArray listRenderResult;
-	//MGlobal::executeCommand(listRnderSetting,listRenderResult);
-
-	//MSelectionList list;
-	//MGlobal::getSelectionListByName(listRenderResult[0],list);
-	//float gammaInput;
-	//for(unsigned int index=0; index<list.length(); index++)
-	//{
-	//	MObject renderSettingNode;
-	//	list.getDependNode(index, renderSettingNode);
-	//	MFnDependencyNode renderFn(renderSettingNode);
-	//	renderFn.findPlug("GammaInput").getValue(gammaInput);
-	//}
-	//done
+	MGlobal::executeCommand("RenderViewWindow");
 
 	yI.clearAll();
 	yI.startScene();
@@ -73,41 +55,14 @@ MStatus renderScene::doIt(const MArgList &args)
 	world.readWorld(yI);
 	cout<<"world ok"<<endl;
 
-	//test
-	//yI.paramsClearAll();
-	//yI.paramsSetString("type", "sunsky");
-	//yI.paramsSetPoint("from", 1, 1, 1);
-	//yI.paramsSetFloat("turbidity", 3);
-	//yI.createBackground("world_background");
-
-	//yI.paramsClearAll();
-	//yI.paramsSetString("type", "none");
-	//yI.createIntegrator("volintegr");
-
 	getRender renderSetting;
-	renderSetting.readRender(yI);
+	renderSetting.createRender(yI);
 	cout<<"renderSetting ok"<<endl;
 
-	//test
-	//yI.paramsClearAll();
-	//yI.paramsSetString("type", "directlighting");
-	//yI.createIntegrator("default");
-
-	yI.paramsClearAll();
-	yI.paramsSetString("camera_name", "cam");
-	yI.paramsSetString("integrator_name", "default");
-	yI.paramsSetString("volintegrator_name", "volintegr");
-	yI.paramsSetString("background_name","world_background");
-
-	yI.paramsSetFloat("gamma", 1.8);
-	yI.paramsSetInt("AA_passes", 1);
-	yI.paramsSetInt("AA_minsamples", 1);
-	yI.paramsSetFloat("AA_pixelwidth", 1.5);
-	yI.paramsSetString("filter_type", "Mitchell");
-
-	yI.paramsSetInt("width",sizex);
-	yI.paramsSetInt("height",sizey);
-	yI.paramsSetBool("z_channel",false);
+	getRender renderData;
+	int sizex, sizey;
+	renderData.getImageWidth(sizex);
+	renderData.getImageHeight(sizey);
 
 	beginRender(sizex, sizey);
 	yI.clearAll();

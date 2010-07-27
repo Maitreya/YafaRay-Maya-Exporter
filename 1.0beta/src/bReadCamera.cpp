@@ -1,6 +1,7 @@
 #define NOMINMAX
 #define _USE_MATH_DEFINES 1
 #include"bReadCamera.h"
+#include "bReadRender.h"
 
 #include<maya/M3dView.h>
 #include<maya/MDagPath.h>
@@ -52,8 +53,13 @@ MStatus getCamera::readCamera(yafaray::yafrayInterface_t &yI)
 	yI.paramsSetFloat("focal", 1.0);
 
 	//cant find the damn size data of the rendering image...so find a temp way
-	yI.paramsSetInt("resx",640);
-	yI.paramsSetInt("resy",480);
+	getRender renderData;
+	int sizex, sizey;
+	renderData.getImageWidth(sizex);
+	renderData.getImageHeight(sizey);
+
+	yI.paramsSetInt("resx",sizex);
+	yI.paramsSetInt("resy",sizey);
 	yI.createCamera("cam");
 
 	return stat=MStatus::kSuccess;

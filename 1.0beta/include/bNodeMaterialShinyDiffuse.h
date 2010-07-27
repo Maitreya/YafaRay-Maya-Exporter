@@ -1,13 +1,13 @@
 #define NOMINMAX
 #define _USE_MATH_DEFINES 1
-#ifndef GLASSNODE
-#define GLASSNODE
+#ifndef SHINYDIFFUSENODE
+#define SHINYDIFFUSENODE
 
 #include <maya/MPxNode.h>
 #include <maya/MFnNumericAttribute.h>
 #include <maya/MTypeId.h> 
 
-class glassNode: public MPxNode
+class shinyDiffuseNode: public MPxNode
 {
 public:
 	virtual MStatus compute(const MPlug &plug,MDataBlock &data);
@@ -16,16 +16,18 @@ public:
 	static const MTypeId id;
 
 private:
-	static MObject absorbColor;
-	static MObject absorbDistance;
-	static MObject filterColor;
+//	static MObject tString;
+	static MObject color;
 	static MObject mirrorColor;
-	static MObject IOR;
+	static MObject diffuseReflection;
+	static MObject mirrorStrength;
+	static MObject transparency;
+	static MObject translucency;
 	static MObject transmitFilter;
-	static MObject dispersionPower;
-	static MObject fakeShadows;
-	static MObject outGlass;
-
+	static MObject emit;
+	static MObject fresnel;
+	static MObject IOR;
+	static MObject outShinyDiffuse;
 
 };
 #endif

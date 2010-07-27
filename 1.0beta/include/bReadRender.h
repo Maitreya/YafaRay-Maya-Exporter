@@ -11,12 +11,14 @@ class getRender
 {
 	//export integrator, volume and general render settings
 	public:
-		MStatus readRender(yafrayInterface_t &yI);
+		MStatus createRender(yafrayInterface_t &yI);
+		MStatus getImageWidth(int &width);
+		MStatus getImageHeight(int &height);
 	private:
+		MStatus setGammaInput(yafrayInterface_t &yI, MFnDependencyNode &renderFn);
 		MStatus readIntegrator(yafrayInterface_t &yI , MFnDependencyNode &renderFn);
-//		MStatus readGeneral(yafrayInterface_t &yI ,MFnDependencyNode &renderFn);
+		MStatus readRender(yafrayInterface_t &yI, MFnDependencyNode &renderFn);
 		MStatus readOutput(yafrayInterface_t &yI, MFnDependencyNode &renderFn);
-		MStatus readAA(yafrayInterface_t &yI, MFnDependencyNode &renderFn);
 
 };
 #endif

@@ -7,6 +7,10 @@
 
 const MTypeId renderSettingNode::id(0x75302);
 
+    //general output settings    
+    MObject renderSettingNode::renderGamma;
+    MObject renderSettingNode::renderGammaInput;
+
     MObject renderSettingNode::renderRayDepth;
 	MObject renderSettingNode::renderTranspShadow;
 	MObject renderSettingNode::renderClayRender;
@@ -15,9 +19,17 @@ const MTypeId renderSettingNode::id(0x75302);
 	MObject renderSettingNode::renderZBuffer;
 	MObject renderSettingNode::renderThreads;
 
+	MObject renderSettingNode::renderAAPasses;
+	MObject renderSettingNode::renderAASamples;
+	MObject renderSettingNode::renderAAThreshold;
+	MObject renderSettingNode::renderAAIncSamples;
+	MObject renderSettingNode::renderFilterType;//enum
+	MObject renderSettingNode::renderAAPixelWidth;
+
 	//output settings
-	MObject renderSettingNode::renderGamma;
-	MObject renderSettingNode::renderGammaInput;
+	MObject renderSettingNode::renderWidth;
+	MObject renderSettingNode::renderHeight;
+
 	MObject renderSettingNode::renderClampRGB;
 	MObject renderSettingNode::renderPremultAlpha;
 	MObject renderSettingNode::renderOutputMethod;//enum
@@ -30,13 +42,7 @@ const MTypeId renderSettingNode::id(0x75302);
 	MObject renderSettingNode::renderDrawParams;
 	//MObject renderSettingNode::renderCustomString;//this is text field?
 
-	//AA settings
-	MObject renderSettingNode::renderAAPasses;
-	MObject renderSettingNode::renderAASamples;
-	MObject renderSettingNode::renderAAThreshold;
-	MObject renderSettingNode::renderAAIncSamples;
-	MObject renderSettingNode::renderFilterType;//enum
-	MObject renderSettingNode::renderAAPixelWidth;
+	
 
     MObject renderSettingNode::renderLightType;
 
@@ -128,6 +134,19 @@ MStatus renderSettingNode::initialize()
 	 numAttr.setMax(20);
 
 	//output settings
+	 renderWidth=numAttr.create("width","rw",MFnNumericData::kInt, 640);
+	 numAttr.setStorable(true);
+	 numAttr.setKeyable(true);
+	 numAttr.setMin(1);
+	 numAttr.setMax(10000);
+
+	 renderHeight=numAttr.create("height","rh",MFnNumericData::kInt, 480);
+	 numAttr.setStorable(true);
+	 numAttr.setKeyable(true);
+	 numAttr.setMin(1);
+	 numAttr.setMax(10000);
+
+
 	 renderGamma=numAttr.create("Gamma","rga",MFnNumericData::kFloat,0.0);
 	 numAttr.setStorable(true);
 	 numAttr.setKeyable(true);
@@ -411,6 +430,9 @@ void renderSettingNode::setAttribute()
 	addAttribute(renderThreads);
 
 	//output settings
+	addAttribute(renderWidth);
+	addAttribute(renderHeight);
+
 	addAttribute(renderGamma);
 	addAttribute(renderGammaInput);
 	addAttribute(renderClampRGB);
@@ -480,6 +502,9 @@ void renderSettingNode::setAttribute()
 	attributeAffects(renderThreads,renderOutput);
 
 	//output settings
+	attributeAffects(renderWidth,renderOutput);
+	attributeAffects(renderHeight,renderOutput);
+
 	attributeAffects(renderGamma,renderOutput);
 	attributeAffects(renderGammaInput,renderOutput);
 	attributeAffects(renderClampRGB,renderOutput);

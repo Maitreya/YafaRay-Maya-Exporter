@@ -12,7 +12,7 @@
 #include <maya/MPlug.h>
 using namespace yafaray;
 
-MStatus getRender::readRender(yafaray::yafrayInterface_t &yI)
+MStatus getRender::createRender(yafaray::yafrayInterface_t &yI)
 {
 	MStatus stat;
 	MString listRnderSetting("ls -type yafRenderSetting");
@@ -27,9 +27,10 @@ MStatus getRender::readRender(yafaray::yafrayInterface_t &yI)
 		list.getDependNode(index, renderSettingNode);
 		MFnDependencyNode renderFn(renderSettingNode);
 
-		readOutput(yI,renderFn);
+		setGammaInput(yI,renderFn);
 		readIntegrator(yI,renderFn);
-//		readAA(yI,renderFn);
+		readRender(yI,renderFn);
+		readOutput(yI,renderFn);
 
 
 	}
@@ -38,7 +39,7 @@ MStatus getRender::readRender(yafaray::yafrayInterface_t &yI)
 	return stat;
 
 }
-MStatus getRender::readOutput(yafrayInterface_t &yI, MFnDependencyNode &renderFn)
+MStatus getRender::setGammaInput(yafrayInterface_t &yI, MFnDependencyNode &renderFn)
 {
 	MStatus stat;
 	float gammaInput;
@@ -124,10 +125,109 @@ MStatus getRender::readIntegrator(yafaray::yafrayInterface_t &yI, MFnDependencyN
 	else if (lightingType==1)
 	{
 		//path tracing settings
+		yI.paramsSetString("type","pathtracing");
+
+		//GI Depth
+		int bounces;
+		renderFn.findPlug("GIDepth").getValue(bounces);
+		yI.paramsSetInt("bounces",bounces);
+
+		int pathSamples;
+		renderFn.findPlug("PathSamples").getValue(pathSamples);
+		yI.paramsSetInt("path_samples",pathSamples);
+
+		bool noRecursive;
+		renderFn.findPlug("NoRecursive").getValue(noRecursive);
+		yI.paramsSetBool("no_recursive",noRecursive);
+
+		short causType;
+		renderFn.findPlug("CausticTypes").getValue(causType);
+		switch(causType)
+		{
+		case 0:
+			yI.paramsSetString("caustic_type","none");
+			break;
+		case 1:
+			yI.paramsSetString("caustic_type","path");
+			break;
+		case 2:
+			yI.paramsSetString("caustic_type","photon");
+			break;
+		case 3:
+			yI.paramsSetString("caustic_type","both");
+			break;
+		default:
+		    break;	
+		}
+		if (causType==2||causType==3)
+		{
+			int photons;
+			renderFn.findPlug("Photons").getValue(photons);
+			yI.paramsSetInt("photons",photons);
+
+			int causticMix;
+			renderFn.findPlug("CausticMix").getValue(causticMix);
+			yI.paramsSetInt("caustic_mix",causticMix);
+
+			int causticDepth;
+			renderFn.findPlug("CausticDepth").getValue(causticDepth);
+			yI.paramsSetInt("caustic_depth",causticDepth);
+
+			float causticRadius;
+			renderFn.findPlug("DirCausticRadius").getValue(causticRadius);
+			yI.paramsSetFloat("caustic_radius",causticRadius);
+		}
 	}
 	else if (lightingType==2)
 	{
 		//photon mapping settings
+		yI.paramsSetString("type","photonmapping");
+
+		int bounces;
+		renderFn.findPlug("GIDepth").getValue(bounces);
+		yI.paramsSetInt("bounces",bounces);
+
+		int photons;
+		renderFn.findPlug("Photons").getValue(photons);
+		yI.paramsSetInt("photons",photons);
+
+		float diffuseRadius;
+		renderFn.findPlug("DiffuseRadius").getValue(diffuseRadius);
+		yI.paramsSetFloat("diffuseRadius",diffuseRadius);
+
+		int causticPhotons;
+		renderFn.findPlug("CausticPhotons").getValue(causticPhotons);
+		yI.paramsSetInt("cPhotons",causticPhotons);
+
+		float causticRadius;
+		renderFn.findPlug("PhotonCausticRadius").getValue(causticRadius);
+		yI.paramsSetFloat("causticRadius",causticRadius);
+
+		int causticMix;
+		renderFn.findPlug("CausticMix").getValue(causticMix);
+		yI.paramsSetInt("caustic_mix",causticMix);
+
+		int search;
+		renderFn.findPlug("Search").getValue(search);
+		yI.paramsSetInt("search",search);
+
+		bool finalGather;
+		renderFn.findPlug("FinalGather").getValue(finalGather);
+		yI.paramsSetBool("finalGather",finalGather);
+
+		int fgBounces;
+		renderFn.findPlug("FGBounces").getValue(fgBounces);
+		yI.paramsSetInt("fg_bounces",fgBounces);
+
+		int fgSamples;
+		renderFn.findPlug("FGSamples").getValue(fgSamples);
+		yI.paramsSetInt("fg_samples",fgSamples);
+
+		bool showMap;
+		renderFn.findPlug("ShowMap").getValue(showMap);
+		yI.paramsSetBool("show_map",showMap);
+
+
 	}
 	else if (lightingType==3)
 	{
@@ -139,14 +239,14 @@ MStatus getRender::readIntegrator(yafaray::yafrayInterface_t &yI, MFnDependencyN
 	return stat;
 }
 
-MStatus getRender::readAA(yafaray::yafrayInterface_t &yI, MFnDependencyNode &renderFn)
+MStatus getRender::readRender(yafaray::yafrayInterface_t &yI, MFnDependencyNode &renderFn)
 {
 	MStatus stat;
 	yI.paramsClearAll();
-	//yI.paramsSetString("camera_name","cam");
-	//yI.paramsSetString("integrator_name","default");
-	//yI.paramsSetString("volintegrator_name","volintegr");
-	//yI.paramsSetString("background_name","world_background");
+	yI.paramsSetString("camera_name","cam");
+	yI.paramsSetString("integrator_name","default");
+	yI.paramsSetString("volintegrator_name","volintegr");
+	yI.paramsSetString("background_name","world_background");
 
 	float gamma;
 	renderFn.findPlug("Gamma").getValue(gamma);
@@ -191,53 +291,6 @@ MStatus getRender::readAA(yafaray::yafrayInterface_t &yI, MFnDependencyNode &ren
 	default:
 		break;
 	}
-	//i don't know what's these things: xstart, ystart.....
-	//don't know how to get the size of the rendering pic now.......
-	//yI.paramsSetInt("xstart",0);
-	//yI.paramsSetInt("ystart",0);
-
-	/*yI.paramsSetInt("width",640);
-	yI.paramsSetInt("height",480);
-	yI.paramsSetBool("z_channel",false);*/
-
-	bool clampRGB;
-	renderFn.findPlug("ClampRGB").getValue(clampRGB);
-	yI.paramsSetBool("clamp_rgb",clampRGB);
-
-	//i am not sure if the two is the same thing, already messy about these names....
-	bool showSampleMask;
-	renderFn.findPlug("ShowResampleMask").getValue(showSampleMask);
-	yI.paramsSetBool("show_sam_pix",showSampleMask);
-
-	int tileSize;
-	renderFn.findPlug("TileSize").getValue(tileSize);
-	yI.paramsSetInt("tile_size",tileSize);
-
-	bool premult;
-	renderFn.findPlug("PremultAlpha").getValue(premult);
-	yI.paramsSetBool("premult",premult);
-
-	short tileOrder;
-	renderFn.findPlug("TileOrder").getValue(tileOrder);
-	if (tileOrder==0)
-	{
-		yI.paramsSetString("tiles_order","linear");
-	}
-	else
-	{
-		yI.paramsSetString("tiles_order","random");
-	}
-
-	bool zChannel;
-	renderFn.findPlug("RenderZBuffer").getValue(zChannel);
-	yI.paramsSetBool("z_channel",zChannel);
-
-	bool drawParams;
-	renderFn.findPlug("DrawRenderParams").getValue(drawParams);
-	yI.paramsSetBool("drawParams",drawParams);
-
-	//don't know how to use this yet......
-	yI.paramsSetString("customString","this is custom string");
 
 	bool autoThreads;
 	renderFn.findPlug("AutoThreads").getValue(autoThreads);
@@ -251,10 +304,74 @@ MStatus getRender::readAA(yafaray::yafrayInterface_t &yI, MFnDependencyNode &ren
 		renderFn.findPlug("Threads").getValue(threads);
 		yI.paramsSetInt("threads",threads);
 	}
+	//i don't know what's these things: xstart, ystart.....
+	//don't know how to get the size of the rendering pic now.......
+	//yI.paramsSetInt("xstart",0);
+	//yI.paramsSetInt("ystart",0);
 
 
+	return stat;
+}
+MStatus getRender::readOutput(yafrayInterface_t &yI, MFnDependencyNode &renderFn)
+{
+	MStatus stat=MStatus::kSuccess;
 
+	int width;
+	renderFn.findPlug("width").getValue(width);
+	yI.paramsSetInt("width",width);
 
+	int height;
+	renderFn.findPlug("height").getValue(height);
+	yI.paramsSetInt("height",height);
+
+	bool zChannel;
+	renderFn.findPlug("RenderZBuffer").getValue(zChannel);
+	yI.paramsSetBool("z_channel",zChannel);
+
+	return stat;
+}
+
+MStatus getRender::getImageWidth(int &width)
+{
+	MStatus stat=MStatus::kSuccess;
+	MString listRnderSetting("ls -type yafRenderSetting");
+	MStringArray listRenderResult;
+	MGlobal::executeCommand(listRnderSetting,listRenderResult);
+
+	MSelectionList list;
+	MGlobal::getSelectionListByName(listRenderResult[0],list);
+	for(unsigned int index=0; index<list.length(); index++)
+	{
+		MObject renderSettingNode;
+		list.getDependNode(index, renderSettingNode);
+		MFnDependencyNode renderFn(renderSettingNode);
+
+		renderFn.findPlug("width").getValue(width);
+
+	}
+
+	return stat;
+}
+
+MStatus getRender::getImageHeight(int &height)
+{
+	MStatus stat=MStatus::kSuccess;
+
+	MString listRnderSetting("ls -type yafRenderSetting");
+	MStringArray listRenderResult;
+	MGlobal::executeCommand(listRnderSetting,listRenderResult);
+
+	MSelectionList list;
+	MGlobal::getSelectionListByName(listRenderResult[0],list);
+	for(unsigned int index=0; index<list.length(); index++)
+	{
+		MObject renderSettingNode;
+		list.getDependNode(index, renderSettingNode);
+		MFnDependencyNode renderFn(renderSettingNode);
+
+		renderFn.findPlug("height").getValue(height);
+
+	}
 
 	return stat;
 }

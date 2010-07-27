@@ -1,6 +1,7 @@
 #define NOMINMAX
 #define _USE_MATH_DEFINES 1
 #include"bNodeMaterialGlass.h"
+
 #include<maya/MFnNumericAttribute.h>
 #include<maya/MFloatVector.h>
 #include<maya/MDataHandle.h>
@@ -11,7 +12,6 @@
 
 const MTypeId glassNode::id(0x75300);
 
-MObject glassNode::indexColor;
 MObject glassNode::absorbColor;
 MObject glassNode::absorbDistance;
 MObject glassNode::filterColor;
@@ -25,21 +25,22 @@ MObject glassNode::outGlass;
 
 MStatus glassNode::compute(const MPlug &plug, MDataBlock &data)
 {
-	if(plug==outGlass)
+	MStatus stat=MStatus::kSuccess;
+	if ((plug !=outGlass)&&(plug.parent() != outGlass))
 	{
-		MFloatVector resultColor(0.1,0.2,0.3);
-		MFloatVector& indexColorHnd=data.inputValue(indexColor).asFloatVector();
-		resultColor=indexColorHnd;
-
-		MDataHandle outColorHandle=data.outputValue(outGlass);
-		MFloatVector& outColor=outColorHandle.asFloatVector();
-		outColor=resultColor;
-		outColorHandle.setClean();
-//		data.setClean(plug);
-
+		return MStatus::kUnknownParameter;
 	}
-	return MStatus::kSuccess;
 
+	MDataHandle indexColor=data.inputValue(absorbColor);
+	const MFloatVector & color=indexColor.asFloatVector();
+
+	MDataHandle outColorHandle=data.outputValue(outGlass);
+	MFloatVector & outColor=outColorHandle.asFloatVector();
+
+	outColor=color;
+	outColorHandle.setClean();
+
+	return stat;
 }
 void *glassNode::creator()
 {
@@ -50,12 +51,6 @@ MStatus glassNode::initialize()
 {
 	MFnNumericAttribute numAttr;
 
-	indexColor=numAttr.createColor("IndexColor","ginco");
-	numAttr.setKeyable(true);
-	numAttr.setStorable(true);
-	numAttr.setDefault(0.0,0.3,0.2);
-
-	
 	absorbColor=numAttr.createColor("AbsorbColor","gabco");
 	numAttr.setKeyable(true);
 	numAttr.setStorable(true);
@@ -102,12 +97,11 @@ MStatus glassNode::initialize()
 	numAttr.setStorable(true);
 	
 
-	outGlass=numAttr.create("outColor","oc",MFnNumericData::kBoolean);
-	numAttr.setDefault(true);
+	outGlass=numAttr.createColor("outColor","oc");
 	numAttr.setHidden(true);
+	numAttr.setReadable(true);
+	numAttr.setWritable(false);
 
-
-	addAttribute(indexColor);
 	addAttribute(absorbColor);
 	addAttribute(absorbDistance);	
 	addAttribute( filterColor );
@@ -118,7 +112,6 @@ MStatus glassNode::initialize()
 	addAttribute(fakeShadows);
 	addAttribute(outGlass);
 
-	attributeAffects(indexColor,outGlass);
 	attributeAffects(absorbColor,outGlass);
 	attributeAffects(absorbDistance,outGlass);
 	attributeAffects(filterColor,outGlass);

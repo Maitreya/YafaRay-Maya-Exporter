@@ -3,7 +3,9 @@
 #include"bNodeWorldSetting.h"
 #include"bNodeRenderSetting.h"
 #include"bNodeMaterialGlass.h"
-//#include"bReadObjectCmd.h"
+#include "bNodeMaterialCoatedGlossy.h"
+#include "bNodeMaterialShinyDiffuse.h"
+#include "bNodeMaterialBlend.h"
 #include"bCmdLoadPlugin.h"
 #include"bNodeCameraAngular.h"
 #include"bCmdCreateCameraAngular.h"
@@ -31,17 +33,27 @@ MStatus initializePlugin(MObject obj)
 	stat=plugin.registerNode("yafRenderSetting",renderSettingNode::id,renderSettingNode::creator,renderSettingNode::initialize);
 	if(!stat) stat.perror("register node renderSetting failed");
 
+	//materials
 	stat=plugin.registerNode("yafGlass",glassNode::id,glassNode::creator,glassNode::initialize,MPxNode::kDependNode,&MaterialClassify);
 	if(!stat) stat.perror("register node yafGlass failed");
 
-//	stat=plugin.registerCommand("yafReadObject",readObject::creator);
-//	if(!stat) stat.perror("register command readObject failed");
+	stat=plugin.registerNode("yafCoatedGlossy",coatedGlossyNode::id,coatedGlossyNode::creator,coatedGlossyNode::initialize,MPxNode::kDependNode,&MaterialClassify);
+	if(!stat) stat.perror("register node yafCoatedGlossy failed");
+
+	stat=plugin.registerNode("yafShinyDiffuse",shinyDiffuseNode::id,shinyDiffuseNode::creator,shinyDiffuseNode::initialize,MPxNode::kDependNode,&MaterialClassify);
+	if(!stat) stat.perror("register node yafShinyDiffuse failed");
+
+	stat=plugin.registerNode("yafBlend",blendNode::id,blendNode::creator,blendNode::initialize,MPxNode::kDependNode,&MaterialClassify);
+	if(!stat) stat.perror("register node yaBlend failed");
+
+	//cameras
 	stat=plugin.registerNode("yafAngular",angularNode::id,angularNode::creator,angularNode::initialize);
 	if(!stat) stat.perror("register node yafAngular failed");
 
 	stat=plugin.registerCommand("yafCreateAngular",createAngular::creator);
 	if(!stat) stat.perror("register command yafCreateAngular failed");
 
+	//lights
 	stat=plugin.registerNode("yafPointLight",pointLightNode::id,pointLightNode::creator,pointLightNode::initialize,MPxNode::kLocatorNode,&LightClassify);
     if(!stat) stat.perror("register node yafPointLight failed");
 
@@ -74,8 +86,14 @@ MStatus uninitializePlugin(MObject obj)
 	stat=plugin.deregisterNode(glassNode::id);
 	if(!stat) stat.perror("deregister node yafGlass failed");
 
-//	stat=plugin.deregisterCommand("yafReadObject");
-//	if(!stat) stat.perror("deregister command readObject failed");
+	stat=plugin.deregisterNode(coatedGlossyNode::id);
+	if(!stat) stat.perror("deregister node yafCoatedGlossy failed");
+
+	stat=plugin.deregisterNode(shinyDiffuseNode::id);
+	if(!stat) stat.perror("deregister node yafShinyDiffuse failed");
+
+	stat=plugin.deregisterNode(blendNode::id);
+	if(!stat) stat.perror("deregister node yafBlend failed");
 
 	stat=plugin.deregisterNode(angularNode::id);
 	if(!stat) stat.perror("deregister node yafAngular failed");

@@ -46,6 +46,7 @@ MStatus getLight::readLight(yafaray::yafrayInterface_t &yI)
 
 		    //test output
 			//this is the position of the point light
+			cout<<"============test light==========="<<endl;
 		    cout<<transP.x<<transP.y<<transP.z<<endl;
 
 			MObject pointDepNode;
@@ -62,10 +63,12 @@ MStatus getLight::readLight(yafaray::yafrayInterface_t &yI)
 			MFnNumericData pointData(pointColor);
 			float pcR,pcG,pcB;
 			pointData.getData(pcR,pcG,pcB);
+			cout<<pcR<<pcG<<pcB<<endl;
 			yI.paramsSetColor("color",pcR,pcG,pcB);
 
-			double pointPower;
+			float pointPower;
 			pointDepFn.findPlug("Power").getValue(pointPower);
+			cout<<pointPower<<endl;
 			yI.paramsSetFloat("power",pointPower);
 
 			yI.createLight(pointDepFn.name().asChar());
