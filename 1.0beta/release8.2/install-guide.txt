@@ -1,0 +1,47 @@
+==================================================================
+=====install guide for yafaray maya exporter test version 8.2=====
+==================================================================
+===================this exporter is for maya 2011=================
+================any other verison is not available================
+==================================================================
+========================================Maitreya@2010-8-2=========
+==================================================================
+
+
+=============================INSTALL==============================
+==================================================================
+1. if your maya is running, close it.
+==================================================================
+2. put THE FOLDER "yafaray" AND yafaray82.mll to
+  ..\your maya location\bin\plug-ins
+   for example:C:\Program Files\Autodesk\Maya2011\bin\plug-ins
+==================================================================
+3. put THINGS IN THE FOLDER "extra" to
+  ..\your maya location\bin
+==================================================================
+4. put THINGS IN THE FOLDER "icons" to
+  ..\your maya location\icons
+===================this exporter is for maya 2011=================
+5. put THINGS IN THE FOLDER "AETemplates" to
+  ..\your maya location\scripts\AETemplates
+==================================================================
+6. put THINGS IN THE FOLDER "mel scripts" to
+  ..\My Document\maya\2011\scripts
+==================================================================
+===============================DONE!!=============================
+
+
+
+============================HOW TO LOAD===========================
+    open your maya,go to the menu:
+    Window->Settings/Preferences->Plug in Manager
+    then you will find yafaray82.mll in the plugin list.
+==================================================================
+    if you can't find it, click "browse" button, to where you put
+the .mll, double click to load it.
+==================================================================
+    now, you will find a new menu "yafaray" appeared in the menu bar.
+there you will find a menu for yafaray settings.
+    and if you open Window->Rendering Editors->Hypershade, you will
+find yafaray materials and lights.
+==================================================================

@@ -1,0 +1,25 @@
+global proc yafCreateUI()
+{
+    global string $yafarayMenu;
+    if(`menu -exists $yafarayMenu`) {deleteUI $yafarayMenu;}
+
+    global string $gMainWindow;
+    global string $mainMenuName = "YafaRay";
+    $yafarayMenu = `menu -parent $gMainWindow -tearOff true -label $mainMenuName`;
+
+    //don't need to be option box item....
+    menuItem -parent $yafarayMenu -label "YafaRay Settings" -command "ySettingUI" -annotation "setting for Yafaray" testDllMenuItem2;
+    //menuItem -parent $yafarayMenu -label "Preview Render" -command "yafRenderPreview" -annotation "render material preview" testDllMenuItem3;
+    //menuItem -parent $yafarayMenu -label "Render" -command "yafRender" -annotation "render" testDllMenuItem4;
+
+}
+
+
+
+global proc yafDeleteUI()
+{
+    global string $yafarayMenu;
+    deleteUI -menu $yafarayMenu;
+
+
+}
