@@ -4,8 +4,8 @@
 
 #include<maya/MGlobal.h>
 #include<maya/MSelectionList.h>
-#include<maya/MItSelectionList.h>
 #include<maya/MString.h>
+#include <maya/MStringArray.h>
 #include<maya/MItMeshVertex.h>
 #include<maya/MitMeshPolygon.h>
 #include<maya/MPoint.h>
@@ -31,7 +31,6 @@ MStatus getObject::readObject(yafaray::yafrayInterface_t &yI , std::map<string ,
 	MStatus stat=MStatus::kSuccess;
 
 	readMesh(yI,materialMap);
-	MGlobal::displayInfo("read mesh succeeded!(*^__^*)");
 	readParticle(yI,materialMap);
 	
 
@@ -42,97 +41,107 @@ MStatus getObject::readMesh(yafaray::yafrayInterface_t &yI,std::map<string , yaf
 	MStatus stat=MStatus::kSuccess;
 
 	//select all the mesh in the scene
-	MSelectionList selectList;
-	MString matchPolygon("*");
-	MGlobal::getSelectionListByName(matchPolygon,selectList);
-	MItSelectionList selectMesh(selectList,MFn::kMesh);
+	MString readMeshCmd("ls -type mesh");
+	MStringArray readMeshResult;
+	MGlobal::executeCommand(readMeshCmd, readMeshResult);
 
-	//this itorate should be done on only visiable meshes, but has not implement yet
-	//how to find the visiability attribute of a mesh?
-	for(; !selectMesh.isDone();selectMesh.next())
+	for(unsigned int i=0; i<readMeshResult.length(); i++)
 	{
-		MDagPath meshPath;
-		selectMesh.getDagPath(meshPath);
+			MSelectionList meshList;
+			MGlobal::getSelectionListByName(readMeshResult[i],meshList);
 
-		//this is for getting the number of faces of the mesh
-		MFnMesh meshFn(meshPath);
-		
-		//find the material of the mesh
-		MObjectArray sgArray;
-		MIntArray indexSG;
-		meshFn.getConnectedShaders(0, sgArray, indexSG);
-		MFnDependencyNode sgFn(sgArray[0]);
-		MPlug surfacePlug=sgFn.findPlug("surfaceShader");
-		MPlugArray sourceArray;
-		MString shaderName;
-		if (surfacePlug.connectedTo(sourceArray, true, false))
-		{
-			MPlug sourcePlug=sourceArray[0];
-			MObject sourceNode=sourcePlug.node();
-			MFnDependencyNode sourceFn(sourceNode);
-			shaderName=sourceFn.name();
-		}
-		string sName(shaderName.asChar());
-		std::map<string , yafaray::material_t *>::iterator iter=materialMap.find(sName);
-		if(iter==materialMap.end())
-		{
-			//here just a temp way
-			//actually, if searched in the map and didn't find the shader name of this object(means this object didn't use yafaray's shader)
-			//we should give it an default shader
-			//to implement this, should export a default shader first, in the read shader step
-			//implement this later
-			MGlobal::displayError("iterator is useless");
-			return MStatus::kFailure;
-		}
-
-		unsigned int yafID=yI.getNextFreeID();
-
-		//itorate all the vertices and print them out
-		MItMeshVertex meshVertex(meshPath);
-
-		yI.paramsClearAll();
-		yI.startGeometry();
-
-		//since MFnMesh does not provide the number of triangles directly, so have to get it in another way
-		MItMeshPolygon forCountTriangle(meshPath);
-		int numTriangle=0;
-		int count;
-		for(;!forCountTriangle.isDone();forCountTriangle.next())
-		{
-			forCountTriangle.numTriangles(count);
-			numTriangle=numTriangle+count;
-		}
-
-		yI.startTriMesh(yafID, meshFn.numVertices(), numTriangle, false, false, 0);
-		for(; !meshVertex.isDone();meshVertex.next())
-		{
-			MPoint locationV=meshVertex.position(MSpace::kWorld);
-			yI.addVertex(locationV.x,locationV.y,locationV.z);
-			
-		}
-
-		//find every triangle face by face
-		MItMeshPolygon meshFace(meshPath);
-		for(;!meshFace.isDone();meshFace.next())
-		{
-			MPointArray points;
-			MIntArray pointIndices;
-			meshFace.getTriangles(points,pointIndices,MSpace::kWorld);
-			//get the indices for each vertex of the triangle. the index will be correspond to the point array before
-			for(unsigned int i=0;i<pointIndices.length();i++)
+			for(unsigned int index=0; index<meshList.length(); index++)
 			{
-				yI.addTriangle(pointIndices[i],pointIndices[i+1],pointIndices[i+2],iter->second);
-				i=i+2;
+				MDagPath meshPath;
+				meshList.getDagPath(index, meshPath);
+
+				//this is for getting the number of faces of the mesh
+				MFnMesh meshFn(meshPath);
+				cout<<"==============mesh test=============="<<endl;
+				cout<<"mesh name:"<<meshFn.name()<<endl;
+				
+				//find the material of the mesh
+				MObjectArray sgArray;
+				MIntArray indexSG;
+				meshFn.getConnectedShaders(0, sgArray, indexSG);
+				MFnDependencyNode sgFn(sgArray[0]);
+				MPlug surfacePlug=sgFn.findPlug("surfaceShader");
+				MPlugArray sourceArray;
+				MString shaderName;
+				if (surfacePlug.connectedTo(sourceArray, true, false))
+				{
+					MPlug sourcePlug=sourceArray[0];
+					MObject sourceNode=sourcePlug.node();
+					MFnDependencyNode sourceFn(sourceNode);
+					shaderName=sourceFn.name();
+				}
+				string sName(shaderName.asChar());
+				cout<<"material name:"<<sName<<endl;
+
+				std::map<string , yafaray::material_t *>::iterator iter=materialMap.find(sName);
+				if(iter==materialMap.end())
+				{
+					//if searched in the map and didn't find the shader name of this object(means this object didn't use yafaray's material)
+					//we should give it an default shader
+					//to implement this, should export a default shader first, in the read shader step
+					//iter=materialMap.find("yafDefaultMaterial");
+
+					//using method above got some problem...when two shape use one trasform node
+					//found this problem when using ncloth
+					//so still jump the ones who didn't use yafaray's material
+					cout<<"this mesh doesn't use yafaray's material"<<endl;
+					MGlobal::displayInfo("(yafaray mesh) this mesh doesn't use yafaray's material!");
+					break;
+				}
+
+				unsigned int yafID=yI.getNextFreeID();
+
+				//itorate all the vertices and print them out
+				MItMeshVertex meshVertex(meshPath);
+
+				yI.paramsClearAll();
+				yI.startGeometry();
+
+				//since MFnMesh does not provide the number of triangles directly, so have to get it in another way
+				MItMeshPolygon forCountTriangle(meshPath);
+				int numTriangle=0;
+				int count;
+				for(;!forCountTriangle.isDone();forCountTriangle.next())
+				{
+					forCountTriangle.numTriangles(count);
+					numTriangle=numTriangle+count;
+				}
+
+				yI.startTriMesh(yafID, meshFn.numVertices(), numTriangle, false, false, 0);
+				for(; !meshVertex.isDone();meshVertex.next())
+				{
+					MPoint locationV=meshVertex.position(MSpace::kWorld);
+					yI.addVertex(locationV.x,locationV.y,locationV.z);
+					
+				}
+
+				//find every triangle face by face
+				MItMeshPolygon meshFace(meshPath);
+				for(;!meshFace.isDone();meshFace.next())
+				{
+					MPointArray points;
+					MIntArray pointIndices;
+					meshFace.getTriangles(points,pointIndices,MSpace::kWorld);
+					//get the indices for each vertex of the triangle. the index will be correspond to the point array before
+					for(unsigned int i=0;i<pointIndices.length();i++)
+					{
+						yI.addTriangle(pointIndices[i],pointIndices[i+1],pointIndices[i+2],iter->second);
+						i=i+2;
+					}
+
+				}
+				yI.endTriMesh();
+				yI.smoothMesh(0, 181);
+				yI.endGeometry();
+
 			}
 
-		}
-		yI.endTriMesh();
-		yI.smoothMesh(0, 181);
-		yI.endGeometry();
-
-		selectMesh.next();
 	}
-
 	return stat;
 }
 MStatus getObject::readParticle(yafrayInterface_t &yI,std::map<string , yafaray::material_t *> &materialMap)

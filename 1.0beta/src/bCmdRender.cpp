@@ -66,7 +66,7 @@ MStatus renderScene::doIt(const MArgList &args)
 
 	beginRender(sizex, sizey);
 	yI.clearAll();
-	MGlobal::displayInfo("yafaray render out");
+	MGlobal::displayInfo("(yafaray render) yafaray render out");
 
 	return stat;
 }
@@ -101,7 +101,7 @@ MStatus renderScene::renderToView(const int sizex, const int sizey, const float 
 
 	//get pixels from yafaray image memory
 	RV_PIXEL *resultPixels=new RV_PIXEL[sizex*sizey];
-	for (unsigned int index=0 ; index<(sizex*sizey) ; index++)
+	for (int index=0 ; index<(sizex*sizey) ; index++)
 	{
 		resultPixels[index].r=imageM[index*4+0]*255;
 		resultPixels[index].g=imageM[index*4+1]*255;
@@ -109,9 +109,9 @@ MStatus renderScene::renderToView(const int sizex, const int sizey, const float 
 		resultPixels[index].a=imageM[index*4+3];
 	}
 	RV_PIXEL *resultPixelReverse= new RV_PIXEL[sizex*sizey];
-	for (unsigned int i=0; i<sizey;i++)
+	for (int i=0; i<sizey;i++)
 	{
-		for (unsigned int j=0; j<sizex; j++)
+		for (int j=0; j<sizex; j++)
 		{
 			resultPixelReverse[i*sizex+j]=resultPixels[(sizey-1-i)*sizex+j];
 		}

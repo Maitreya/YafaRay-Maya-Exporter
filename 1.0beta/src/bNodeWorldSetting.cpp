@@ -39,6 +39,8 @@ const MTypeId worldSettingNode::id(0x75301);
 	  MObject worldSettingNode::skySamples;
 
 	//DarkTide's sunsky attribute
+	  MObject worldSettingNode::DSClampRGB;
+
 	  MObject worldSettingNode::DSTurbidity;
 	  MObject worldSettingNode::renderDSA;
 	  MObject worldSettingNode::renderDSB;
@@ -229,6 +231,10 @@ MStatus worldSettingNode::initialize()
 	numAttr.setMax(128);
 
 	//DarkTide's sunsky attribute
+	DSClampRGB=numAttr.create("ClampRGB","wcrgb",MFnNumericData::kBoolean,0);
+	numAttr.setKeyable(true);
+	numAttr.setStorable(true);
+
 	DSTurbidity=numAttr.create("DarkTideTurbidity","wdatu",MFnNumericData::kFloat,2.0);
 	numAttr.setKeyable(true);
 	numAttr.setStorable(true);
@@ -417,6 +423,7 @@ void worldSettingNode::setAttribute()
 	addAttribute(skySamples);
 
 	//DarkTide's sunsky attribute
+	addAttribute(DSClampRGB);
 	addAttribute(DSTurbidity);
 	addAttribute(renderDSA);
 	addAttribute(renderDSB);
@@ -476,6 +483,7 @@ void worldSettingNode::setAttribute()
 	attributeAffects(skySamples,worldOutput);
 
 
+	attributeAffects(DSClampRGB,worldOutput);
 	attributeAffects(DSTurbidity,worldOutput);
 	attributeAffects(renderDSA,worldOutput);
 	attributeAffects(renderDSB,worldOutput);

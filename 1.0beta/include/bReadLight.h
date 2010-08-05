@@ -10,5 +10,7 @@ class getLight
 {
 public:
 	MStatus readLight(yafrayInterface_t &yI);
+private:
+	int makeSphere(yafrayInterface_t &yI,int u, int v, double x,double y,double z,float radius);
 };
 #endif

@@ -5,24 +5,28 @@
 #include<maya/M3dView.h>
 
 
-#ifndef POINTLIGHT
-#define POINTLIGHT
+#ifndef SUNLIGHT
+#define SUNLIGHT
 
-class pointLightNode : public MPxLocatorNode
+class  sunLightNode : public MPxLocatorNode
 {
 public:
 	//virtual MStatus compute( const MPlug& plug, MDataBlock& data );
 	virtual void draw( M3dView & view, const MDagPath & path, M3dView::DisplayStyle style,M3dView::DisplayStatus status );
-    virtual bool  isBounded() const;
-//    virtual MBoundingBox  boundingBox() const; 
-    static  void * creator();
-    static  MStatus  initialize();
+	virtual bool  isBounded() const;
+	//    virtual MBoundingBox  boundingBox() const; 
+	static  void * creator();
+	static  MStatus  initialize();
 
 	static const MTypeId id;
 private:
 	//light input
-	static MObject pointLightColor;
-	static MObject pointPower;
+	static MObject sunColor;
+	static MObject sunPower;
+	static MObject sunSamples;
+	static MObject sunAngle;
+
+
 
 };
 #endif

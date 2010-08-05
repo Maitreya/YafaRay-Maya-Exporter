@@ -46,7 +46,7 @@ MStatus shinyDiffuseNode::initialize()
 	numAttr.setStorable(true);
 	numAttr.setDefault(1.0,1.0,1.0);
 
-	mirrorColor==numAttr.createColor("MirrorColor","dmico");
+	mirrorColor=numAttr.createColor("MirrorColor","dmico");
 	numAttr.setKeyable(true);
 	numAttr.setStorable(true);
 	numAttr.setDefault(1.0,1.0,1.0);
@@ -57,7 +57,7 @@ MStatus shinyDiffuseNode::initialize()
 	numAttr.setMin(0.0f);
 	numAttr.setMax(1.0f);
 
-	mirrorStrength==numAttr.create("MirrorStrength","dmist",MFnNumericData::kFloat,0.0);
+	mirrorStrength=numAttr.create("MirrorStrength","dmist",MFnNumericData::kFloat,0.0);
 	numAttr.setKeyable(true);
 	numAttr.setStorable(true);
 	numAttr.setMin(0.0f);

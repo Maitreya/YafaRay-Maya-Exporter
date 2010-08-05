@@ -14,9 +14,9 @@ MStatus loadPlugin::doIt(const MArgList &args)
 {
 	MStatus stat=MStatus::kSuccess;
 
-    MString getExtraPath("getenv ""YAFARAY_EXTRADLL_PATH""");
-	MString extraPath;
-	MGlobal::executeCommand(getExtraPath,extraPath);
+    MString getMayaLocation("getenv MAYA_LOCATION");
+	MString locationPath;
+	MGlobal::executeCommand(getMayaLocation,locationPath);
 	MStringArray extraDlls;
 	extraDlls.append("libpng14d");
 	extraDlls.append("libtiff3");
@@ -25,22 +25,21 @@ MStatus loadPlugin::doIt(const MArgList &args)
 	extraDlls.append("yafarayqt");
 	extraDlls.append("yafarayplugin");
 	extraDlls.append("zlib");
+	MString pathAdded("/bin");
 	MString suffix(".dll");
 	for(unsigned int i=0; i<extraDlls.length();i++)
 	{
-		MString dll=extraPath+extraDlls[i]+suffix;
+		MString dll=locationPath+pathAdded+extraDlls[i]+suffix;
 		cout<<"loading dll "<<extraDlls[i]<<".dll";
 		LoadLibrary(dll.asChar());
 		cout<<"........................succeeded!"<<endl;
 	}
 
-	
-	MString getPath("getenv ""YAFARAY_PLUG_IN_PATH""");
-	MString pluginPath;
-	MGlobal::executeCommand(getPath,pluginPath);
 
+	MString yafPath("/bin/plug-ins/yafaray");
+	MString yafDll=locationPath+yafPath;
     yafrayInterface_t * yafLoad=renderScene::getyI();
-	yafLoad->loadPlugins(pluginPath.asChar());
+	yafLoad->loadPlugins(yafDll.asChar());
 	MGlobal::displayInfo("load yafaray components succeeded!");
 
 

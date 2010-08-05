@@ -50,7 +50,7 @@ MStatus getCamera::readCamera(yafaray::yafrayInterface_t &yI)
 	yI.paramsSetPoint("from",eyePoint.x, eyePoint.y, eyePoint.z);
 	yI.paramsSetPoint("up",up.x,up.y,up.z);
 	yI.paramsSetPoint("to",to.x,to.y,to.z);
-	yI.paramsSetFloat("focal", 1.0);
+	yI.paramsSetFloat("focal", 2.0);
 
 	//cant find the damn size data of the rendering image...so find a temp way
 	getRender renderData;

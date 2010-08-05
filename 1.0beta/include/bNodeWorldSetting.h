@@ -54,6 +54,8 @@ private:
 	static MObject skySamples;
 
 	//DarkTide's sunsky attribute
+	static MObject DSClampRGB;
+
 	static MObject DSTurbidity;
 	static MObject renderDSA;
 	static MObject renderDSB;

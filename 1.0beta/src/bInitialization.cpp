@@ -6,10 +6,17 @@
 #include "bNodeMaterialCoatedGlossy.h"
 #include "bNodeMaterialShinyDiffuse.h"
 #include "bNodeMaterialBlend.h"
+#include "bNodeMaterialGlossy.h"
+#include "bNodeMaterialRoughGlass.h"
 #include"bCmdLoadPlugin.h"
 #include"bNodeCameraAngular.h"
 #include"bCmdCreateCameraAngular.h"
 #include"bNodeLightPoint.h"
+#include "bNodeLightArea.h"
+#include "bNodeLightDirectional.h"
+#include "bNodeLightSpot.h"
+#include "bNodeLightSphere.h"
+#include "bNodeLightSun.h"
 #include"bCmdRender.h"
 #include "bCmdRenderPreview.h"
 
@@ -46,6 +53,12 @@ MStatus initializePlugin(MObject obj)
 	stat=plugin.registerNode("yafBlend",blendNode::id,blendNode::creator,blendNode::initialize,MPxNode::kDependNode,&MaterialClassify);
 	if(!stat) stat.perror("register node yaBlend failed");
 
+	stat=plugin.registerNode("yafGlossy",glossyNode::id, glossyNode::creator, glossyNode::initialize, MPxNode::kDependNode, &MaterialClassify);
+	if(!stat) stat.perror("register node yaGlossy failed");
+
+	stat=plugin.registerNode("yafRoughGlass",roughGlassNode::id, roughGlassNode::creator, roughGlassNode::initialize, MPxNode::kDependNode, &MaterialClassify);
+	if(!stat) stat.perror("register node yafRoughGlass failed");
+
 	//cameras
 	stat=plugin.registerNode("yafAngular",angularNode::id,angularNode::creator,angularNode::initialize);
 	if(!stat) stat.perror("register node yafAngular failed");
@@ -56,6 +69,21 @@ MStatus initializePlugin(MObject obj)
 	//lights
 	stat=plugin.registerNode("yafPointLight",pointLightNode::id,pointLightNode::creator,pointLightNode::initialize,MPxNode::kLocatorNode,&LightClassify);
     if(!stat) stat.perror("register node yafPointLight failed");
+
+	stat=plugin.registerNode("yafDirectionalLight",directionalLightNode::id,directionalLightNode::creator,directionalLightNode::initialize,MPxNode::kLocatorNode,&LightClassify);
+	if(!stat) stat.perror("register node yafDirectionalLight failed");
+
+	stat=plugin.registerNode("yafAreaLight",areaLightNode::id,areaLightNode::creator,areaLightNode::initialize,MPxNode::kLocatorNode,&LightClassify);
+	if(!stat) stat.perror("register node yafAreaLight failed");
+
+	stat=plugin.registerNode("yafSpotLight",spotLightNode::id,spotLightNode::creator,spotLightNode::initialize,MPxNode::kLocatorNode,&LightClassify);
+	if(!stat) stat.perror("register node yafSpotLight failed");
+
+	stat=plugin.registerNode("yafSphereLight",sphereLightNode::id,sphereLightNode::creator,sphereLightNode::initialize,MPxNode::kLocatorNode,&LightClassify);
+	if(!stat) stat.perror("register node yafSphereLight failed");
+
+	stat=plugin.registerNode("yafSunLight",sunLightNode::id,sunLightNode::creator,sunLightNode::initialize,MPxNode::kLocatorNode,&LightClassify);
+	if(!stat) stat.perror("register node yafSunLight failed");
 
 	stat=plugin.registerCommand("yafRender",renderScene::creator);
 	if(!stat) stat.perror("register command yafRender failed");
@@ -95,6 +123,12 @@ MStatus uninitializePlugin(MObject obj)
 	stat=plugin.deregisterNode(blendNode::id);
 	if(!stat) stat.perror("deregister node yafBlend failed");
 
+	stat=plugin.deregisterNode(glossyNode::id);
+	if(!stat) stat.perror("deregister node yafGlossy failed");
+
+	stat=plugin.deregisterNode(roughGlassNode::id);
+	if(!stat) stat.perror("deregister node yafRoughGlass failed");
+
 	stat=plugin.deregisterNode(angularNode::id);
 	if(!stat) stat.perror("deregister node yafAngular failed");
 
@@ -103,6 +137,21 @@ MStatus uninitializePlugin(MObject obj)
 
 	stat=plugin.deregisterNode(pointLightNode::id);
 	if(!stat) stat.perror("deregister node yafPointLight failed");
+
+	stat=plugin.deregisterNode(areaLightNode::id);
+	if(!stat) stat.perror("deregister node yafAreaLight failed");
+
+	stat=plugin.deregisterNode(directionalLightNode::id);
+	if(!stat) stat.perror("deregister node yafDirectionalLight failed");
+
+	stat=plugin.deregisterNode(spotLightNode::id);
+	if(!stat) stat.perror("deregister node yafSpotLight failed");
+
+	stat=plugin.deregisterNode(sphereLightNode::id);
+	if(!stat) stat.perror("deregister node yafSphereLight failed");
+
+	stat=plugin.deregisterNode(sunLightNode::id);
+	if(!stat) stat.perror("deregister node yafSunLight failed");
 
 	stat=plugin.deregisterCommand("yafRender");
 	if(!stat) stat.perror("deregister command yafRender failed");
