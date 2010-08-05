@@ -16,6 +16,7 @@ const MTypeId areaLightNode::id(0x75308);
 MObject areaLightNode::areaLightColor;
 MObject areaLightNode::areaPower;
 MObject areaLightNode::areaSamples;
+MObject areaLightNode::areaMakeGeo;
 
 void * areaLightNode::creator()
 {
@@ -43,9 +44,14 @@ MStatus areaLightNode::initialize()
 	numAttr.setMin(0);
 	numAttr.setMax(512); 
 
+	areaMakeGeo=numAttr.create("MakeGeometry","mg",MFnNumericData::kBoolean,0);
+	numAttr.setKeyable(true);
+	numAttr.setStorable(true);
+
 	addAttribute(areaLightColor);
 	addAttribute(areaPower);
 	addAttribute(areaSamples);
+	addAttribute(areaMakeGeo);
 
 	return stat;
 }

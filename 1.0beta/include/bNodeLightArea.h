@@ -24,6 +24,7 @@ private:
     static MObject areaSamples;
 	static MObject areaLightColor;
 	static MObject areaPower;
+	static MObject areaMakeGeo;
 
 };
 #endif

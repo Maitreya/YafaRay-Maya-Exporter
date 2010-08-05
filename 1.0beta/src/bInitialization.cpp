@@ -17,6 +17,7 @@
 #include "bNodeLightSpot.h"
 #include "bNodeLightSphere.h"
 #include "bNodeLightSun.h"
+#include "bNodeTextureImage.h"
 #include"bCmdRender.h"
 #include "bCmdRenderPreview.h"
 
@@ -28,6 +29,7 @@ MStatus initializePlugin(MObject obj)
 	MStatus stat;
     const MString MaterialClassify("shader/surface");
 	const MString LightClassify("light");
+	const MString TextureClassify("texture/2d");
 
 	MFnPlugin plugin(obj,"YafaRay","2011","Any");
 
@@ -84,6 +86,10 @@ MStatus initializePlugin(MObject obj)
 
 	stat=plugin.registerNode("yafSunLight",sunLightNode::id,sunLightNode::creator,sunLightNode::initialize,MPxNode::kLocatorNode,&LightClassify);
 	if(!stat) stat.perror("register node yafSunLight failed");
+
+	//texture
+	stat=plugin.registerNode("yafImageTexture",imageTexNode::id,imageTexNode::creator,imageTexNode::initialize,MPxNode::kDependNode,&TextureClassify);
+	if(!stat) stat.perror("register node yafImageTexture failed");
 
 	stat=plugin.registerCommand("yafRender",renderScene::creator);
 	if(!stat) stat.perror("register command yafRender failed");
@@ -152,6 +158,10 @@ MStatus uninitializePlugin(MObject obj)
 
 	stat=plugin.deregisterNode(sunLightNode::id);
 	if(!stat) stat.perror("deregister node yafSunLight failed");
+
+	//texture
+	stat=plugin.deregisterNode(imageTexNode::id);
+	if(!stat) stat.perror("deregister node yafImageTexture failed");
 
 	stat=plugin.deregisterCommand("yafRender");
 	if(!stat) stat.perror("deregister command yafRender failed");

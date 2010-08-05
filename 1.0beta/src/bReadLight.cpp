@@ -111,32 +111,24 @@ MStatus getLight::readLight(yafaray::yafrayInterface_t &yI)
 				MFnTransform sphereTrans(sphereTransNode);
 				MVector transP=sphereTrans.getTranslation(MSpace::kTransform);
 
-
-				yI.paramsClearAll();
-				yI.paramsSetString("type","spherelight");
 				MFnDagNode sphereFn(spherePath);
-
-				yI.paramsSetPoint("from",transP.x, transP.y,transP.z);
-
 				MObject sphereColor;
 				sphereFn.findPlug("LightColor").getValue(sphereColor);
 				MFnNumericData sphereData(sphereColor);
 				float sphereR,sphereG,sphereB;
 				sphereData.getData(sphereR,sphereG,sphereB);
-				yI.paramsSetColor("color",sphereR,sphereG,sphereB);
 
 				float power;
 				sphereFn.findPlug("Power").getValue(power);
-				yI.paramsSetFloat("power",power);
 
 				int samples;
 				sphereFn.findPlug("Samples").getValue(samples);
-				yI.paramsSetInt("samples",samples);
 
 				float radius;
 				sphereFn.findPlug("Radius").getValue(radius);
-				yI.paramsSetFloat("radius",radius);
+				
 
+				//check if draw geometry needed
 				bool makeGeo;
 				sphereFn.findPlug("MakeGeometry").getValue(makeGeo);
 				if (makeGeo)
@@ -144,9 +136,24 @@ MStatus getLight::readLight(yafaray::yafrayInterface_t &yI)
 					int u=24;
 					int v=48;
 
-					int sphereID=makeSphere(yI,u,v,transP.x,transP.y,transP.z,radius);
+					yI.paramsClearAll();
+					yI.paramsSetString("type","light_mat");
+					yI.paramsSetFloat("power",power);
+					yI.paramsSetColor("color",sphereR,sphereG,sphereB);
+					yafaray::material_t *lightMat=yI.createMaterial(sphereFn.name().asChar());
+
+					int sphereID=makeSphere(yI,u,v,transP.x,transP.y,transP.z,radius,lightMat);
 					yI.paramsSetInt("object",sphereID);
 				}
+
+				yI.paramsClearAll();
+				yI.paramsSetString("type","spherelight");
+				yI.paramsSetPoint("from",transP.x, transP.y,transP.z);
+				yI.paramsSetColor("color",sphereR,sphereG,sphereB);
+				yI.paramsSetFloat("power",power);
+				yI.paramsSetInt("samples",samples);
+				yI.paramsSetFloat("radius",radius);
+
 
 				cout<<"================sphere light=============="<<endl;
 				cout<<sphereFn.name().asChar()<<endl;
@@ -385,44 +392,68 @@ MStatus getLight::readLight(yafaray::yafrayInterface_t &yI)
 
 					MPoint corner(-1.0,-1.0,0);
 					MPoint point1(-1.0,1.0,0);
-					MPoint point2(1.0,-1.0,0);
+					MPoint point2(1.0,1.0,0);
+					MPoint point3(1.0,-1.0,0);
 					corner*=areaMatrix;
 					point1*=areaMatrix;
 					point2*=areaMatrix;
+					point3*=areaMatrix;
 
-					yI.paramsClearAll();
-					yI.paramsSetString("type","arealight");
+					MVector areaP=areaTransform.getTranslation(MSpace::kTransform);
 
-					cout<<"===============area light=============="<<endl;
 					MFnDagNode areaShapeFn(areaShapePath);
 					int samples;
 					areaShapeFn.findPlug("Samples").getValue(samples);
-		//			cout<<"samples"<<samples<<endl;
-					yI.paramsSetInt("samples",samples);
 
-					yI.paramsSetPoint("corner",corner.x, corner.y, corner.z);
-		//			cout<<"corner"<<corner.x<<corner.y<<corner.z<<endl;
-					yI.paramsSetPoint("point1",point1.x, point1.y, point1.z);
-		//			cout<<"point1"<<point1.x<<point1.y<<point1.z<<endl;
-					yI.paramsSetPoint("point2",point2.x, point2.y, point2.z);
-		//			cout<<"point2"<<point2.x<<point2.y<<point2.z<<endl;
-
-					MVector areaP=areaTransform.getTranslation(MSpace::kTransform);
-		//			cout<<"from"<<areaP.x<<areaP.y<<areaP.z<<endl;
-					yI.paramsSetPoint("from",areaP.x, areaP.y, areaP.z);
-
-					
 					MObject areaColor;
 					areaShapeFn.findPlug("LightColor").getValue(areaColor);
 					MFnNumericData areaData(areaColor);
 					float areaR,areaG,areaB;
 					areaData.getData(areaR,areaG,areaB);
-		//			cout<<"color"<<areaR<<areaG<<areaB<<endl;
-					yI.paramsSetColor("color",areaR,areaG,areaB);
 
 					float power;
 					areaShapeFn.findPlug("Power").getValue(power);
-		//			cout<<"power"<<power<<endl;
+
+					bool makeGeo;
+					areaShapeFn.findPlug("MakeGeometry").getValue(makeGeo);
+					if (makeGeo==1)
+					{
+						//create light
+						yI.paramsClearAll();
+						yI.paramsSetString("type","light_mat");
+						yI.paramsSetFloat("power",power);
+						yI.paramsSetColor("color",areaR,areaG,areaB);
+						yafaray::material_t * lightMat=yI.createMaterial(areaShapeFn.name().asChar());
+						//create geometry
+						yI.paramsClearAll();
+						int areaID=yI.getNextFreeID();
+						yI.startGeometry();
+						yI.startTriMesh(areaID,4,2,false,false);
+						yI.addVertex(corner.x,corner.y,corner.z);
+						yI.addVertex(point1.x,point1.y,point1.z);
+						yI.addVertex(point2.x,point2.y,point2.z);
+						yI.addVertex(point3.x,point3.y,point3.z);
+						yI.addTriangle(0,1,2,lightMat);
+						yI.addTriangle(0,2,3,lightMat);
+						yI.endTriMesh();
+						yI.endGeometry();
+						yI.paramsSetInt("object",areaID);
+
+					}
+
+					yI.paramsClearAll();
+					yI.paramsSetString("type","arealight");
+
+					cout<<"===============area light=============="<<endl;
+					yI.paramsSetInt("samples",samples);
+
+					yI.paramsSetPoint("corner",corner.x, corner.y, corner.z);
+					yI.paramsSetPoint("point1",point1.x, point1.y, point1.z);
+					yI.paramsSetPoint("point2",point3.x, point3.y, point3.z);
+
+					yI.paramsSetPoint("from",areaP.x, areaP.y, areaP.z);
+
+					yI.paramsSetColor("color",areaR,areaG,areaB);
 					yI.paramsSetFloat("power",power);
 
 					cout<<areaShapeFn.name().asChar()<<endl;
@@ -468,19 +499,21 @@ MStatus getLight::readLight(yafaray::yafrayInterface_t &yI)
 
 	return stat;
 }
-int getLight::makeSphere(yafaray::yafrayInterface_t &yI, int u, int v, double x, double y, double z, float radius)
+int getLight::makeSphere(yafaray::yafrayInterface_t &yI, int u, int v, double x, double y, double z, float radius,yafaray::material_t *lightMat)
 {
+	yI.paramsClearAll();
+
 	int sphereID=yI.getNextFreeID();
 	yI.startGeometry();
 	yI.startTriMesh(sphereID,2+(u-1)*v,2*(u-1)*v,false,false);
 	yI.addVertex(x,y,z+radius);
 	yI.addVertex(x,y,z-radius);
-	for (int i=1;i<v;i++)
+	for (int i=0;i<v;i++)
 	{
 		float t=i/float(v);
 		double sinV=sin(2.0*PI*t);
 		double cosV=cos(2.0*PI*t);
-		for (int j=2;j<u;j++)
+		for (int j=1;j<u;j++)
 		{
 			float s=j/float(u);
 			double sinU=sin(PI*s);
@@ -488,14 +521,14 @@ int getLight::makeSphere(yafaray::yafrayInterface_t &yI, int u, int v, double x,
 			yI.addVertex(x+cosV*cosU*radius,y+sinV*sinU*radius,z+cosU*radius);
 		}
 	}
-	for (int i=1;i<v;i++)
+	for (int i=0;i<v;i++)
 	{
-		yI.addTriangle(0,2+i*(u-1),2+((i+1)%v)*(u-1),NULL);
-		yI.addTriangle(1,((i+1)%v)*(u-1)+u, i*(u-1)+u,NULL);
-		for (int j=1;j<u-2;j++)
+		yI.addTriangle(0,2+i*(u-1),2+((i+1)%v)*(u-1),lightMat);
+		yI.addTriangle(1,((i+1)%v)*(u-1)+u, i*(u-1)+u,lightMat);
+		for (int j=0;j<u-2;j++)
 		{
-			yI.addTriangle( 2+i*(u-1)+j, 2+i*(u-1)+j+1, 2+((i+1)%v)*(u-1)+j,NULL );
-			yI.addTriangle( 2+i*(u-1)+j+1, 2+((i+1)%v)*(u-1)+j+1, 2+((i+1)%v)*(u-1)+j, NULL );
+			yI.addTriangle( 2+i*(u-1)+j, 2+i*(u-1)+j+1, 2+((i+1)%v)*(u-1)+j,lightMat );
+			yI.addTriangle( 2+i*(u-1)+j+1, 2+((i+1)%v)*(u-1)+j+1, 2+((i+1)%v)*(u-1)+j, lightMat );
 		}
 	}
 	yI.endTriMesh();
