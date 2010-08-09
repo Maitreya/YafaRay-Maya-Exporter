@@ -17,7 +17,15 @@
 #include "bNodeLightSpot.h"
 #include "bNodeLightSphere.h"
 #include "bNodeLightSun.h"
+#include "bNodeTexLayer.h"
 #include "bNodeTextureImage.h"
+#include "bNodeTextureBlend.h"
+#include "bNodeTextureCloud.h"
+#include "bNodeTextureWood.h"
+#include "bNodeTextureMarble.h"
+#include "bNodeTextureVoronoi.h"
+#include "bNodeTextureMusgrave.h"
+#include "bNodeTextureDisnoise.h"
 #include"bCmdRender.h"
 #include "bCmdRenderPreview.h"
 
@@ -88,8 +96,32 @@ MStatus initializePlugin(MObject obj)
 	if(!stat) stat.perror("register node yafSunLight failed");
 
 	//texture
+	stat=plugin.registerNode("yafTexLayer",texLayerNode::id,texLayerNode::creator,texLayerNode::initialize,MPxNode::kDependNode,&TextureClassify);
+	if(!stat) stat.perror("register node yafTexLayer failed");
+
 	stat=plugin.registerNode("yafImageTexture",imageTexNode::id,imageTexNode::creator,imageTexNode::initialize,MPxNode::kDependNode,&TextureClassify);
 	if(!stat) stat.perror("register node yafImageTexture failed");
+
+	stat=plugin.registerNode("yafBlendTexture",blendTexNode::id,blendTexNode::creator,blendTexNode::initialize,MPxNode::kDependNode,&TextureClassify);
+	if(!stat) stat.perror("register node yafBlendTexture failed");
+
+	stat=plugin.registerNode("yafCloudTexture",cloudTexNode::id,cloudTexNode::creator,cloudTexNode::initialize,MPxNode::kDependNode,&TextureClassify);
+	if(!stat) stat.perror("register node yafCloudTexture failed");
+
+	stat=plugin.registerNode("yafWoodTexture",woodTexNode::id,woodTexNode::creator,woodTexNode::initialize,MPxNode::kDependNode,&TextureClassify);
+	if(!stat) stat.perror("register node yafWoodTexture failed");
+
+	stat=plugin.registerNode("yafMarbleTexture",marbleTexNode::id,marbleTexNode::creator,marbleTexNode::initialize,MPxNode::kDependNode,&TextureClassify);
+	if(!stat) stat.perror("register node yafMarbleTexture failed");
+
+	stat=plugin.registerNode("yafVoronoiTexture",voronoiTexNode::id,voronoiTexNode::creator,voronoiTexNode::initialize,MPxNode::kDependNode,&TextureClassify);
+	if(!stat) stat.perror("register node yafVoronoiTexture failed");
+
+	stat=plugin.registerNode("yafMusgraveTexture",musgraveTexNode::id,musgraveTexNode::creator,musgraveTexNode::initialize,MPxNode::kDependNode,&TextureClassify);
+	if(!stat) stat.perror("register node yafMusgraveTexture failed");
+
+	stat=plugin.registerNode("yafDisnoiseTexture",disnoiseTexNode::id,disnoiseTexNode::creator,disnoiseTexNode::initialize,MPxNode::kDependNode,&TextureClassify);
+	if(!stat) stat.perror("register node yafDisnoiseTexture failed");
 
 	stat=plugin.registerCommand("yafRender",renderScene::creator);
 	if(!stat) stat.perror("register command yafRender failed");
@@ -117,6 +149,7 @@ MStatus uninitializePlugin(MObject obj)
 	stat=plugin.deregisterNode(renderSettingNode::id);
 	if(!stat) stat.perror("deregister node renderSetting failed");
 
+	//material
 	stat=plugin.deregisterNode(glassNode::id);
 	if(!stat) stat.perror("deregister node yafGlass failed");
 
@@ -138,9 +171,11 @@ MStatus uninitializePlugin(MObject obj)
 	stat=plugin.deregisterNode(angularNode::id);
 	if(!stat) stat.perror("deregister node yafAngular failed");
 
+	//camera
 	stat=plugin.deregisterCommand("yafCreateAngular");
 	if(!stat) stat.perror("deregister command yafCreateAngular failed");
 
+	//light
 	stat=plugin.deregisterNode(pointLightNode::id);
 	if(!stat) stat.perror("deregister node yafPointLight failed");
 
@@ -160,8 +195,32 @@ MStatus uninitializePlugin(MObject obj)
 	if(!stat) stat.perror("deregister node yafSunLight failed");
 
 	//texture
+	stat=plugin.deregisterNode(texLayerNode::id);
+	if(!stat) stat.perror("deregister node yafTexLayer failed");
+
 	stat=plugin.deregisterNode(imageTexNode::id);
 	if(!stat) stat.perror("deregister node yafImageTexture failed");
+
+	stat=plugin.deregisterNode(blendTexNode::id);
+	if(!stat) stat.perror("deregister node yafBlendTexture failed");
+
+	stat=plugin.deregisterNode(cloudTexNode::id);
+	if(!stat) stat.perror("deregister node yafCloudTexture failed");
+
+	stat=plugin.deregisterNode(woodTexNode::id);
+	if(!stat) stat.perror("deregister node yafWoodTexture failed");
+
+	stat=plugin.deregisterNode(marbleTexNode::id);
+	if(!stat) stat.perror("deregister node yafMarbleTexture failed");
+
+	stat=plugin.deregisterNode(voronoiTexNode::id);
+	if(!stat) stat.perror("deregister node yafVoronoiTexture failed");
+
+	stat=plugin.deregisterNode(musgraveTexNode::id);
+	if(!stat) stat.perror("deregister node yafMusgraveTexture failed");
+
+	stat=plugin.deregisterNode(disnoiseTexNode::id);
+	if(!stat) stat.perror("deregister node yafDisnoiseTexture failed");
 
 	stat=plugin.deregisterCommand("yafRender");
 	if(!stat) stat.perror("deregister command yafRender failed");

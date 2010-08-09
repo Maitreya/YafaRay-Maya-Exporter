@@ -1,13 +1,13 @@
 #define NOMINMAX
 #define _USE_MATH_DEFINES 1
-#ifndef IMAGETEX
-#define IMAGETEX
+#ifndef CLOUDTEX
+#define CLOUDTEX
 
 #include <maya/MPxNode.h>
 #include <maya/MFnNumericAttribute.h>
 #include <maya/MTypeId.h> 
 
-class imageTexNode: public MPxNode
+class cloudTexNode: public MPxNode
 {
 public:
 	virtual MStatus compute(const MPlug &plug,MDataBlock &data);
@@ -16,17 +16,10 @@ public:
 	static const MTypeId id;
 
 private:
-	static MObject imageFile;
-	static MObject imageRepeatX;
-	static MObject imagerepeatY;
-	static MObject imageUseAlpha;
-	static MObject imageCalcAlpha;
-	static MObject imageNormalMap;
-//	static MObject imageExtend; this is a very blender setting, i think
-	static MObject imageMinX;
-	static MObject imageMinY;
-	static MObject imageMaxX;
-	static MObject imageMaxY;
+	static MObject cloudSize;
+    static MObject cloudHard;
+	static MObject cloudDepth;
+	static MObject NoiseType;
 	static MObject mappingMethod;
 	static MObject texCo;
 	static MObject UV;

@@ -16,6 +16,7 @@ public:
 	static const MTypeId id;
 
 private:
+	static MObject texLayer;
 	static MObject exponent;
 	static MObject alpha;
 	static MObject absorbColor;

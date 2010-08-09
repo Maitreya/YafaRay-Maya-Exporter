@@ -1,13 +1,13 @@
 #define NOMINMAX
 #define _USE_MATH_DEFINES 1
-#ifndef IMAGETEX
-#define IMAGETEX
+#ifndef MUSGRAVETEX
+#define MUSGRAVETEX
 
 #include <maya/MPxNode.h>
 #include <maya/MFnNumericAttribute.h>
 #include <maya/MTypeId.h> 
 
-class imageTexNode: public MPxNode
+class musgraveTexNode: public MPxNode
 {
 public:
 	virtual MStatus compute(const MPlug &plug,MDataBlock &data);
@@ -16,17 +16,15 @@ public:
 	static const MTypeId id;
 
 private:
-	static MObject imageFile;
-	static MObject imageRepeatX;
-	static MObject imagerepeatY;
-	static MObject imageUseAlpha;
-	static MObject imageCalcAlpha;
-	static MObject imageNormalMap;
-//	static MObject imageExtend; this is a very blender setting, i think
-	static MObject imageMinX;
-	static MObject imageMinY;
-	static MObject imageMaxX;
-	static MObject imageMaxY;
+
+	static MObject musgraveType;
+	static MObject musgraveH;
+	static MObject musgraveLacunarity;
+	static MObject musgraveOctaves;
+	static MObject musgraveSize;
+	static MObject musgraveIntensity;
+
+	static MObject NoiseType;
 	static MObject mappingMethod;
 	static MObject texCo;
 	static MObject UV;
