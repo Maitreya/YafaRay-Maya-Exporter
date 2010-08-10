@@ -15,8 +15,10 @@ class renderAnimation:public MPxCommand
 {
 public:
 	virtual MStatus doIt(const MArgList& args);
-	static void *creator(){return new renderScene;}
+	static void *creator(){return new renderAnimation;}
 private:
+	MStatus beginRender(yafrayInterface_t &yI,const int sizex, const int sizey,const int currentTme);
+	MStatus renderToImage(const int sizex, const int sizey, const float *imageM,const int currentTme);
 	static std::map<string , yafaray::material_t*> materialMap;
 };
 #endif

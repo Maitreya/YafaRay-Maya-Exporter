@@ -28,6 +28,7 @@
 #include "bNodeTextureDisnoise.h"
 #include"bCmdRender.h"
 #include "bCmdRenderPreview.h"
+#include "bCmdRenderAnimation.h"
 
 #include<maya/MFnPlugin.h>
 #include<maya/MString.h>
@@ -129,6 +130,9 @@ MStatus initializePlugin(MObject obj)
 	stat=plugin.registerCommand("yafRenderPreview",renderPreview::creator);
 	if(!stat) stat.perror("register command yafRenderPreview failed");
 
+	stat=plugin.registerCommand("yafRenderAnimation",renderAnimation::creator);
+	if(!stat) stat.perror("register command yafRenderAnimation failed");
+
 	stat=plugin.registerUI("yafCreateUI","yafDeleteUI");
 	if(!stat) stat.perror("register UI failed");
 
@@ -227,6 +231,9 @@ MStatus uninitializePlugin(MObject obj)
 
 	stat=plugin.deregisterCommand("yafRenderPreview");
 	if(!stat) stat.perror("deregister command yafRenderPreview failed");
+
+	stat=plugin.deregisterCommand("yafRenderAnimation");
+	if(!stat) stat.perror("deregister command yafRenderAnimation failed");
 
 	return stat;
 }
