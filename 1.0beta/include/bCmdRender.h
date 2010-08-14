@@ -23,6 +23,7 @@ private:
 
 	static yafrayInterface_t yI;
 	static std::map<string , yafaray::material_t*> materialMap;
+	static std::map<string, yafaray::texture_t*> textureMap;
 	
 };
 #endif

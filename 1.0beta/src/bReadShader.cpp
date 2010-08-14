@@ -8,6 +8,7 @@
 #include<maya/MSelectionList.h>
 #include<maya/MFnDependencyNode.h>
 #include<maya/MPlug.h>
+#include <maya/MPlugArray.h>
 #include<maya/MFnNumericData.h>
 #include<interface/yafrayinterface.h>
 #include<map>
@@ -15,7 +16,7 @@
 using namespace yafaray;
 using namespace std;
 
-MStatus getShader::readShader ( yafrayInterface_t &yI , std::map<string , yafaray::material_t*> &materialMap)
+MStatus getShader::readShader ( yafrayInterface_t &yI , std::map<string , yafaray::material_t*> &materialMap, std::map<string, yafaray::texture_t*> &textureMap)
 {
 	MStatus stat=MStatus::kSuccess;
 
@@ -379,7 +380,28 @@ MStatus getShader::readShader ( yafrayInterface_t &yI , std::map<string , yafara
 					ShinyDiffuseFn.findPlug("IOR").getValue(ior);
 					yI.paramsSetFloat("IOR",ior);
 
+					
+
+					//link texture to material
+					//find if there is a texture layer node connect to textureLayer attribute
+					MPlug texLayerPlug=ShinyDiffuseFn.findPlug("TextureLayer");
+					MPlugArray srcPlugs;
+					texLayerPlug.connectedTo(srcPlugs,true,false);
+					//if there is any thing connect to textureLayer attribute
+					if (srcPlugs.length()>0)
+					{
+						MString nType;
+						MString nName;
+						nodeType(srcPlugs[0],nType,nName);
+						cout<<nType.asChar()<<endl;
+						if (nType=="yafTexLayer")
+						{
+							//textureMap has already got a lot of textures
+							readTexLayer(yI, nName, textureMap);
+						}
+					}
 					yI.paramsEndList();
+
 
 					const char* shinyDiffuseName=ShinyDiffuseFn.name().asChar();
 					yafaray::material_t* shinyDiffuseMat=yI.createMaterial(shinyDiffuseName);
@@ -480,6 +502,324 @@ MStatus getShader::readShader ( yafrayInterface_t &yI , std::map<string , yafara
 
 	
 
+
+	return stat;
+}
+
+MStatus getShader::readTexture(yafaray::yafrayInterface_t &yI, std::map<string,yafaray::texture_t*> &textureMap)
+{
+	MStatus stat;
+
+	MString getImageCmd("ls -type yafImageTexture");
+	MStringArray getImageResult;
+	MGlobal::executeCommand(getImageCmd,getImageResult);
+	if (getImageResult.length()>0)
+	{
+		for (unsigned int i=0;i<getImageResult.length();i++)
+		{
+			MSelectionList list;
+			MGlobal::getSelectionListByName(getImageResult[i],list);
+			for(unsigned int index=0;index<list.length();index++)
+			{
+				MObject imageTexNode;
+				list.getDependNode(index,imageTexNode);
+				MFnDependencyNode imageTexFn(imageTexNode);
+
+				yI.paramsClearAll();
+				yI.paramsSetString("type","image");
+
+				float imageFloats;
+				bool imageBools;
+				int imageInts;
+
+				cout<<"================image texture=============="<<endl;
+
+				MString fileName;
+				imageTexFn.findPlug("ImageFile").getValue(fileName);
+				cout<<fileName.asChar()<<endl;
+				yI.paramsSetString("filename",fileName.asChar());
+
+				yI.paramsSetFloat("gamma",1.8);
+
+				imageTexFn.findPlug("UseAlpha").getValue(imageBools);
+				yI.paramsSetBool("use_alpha",imageBools);
+
+				imageTexFn.findPlug("CalculateAlpha").getValue(imageBools);
+				yI.paramsSetBool("calc_alpha",imageBools);
+
+				imageTexFn.findPlug("NormalMap").getValue(imageBools);
+				yI.paramsSetBool("normalmap",imageBools);
+
+				imageTexFn.findPlug("RepeatX").getValue(imageInts);
+				yI.paramsSetInt("xrepeat",imageInts);
+
+				imageTexFn.findPlug("RepeatY").getValue(imageInts);
+				yI.paramsSetInt("yrepeat",imageInts);
+
+				imageTexFn.findPlug("MinX").getValue(imageFloats);
+				yI.paramsSetFloat("cropmin_x",imageFloats);
+
+				imageTexFn.findPlug("MinY").getValue(imageFloats);
+				yI.paramsSetFloat("cropmin_y",imageFloats);
+
+				imageTexFn.findPlug("MaxX").getValue(imageFloats);
+				yI.paramsSetFloat("cropmax_x",imageFloats);
+
+				imageTexFn.findPlug("MaxY").getValue(imageFloats);
+				yI.paramsSetFloat("cropmax_y",imageFloats);
+
+				yI.paramsEndList();
+
+				const char* imageTexName=imageTexFn.name().asChar();
+				yafaray::texture_t* imageMat=yI.createTexture(imageTexName);
+				string iName(imageTexName);
+				cout<<iName<<endl;
+				textureMap[iName]=imageMat;
+
+			}
+		}
+	}
+
+	MString getVoronoiCmd("ls -type yafVoronoiTexture");
+	MStringArray getVoronoiResult;
+	MGlobal::executeCommand(getVoronoiCmd,getVoronoiResult);
+	if (getVoronoiResult.length()>0)
+	{
+		for (unsigned int i=0;i<getVoronoiResult.length();i++)
+		{
+			MSelectionList list;
+			MGlobal::getSelectionListByName(getVoronoiResult[i],list);
+			for(unsigned int index=0;index<list.length();index++)
+			{
+				MObject voronoiTexNode;
+				list.getDependNode(index,voronoiTexNode);
+				MFnDependencyNode voronoiTexFn(voronoiTexNode);
+
+				float voronoiFloats;
+
+				yI.paramsClearAll();
+				yI.paramsSetString("type","voronoi");
+
+				short voColorType;
+				voronoiTexFn.findPlug("ColorType").getValue(voColorType);
+				switch (voColorType)
+				{
+				case 0:
+					yI.paramsSetString("color_type","int");
+					break;
+				case 1:
+					yI.paramsSetString("color_type","col1");
+					break;
+				case 2:
+					yI.paramsSetString("color_type","col2");
+					break;
+				case 3:
+					yI.paramsSetString("color_type","col3");
+					break;
+				}
+
+				voronoiTexFn.findPlug("Weight1").getValue(voronoiFloats);
+				yI.paramsSetFloat("weight1",voronoiFloats);
+
+				voronoiTexFn.findPlug("Weight2").getValue(voronoiFloats);
+				yI.paramsSetFloat("weight2",voronoiFloats);
+
+				voronoiTexFn.findPlug("Weight3").getValue(voronoiFloats);
+				yI.paramsSetFloat("weight3",voronoiFloats);
+
+				voronoiTexFn.findPlug("Weight4").getValue(voronoiFloats);
+				yI.paramsSetFloat("weight4",voronoiFloats);
+
+				voronoiTexFn.findPlug("Exponent").getValue(voronoiFloats);
+				yI.paramsSetFloat("mk_exponent",voronoiFloats);
+
+				voronoiTexFn.findPlug("Intensity").getValue(voronoiFloats);
+				yI.paramsSetFloat("intensity",voronoiFloats);
+
+				voronoiTexFn.findPlug("VoronoiSize").getValue(voronoiFloats);
+				yI.paramsSetFloat("size",voronoiFloats);
+
+				short distMetric;
+				voronoiTexFn.findPlug("DistanceMetric").getValue(distMetric);
+				switch (distMetric)
+				{
+				case 0:
+					yI.paramsSetString("distance_metric","actual");
+					break;
+				case 1:
+					yI.paramsSetString("distance_metric","squared");
+					break;
+				case 2:
+					yI.paramsSetString("distance_metric","manhattan");
+					break;
+				case 3:
+					yI.paramsSetString("distance_metric","chebychev");
+					break;
+				case 4:
+					yI.paramsSetString("distance_metric","minkovsky_half");
+					break;
+				case 5:
+					yI.paramsSetString("distance_metric","minkovsky_four");
+					break;
+				case 6:
+					yI.paramsSetString("distance_metric","minkovsky");
+					break;
+				}
+
+				yI.paramsEndList();
+
+				const char* voronoiTexName=voronoiTexFn.name().asChar();
+				yafaray::texture_t* voMat=yI.createTexture(voronoiTexName);
+				string vName(voronoiTexName);
+				cout<<vName<<endl;
+				textureMap[vName]=voMat;
+			}
+		}
+	}
+	return stat;
+}
+MStatus getShader::nodeType(MPlug srcPlug, MString &nType, MString &nName)
+{
+	MStatus stat;
+	MObject nodeObj=srcPlug.node();
+	MFnDependencyNode nodeFn(nodeObj);
+
+	nType=nodeFn.typeName();
+	nName=nodeFn.name();
+	cout<<"=============test nodeType============="<<endl;
+	cout<<nType.asChar()<<endl;
+	cout<<nName.asChar()<<endl;
+
+	return stat;
+}
+MStatus getShader::readTexLayer(yafrayInterface_t &yI, MString layerName, std::map<string,yafaray::texture_t*> &textureMap)
+{
+	MStatus stat;
+	MSelectionList list;
+	MGlobal::getSelectionListByName(layerName,list);
+	for (unsigned int index=0; index<list.length(); index++)
+	{
+		MObject layerObject;
+		list.getDependNode(index,layerObject);
+		MFnDependencyNode layerFn(layerObject);
+
+		//find the texture connected to the first input
+		MPlug inputP1=layerFn.findPlug("LayerInput1");
+		MPlugArray srcP1;
+		inputP1.connectedTo(srcP1,true,false);
+
+		if (srcP1.length()==0)
+		{
+			cout<<"nothing connected to input 1"<<endl;
+			break;
+		}
+
+		//find the name of the input texture
+		MString nType,nName;
+		nodeType(srcP1[0],nType,nName);
+
+		//check if the input thing is a yafaray texture
+		string nodeName(nName.asChar());
+		std::map<string , yafaray::texture_t *>::iterator iter=textureMap.find(nodeName);
+		if(iter==textureMap.end())
+		{
+			cout<<nodeName<<" is not a yafaray texture"<<endl;
+			break;
+		}
+
+		cout<<"=================texture layer function test================="<<endl;
+
+
+		yI.paramsPushList();
+		yI.paramsSetString("element","shader_node");
+		yI.paramsSetString("type","layer");
+		yI.paramsSetString("name",layerName.asChar());
+		MString mapperName=nName+"Mapper";
+		yI.paramsSetString("input",mapperName.asChar());
+
+		short mixMode;
+		layerFn.findPlug("MixMethod1").getValue(mixMode);
+		yI.paramsSetInt("mode",mixMode);
+
+		//haven't added them
+		yI.paramsSetBool("stencil",false);
+		yI.paramsSetBool("negative",false);
+		yI.paramsSetBool("noRGB",false);
+		yI.paramsSetColor("def_col",1.0,0.5,0.5);
+		yI.paramsSetFloat("def_val",1.0);
+		yI.paramsSetFloat("colfac",1.0);
+		yI.paramsSetFloat("valfac",1.0);
+		yI.paramsSetBool("color_input",true);
+		yI.paramsSetBool("use_alpha",false);
+		
+		yI.paramsSetColor("upper_color",0,0,0);
+		yI.paramsSetFloat("upper_value",1.0);
+
+		yI.paramsSetBool("do_color",false);
+		yI.paramsSetBool("do_scalar",true);
+
+		readTexMapping(yI,nName);
+
+	}
+
+	return stat;
+}
+
+MStatus getShader::readTexMapping(yafrayInterface_t &yI, MString textureName)
+{
+	MStatus stat;
+	MSelectionList list;
+	MGlobal::getSelectionListByName(textureName,list);
+	for (unsigned int index=0; index<list.length(); index++)
+	{
+		MObject textureNode;
+		list.getDependNode(index,textureNode);
+		MFnDependencyNode texFn(textureNode);
+
+		yI.paramsPushList();
+		yI.paramsSetString("element","shader_node");
+		yI.paramsSetString("type","texture_mapper");
+		//mapper name can't be the same with texture name
+		MString mapperName=textureName+"Mapper";
+		yI.paramsSetString("name",mapperName.asChar());
+		yI.paramsSetString("texture",textureName.asChar());
+
+		short texcoMethod;
+		texFn.findPlug("MappingMethod").getValue( texcoMethod);
+		switch (texcoMethod)
+		{
+		case 0:
+			yI.paramsSetString("texco","uv");
+			break;
+		case 1:
+			yI.paramsSetString("texco","orco");
+			break;
+		case 2:
+			yI.paramsSetString("texco","global");
+			break;
+		case 3:
+			yI.paramsSetString("texco","window");
+			break;
+		}
+
+		short mapMethod;
+		texFn.findPlug("TextureCoordinate").getValue(mapMethod);
+		switch (mapMethod)
+		{
+		case 0:
+			yI.paramsSetString("mapping","plain");
+			break;
+		case 1:
+			yI.paramsSetString("mapping","cube");
+			break;
+		case 2:
+			yI.paramsSetString("mapping","tube");
+			break;
+		case 3:
+			yI.paramsSetString("mapping","sphere");
+			break;
+		}
+	}
 
 	return stat;
 }

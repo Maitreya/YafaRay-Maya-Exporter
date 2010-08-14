@@ -24,6 +24,7 @@ using namespace yafaray;
 //using namespace std;
 yafrayInterface_t renderScene::yI;
 std::map<string , yafaray::material_t*> renderScene::materialMap;
+std::map<string , yafaray::texture_t*> renderScene::textureMap;
 MStatus renderScene::doIt(const MArgList &args)
 {
 	MStatus stat=MStatus::kSuccess;
@@ -35,7 +36,8 @@ MStatus renderScene::doIt(const MArgList &args)
 	//yI.setInputGamma(gammaInput,true);
 
 	getShader shader;
-	shader.readShader(yI,materialMap);
+	shader.readTexture(yI,textureMap);
+	shader.readShader(yI,materialMap,textureMap);
 	cout<<"shader ok"<<endl;
 
 	getObject object;

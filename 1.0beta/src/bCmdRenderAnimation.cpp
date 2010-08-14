@@ -29,13 +29,14 @@
 using namespace yafaray;
 using namespace std;
 std::map<string , yafaray::material_t*> renderAnimation::materialMap;
+std::map<string, yafaray::texture_t*> renderAnimation::textureMap;
 
 MStatus renderAnimation::doIt(const MArgList &args)
 {
 	MStatus stat;
 	yafrayInterface_t * yafAnimation=renderScene::getyI();
 
-	for (int i=1;i<10;i++)
+	for (int i=1;i<200;i++)
 	{
 		MAnimControl::setCurrentTime(MTime(i,MTime::kFilm));
 
@@ -43,7 +44,7 @@ MStatus renderAnimation::doIt(const MArgList &args)
 			yafAnimation->startScene();
 
 			getShader shader;
-			shader.readShader(*yafAnimation,materialMap);
+			shader.readShader(*yafAnimation,materialMap,textureMap);
 			cout<<"shader ok"<<endl;
 
 			getObject object;
@@ -122,21 +123,29 @@ MStatus renderAnimation::renderToImage(const int sizex, const int sizey, const f
 
 	for (int i=0; i<imageSize; i++)
 	{
-		*Pixels=(int)resultPixelReverse[i].r;
+		*Pixels=std::max(0,std::min(255,(int)resultPixelReverse[i].r));
 		Pixels++;
-		*Pixels=(int)resultPixelReverse[i].g;
+		*Pixels=std::max(0,std::min(255,(int)resultPixelReverse[i].g));
 		Pixels++;
-		*Pixels=(int)resultPixelReverse[i].b;
+		*Pixels=std::max(0,std::min(255,(int)resultPixelReverse[i].b));
 		Pixels++;
-		*Pixels=(int)resultPixelReverse[i].a;
+		*Pixels=std::max(0,std::min(255,(int)resultPixelReverse[i].a));
 		Pixels++;		
 	}
 
 	delete [] resultPixels;
 	delete [] resultPixelReverse;
-	MString filePath("c:/test"+currentTime);
 
-	stat=resultImage.writeToFile("c:/test.tga","tga");
+	char c[20];
+	sprintf(c, "%d",currentTime);
+	std::string numString=c;
+    const char * nString=numString.c_str();
+
+	MString filePath("c:/test");
+	MString fileFrame(nString);
+	MString fileName(filePath+fileFrame+".tga");
+
+	stat=resultImage.writeToFile(fileName,"tga");
 	if (stat=MStatus::kFailure)
 	{
 		cout<<"can't write to the file"<<endl;
@@ -148,6 +157,7 @@ MStatus renderAnimation::renderToImage(const int sizex, const int sizey, const f
 
 	resultImage.release();
 	delete [] Pixels;
+	MGlobal::displayInfo(fileFrame+"has been renderer out");
 
 
 	return stat;

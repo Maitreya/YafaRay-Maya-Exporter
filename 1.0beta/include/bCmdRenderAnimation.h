@@ -20,5 +20,6 @@ private:
 	MStatus beginRender(yafrayInterface_t &yI,const int sizex, const int sizey,const int currentTme);
 	MStatus renderToImage(const int sizex, const int sizey, const float *imageM,const int currentTme);
 	static std::map<string , yafaray::material_t*> materialMap;
+	static std::map<string, yafaray::texture_t*> textureMap;
 };
 #endif

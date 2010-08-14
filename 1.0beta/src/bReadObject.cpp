@@ -126,11 +126,27 @@ MStatus getObject::readMesh(yafaray::yafrayInterface_t &yI,std::map<string , yaf
 				{
 					MPointArray points;
 					MIntArray pointIndices;
+					float UV0[2];
+					float UV1[2];
+					float UV2[2];
 					meshFace.getTriangles(points,pointIndices,MSpace::kWorld);
 					//get the indices for each vertex of the triangle. the index will be correspond to the point array before
 					for(unsigned int i=0;i<pointIndices.length();i++)
 					{
-						yI.addTriangle(pointIndices[i],pointIndices[i+1],pointIndices[i+2],iter->second);
+						meshFace.getUVAtPoint(points[i],UV0,MSpace::kObject);
+						meshFace.getUVAtPoint(points[i+1],UV1,MSpace::kObject);
+						meshFace.getUVAtPoint(points[i+2],UV2,MSpace::kObject);
+
+						////test output
+						//cout<<"================="<<i<<"================"<<endl;
+						//cout<<UV0[0]<<UV0[1]<<endl;
+						//cout<<UV1[0]<<UV1[1]<<endl;
+						//cout<<UV2[0]<<UV2[1]<<endl;
+						int uvIndex0=yI.addUV(UV0[0],UV0[1]);
+						int uvIndex1=yI.addUV(UV1[0],UV1[1]);
+						int uvIndex2=yI.addUV(UV2[0],UV2[1]);
+						yI.addTriangle(pointIndices[i],pointIndices[i+1],pointIndices[i+2],uvIndex0,uvIndex1,uvIndex2,iter->second);
+						//yI.addTriangle(pointIndices[i],pointIndices[i+1],pointIndices[i+2],iter->second);
 						i=i+2;
 					}
 

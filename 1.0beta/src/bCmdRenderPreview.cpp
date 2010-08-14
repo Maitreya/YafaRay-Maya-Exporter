@@ -26,6 +26,7 @@
 using namespace yafaray;
 
 std::map<string , yafaray::material_t*> renderPreview::materialMap;
+std::map<string , yafaray::texture_t*> renderPreview::textureMap;
 
 MStatus renderPreview::doIt(const MArgList &args)
 {
@@ -58,7 +59,7 @@ MStatus renderPreview::doIt(const MArgList &args)
 	yafPreview->setInputGamma(gammaInput,true);
 
 	getShader previewShader;
-	previewShader.readShader(*yafPreview,materialMap);
+	previewShader.readShader(*yafPreview,materialMap,textureMap);
 
 	//get the material name of the selected mesh
 	MSelectionList selectObject;

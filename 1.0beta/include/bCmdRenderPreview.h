@@ -19,6 +19,7 @@ public:
 private:
 	MStatus toRenderView(const int sizex, const int sizey,  const float * imageM);
 	static std::map<string , yafaray::material_t*> materialMap;
+	static std::map<string, yafaray::texture_t*> textureMap;
 };
 
 #endif
