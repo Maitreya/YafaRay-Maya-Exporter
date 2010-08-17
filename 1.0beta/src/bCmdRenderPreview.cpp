@@ -59,6 +59,7 @@ MStatus renderPreview::doIt(const MArgList &args)
 	yafPreview->setInputGamma(gammaInput,true);
 
 	getShader previewShader;
+	previewShader.readTexture(*yafPreview,textureMap);
 	previewShader.readShader(*yafPreview,materialMap,textureMap);
 
 	//get the material name of the selected mesh

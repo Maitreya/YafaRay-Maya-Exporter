@@ -24,8 +24,10 @@ public:
 	MStatus readTexture(yafrayInterface_t &yI, std::map<string, yafaray::texture_t*> &textureMap);
 private:
 	MStatus nodeType(MPlug srcPlug,MString &nType,MString &nName);
-	MStatus readTexLayer(yafrayInterface_t &yI, MString layerName,std::map<string,yafaray::texture_t*> &textureMap);
-	MStatus readTexMapping(yafrayInterface_t &yI, MString textureName);
+	//layerShader: what will be linked to the apropiate slot of material
+	MStatus readTexLayer(yafrayInterface_t &yI, MString textureLayerName, std::map<string,yafaray::texture_t*> &textureMap , MObject color,MString &layerShader);
+	MStatus readLayerMap(yafrayInterface_t &yI, MString texName, MString texType, MObject color, MString upperLayer="");
+
 
 };
 #endif

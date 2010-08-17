@@ -16,7 +16,10 @@ public:
 	static const MTypeId id;
 
 private:
-	static MObject texLayer;
+	static MObject mirrorTexLayer;
+	static MObject filterTexLayer;
+	static MObject bumpTexLayer;
+
 	static MObject exponent;
 	static MObject alpha;
 	static MObject absorbColor;

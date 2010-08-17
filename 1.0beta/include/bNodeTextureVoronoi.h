@@ -26,9 +26,22 @@ private:
 	static MObject voronoiSize;
 	static MObject voronoiDistanceMetric;
 
-	static MObject NoiseType;
+	//static MObject NoiseType;
 	static MObject mappingMethod;
 	static MObject texCo;
+
+    //layer settings
+	//colorInput, upperColor, upperValue, useAlpha ,doScale, don't need settings
+	static MObject layerMix;
+	static MObject textureColor;
+	static MObject texColorFact;
+	static MObject defVal;
+	static MObject valFact;
+	static MObject doColor;
+	static MObject negative;
+	static MObject noRGB;
+	static MObject stencil;
+
 	static MObject UV;
 	static MObject UVFilterSize;
 	static MObject Output;

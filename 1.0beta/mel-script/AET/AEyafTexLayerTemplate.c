@@ -1,0 +1,28 @@
+global proc AEyafTexLayerTemplate(string $nodeName)
+{
+	AEswatchDisplay $nodeName;
+	editorTemplate -beginScrollLayout;
+	    editorTemplate -beginLayout "YafaRay Texture Layer Attribute" -collapse 0;
+	        editorTemplate -callCustom AETexInputNew AETexInputReplace "LayerInput1";
+	        editorTemplate -callCustom AETexInputNew AETexInputReplace "LayerInput2";
+	        editorTemplate -callCustom AETexInputNew AETexInputReplace "LayerInput3";
+	        editorTemplate -callCustom AETexInputNew AETexInputReplace "LayerInput4";
+	    editorTemplate -endLayout;
+	    
+	    editorTemplate -addExtraControls;
+	editorTemplate -endScrollLayout;
+}
+global proc AETexInputNew(string $shaderName)
+{
+	setUITemplate -pst attributeEditorTemplate;
+	attrNavigationControlGrp -attribute $shaderName -label $shaderName layerInput;
+	setUITemplate -ppt;
+	AETexInputReplace( $shaderName );
+}
+
+global proc AETexInputReplace(string $shaderName)
+{
+	setUITemplate -pst attributeEditorTemplate;
+	attrNavigationControlGrp -edit -attribute $shaderName layerInput;
+	setUITemplate -ppt;
+}

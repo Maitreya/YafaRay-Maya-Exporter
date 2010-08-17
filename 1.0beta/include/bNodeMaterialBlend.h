@@ -18,6 +18,7 @@ public:
 private:
 	static MObject materialA;
 	static MObject materialB;
+	static MObject diffuseTexLayer;
 	static MObject blendValue;
 	static MObject outBlend;
 

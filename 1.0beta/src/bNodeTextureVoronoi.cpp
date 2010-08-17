@@ -23,9 +23,23 @@ MObject voronoiTexNode::voronoiIntensity;
 MObject voronoiTexNode::voronoiSize;
 MObject voronoiTexNode::voronoiDistanceMetric;
 
-MObject voronoiTexNode::NoiseType;
+//MObject voronoiTexNode::NoiseType;
+
+//mapping method
 MObject voronoiTexNode::mappingMethod;
 MObject voronoiTexNode::texCo;
+
+//texture layer settings
+MObject voronoiTexNode::layerMix;
+MObject voronoiTexNode::textureColor;
+MObject voronoiTexNode::texColorFact;
+MObject voronoiTexNode::defVal;
+MObject voronoiTexNode::valFact;
+MObject voronoiTexNode::doColor;
+MObject voronoiTexNode::negative;
+MObject voronoiTexNode::noRGB;
+MObject voronoiTexNode::stencil;
+
 MObject voronoiTexNode::UV;
 MObject voronoiTexNode::UVFilterSize;
 MObject voronoiTexNode::Output;
@@ -89,9 +103,9 @@ MStatus voronoiTexNode::initialize()
 	numAttr.setMax(10.0);
 	MAKE_INPUT(numAttr);
 
-	voronoiSize=numAttr.create("VoronoiSize","vosi",MFnNumericData::kFloat,0.0);
+	voronoiSize=numAttr.create("VoronoiSize","vosi",MFnNumericData::kFloat,4);
 	numAttr.setMin(0.0);
-	numAttr.setMax(2.0);
+	numAttr.setMax(32.0);
 	MAKE_INPUT(numAttr);
 
 	voronoiDistanceMetric=enumAttr.create("DistanceMetric","dime",0);
@@ -104,17 +118,50 @@ MStatus voronoiTexNode::initialize()
 	enumAttr.addField("minkovsky",6);
 	MAKE_INPUT(enumAttr);
 
-	NoiseType=enumAttr.create("NoiseType","noty",0);
-	enumAttr.addField("newperlin",0);
-	enumAttr.addField("stdperlin",1);
-	enumAttr.addField("voronoi_f1",2);
-	enumAttr.addField("voronoi_f2",3);
-	enumAttr.addField("voronoi_f3",4);
-	enumAttr.addField("voronoi_f4",5);
-	enumAttr.addField("voronoi_f2fl",6);
-	enumAttr.addField("voronoi_crackle",7);
-	enumAttr.addField("cellnoise",8);
+	//*******************************layer texture attribute*********************************//
+	layerMix=enumAttr.create("MixMethod","mm1",0);
+	enumAttr.addField("mix",0);
+	enumAttr.addField("add",1);
+	enumAttr.addField("multiply",2);
+	enumAttr.addField("subtract",3);
+	enumAttr.addField("screen",4);
+	enumAttr.addField("divide",5);
+	enumAttr.addField("difference",6);
+	enumAttr.addField("darken",7);
+	enumAttr.addField("lighten",8);
 	MAKE_INPUT(enumAttr);
+
+	textureColor=numAttr.createColor("TextureColor","teco");
+	numAttr.setDefault(1.0,0.0,1.0);
+	MAKE_INPUT(numAttr);
+
+	texColorFact=numAttr.create("TextureColorWeight","tcw",MFnNumericData::kFloat,1.0);
+	numAttr.setMin(0.0);
+	numAttr.setMax(1.0);
+	MAKE_INPUT(numAttr);
+
+	defVal=numAttr.create("DefValue","dev",MFnNumericData::kFloat,1.0);
+	numAttr.setMin(0.0);
+	numAttr.setMax(1.0);
+	MAKE_INPUT(numAttr);
+
+	valFact=numAttr.create("ValueWeight","vaw",MFnNumericData::kFloat,1.0);
+	numAttr.setMin(0.0);
+	numAttr.setMax(1.0);
+	MAKE_INPUT(numAttr);
+
+	doColor=numAttr.create("DoColor","doco",MFnNumericData::kBoolean,true);
+	MAKE_INPUT(numAttr);
+
+	negative=numAttr.create("Negative","nega",MFnNumericData::kBoolean,false);
+	MAKE_INPUT(numAttr);
+
+	noRGB=numAttr.create("NoRGB","nr",MFnNumericData::kBoolean,false);
+	MAKE_INPUT(numAttr);
+
+	stencil=numAttr.create("Stencil","sten",MFnNumericData::kBoolean,false);
+	MAKE_INPUT(numAttr);
+	//*******************************layer texture attribute end*********************************//
 
 	mappingMethod=enumAttr.create("MappingMethod","mame",0);
 	enumAttr.addField("uv",0);
@@ -123,7 +170,7 @@ MStatus voronoiTexNode::initialize()
 	enumAttr.addField("window",3);
 	MAKE_INPUT(enumAttr);
 
-	texCo=enumAttr.create("TextureCoordinate","teco",0);
+	texCo=enumAttr.create("TextureCoordinate","texco",0);
 	enumAttr.addField("plain",0);
 	enumAttr.addField("cube",1);
 	enumAttr.addField("tube",2);
@@ -153,9 +200,20 @@ MStatus voronoiTexNode::initialize()
 	addAttribute(voronoiIntensity);
 	addAttribute(voronoiSize);
 	addAttribute(voronoiDistanceMetric);
-	addAttribute(NoiseType);
+//	addAttribute(NoiseType);
 	addAttribute(mappingMethod);
 	addAttribute(texCo);
+
+	addAttribute(layerMix);
+	addAttribute(textureColor);
+	addAttribute(texColorFact);
+	addAttribute(defVal);
+	addAttribute(valFact);
+	addAttribute(doColor);
+	addAttribute(negative);
+	addAttribute(noRGB);
+	addAttribute(stencil);
+
 	addAttribute(UV);
 	addAttribute(UVFilterSize);
 	addAttribute(Output);
@@ -170,7 +228,18 @@ MStatus voronoiTexNode::initialize()
 	attributeAffects(voronoiIntensity,Output);
 	attributeAffects(voronoiSize,Output);
 	attributeAffects(voronoiDistanceMetric,Output);
-	attributeAffects(NoiseType,Output);
+//	attributeAffects(NoiseType,Output);
+
+	attributeAffects(layerMix,Output);
+	attributeAffects(textureColor,Output);
+	attributeAffects(texColorFact,Output);
+	attributeAffects(defVal,Output);
+	attributeAffects(valFact,Output);
+	attributeAffects(doColor,Output);
+	attributeAffects(negative,Output);
+	attributeAffects(noRGB,Output);
+	attributeAffects(stencil,Output);
+
 	attributeAffects(mappingMethod,Output);
 	attributeAffects(texCo,Output);
 	attributeAffects(UV,Output);
@@ -182,17 +251,19 @@ MStatus voronoiTexNode::initialize()
 MStatus voronoiTexNode::compute(const MPlug &plug, MDataBlock &data)
 {
 	MStatus stat=MStatus::kSuccess;
-	if ((plug !=Output)&&(plug.parent() !=Output))
+	if ((plug !=Output)&&(plug.parent() != Output))
 	{
 		return MStatus::kUnknownParameter;
 	}
 
-	const MFloatVector color(0.0,0.0,0.0);
+	MDataHandle indexColor=data.inputValue(textureColor);
+	const MFloatVector & iColor=indexColor.asFloatVector();
 
 	MDataHandle outColorHandle=data.outputValue(Output);
 	MFloatVector & outColor=outColorHandle.asFloatVector();
 
-	outColor=color;
+	outColor=iColor;
 	outColorHandle.setClean();
+
 	return stat;
 }

@@ -19,6 +19,19 @@ private:
 	static MObject blendStype;
 	static MObject mappingMethod;
 	static MObject texCo;
+
+	//layer settings
+	//colorInput, upperColor, upperValue, useAlpha ,doScale, don't need settings
+	static MObject layerMix;
+	static MObject textureColor;
+	static MObject texColorFact;
+	static MObject defVal;
+	static MObject valFact;
+	static MObject doColor;
+	static MObject negative;
+	static MObject noRGB;
+	static MObject stencil;
+
 	static MObject blendUV;
 	static MObject blendUVFilterSize;
 	static MObject blendOutput;

@@ -16,6 +16,17 @@ const MTypeId blendTexNode::id(0x75317);
 MObject blendTexNode::blendStype;
 MObject blendTexNode::mappingMethod;
 MObject blendTexNode::texCo;
+//texture layer settings
+MObject blendTexNode::layerMix;
+MObject blendTexNode::textureColor;
+MObject blendTexNode::texColorFact;
+MObject blendTexNode::defVal;
+MObject blendTexNode::valFact;
+MObject blendTexNode::doColor;
+MObject blendTexNode::negative;
+MObject blendTexNode::noRGB;
+MObject blendTexNode::stencil;
+
 MObject blendTexNode::blendUV;
 MObject blendTexNode::blendUVFilterSize;
 MObject blendTexNode::blendOutput;
@@ -59,12 +70,57 @@ MStatus blendTexNode::initialize()
 	enumAttr.addField("window",3);
 	MAKE_INPUT(enumAttr);
 
-	texCo=enumAttr.create("TextureCoordinate","teco",0);
+	texCo=enumAttr.create("TextureCoordinate","texco",0);
 	enumAttr.addField("plain",0);
 	enumAttr.addField("cube",1);
 	enumAttr.addField("tube",2);
 	enumAttr.addField("sphere",3);
 	MAKE_INPUT(enumAttr);
+
+	//*******************************layer texture attribute*********************************//
+	layerMix=enumAttr.create("MixMethod","mm1",0);
+	enumAttr.addField("mix",0);
+	enumAttr.addField("add",1);
+	enumAttr.addField("multiply",2);
+	enumAttr.addField("subtract",3);
+	enumAttr.addField("screen",4);
+	enumAttr.addField("divide",5);
+	enumAttr.addField("difference",6);
+	enumAttr.addField("darken",7);
+	enumAttr.addField("lighten",8);
+	MAKE_INPUT(enumAttr);
+
+	textureColor=numAttr.createColor("TextureColor","teco");
+	numAttr.setDefault(1.0,0.0,1.0);
+	MAKE_INPUT(numAttr);
+
+	texColorFact=numAttr.create("TextureColorWeight","tcw",MFnNumericData::kFloat,1.0);
+	numAttr.setMin(0.0);
+	numAttr.setMax(1.0);
+	MAKE_INPUT(numAttr);
+
+	defVal=numAttr.create("DefValue","dev",MFnNumericData::kFloat,1.0);
+	numAttr.setMin(0.0);
+	numAttr.setMax(1.0);
+	MAKE_INPUT(numAttr);
+
+	valFact=numAttr.create("ValueWeight","vaw",MFnNumericData::kFloat,1.0);
+	numAttr.setMin(0.0);
+	numAttr.setMax(1.0);
+	MAKE_INPUT(numAttr);
+
+	doColor=numAttr.create("DoColor","doco",MFnNumericData::kBoolean,true);
+	MAKE_INPUT(numAttr);
+
+	negative=numAttr.create("Negative","nega",MFnNumericData::kBoolean,false);
+	MAKE_INPUT(numAttr);
+
+	noRGB=numAttr.create("NoRGB","nr",MFnNumericData::kBoolean,false);
+	MAKE_INPUT(numAttr);
+
+	stencil=numAttr.create("Stencil","sten",MFnNumericData::kBoolean,false);
+	MAKE_INPUT(numAttr);
+	//*******************************layer texture attribute end*********************************//
 
 	MObject u=numAttr.create("uCoord","u",MFnNumericData::kFloat);
 	MObject v=numAttr.create("vCoord","v",MFnNumericData::kFloat);
@@ -83,6 +139,17 @@ MStatus blendTexNode::initialize()
 	addAttribute(blendStype);
 	addAttribute(mappingMethod);
 	addAttribute(texCo);
+
+	addAttribute(layerMix);
+	addAttribute(textureColor);
+	addAttribute(texColorFact);
+	addAttribute(defVal);
+	addAttribute(valFact);
+	addAttribute(doColor);
+	addAttribute(negative);
+	addAttribute(noRGB);
+	addAttribute(stencil);
+
 	addAttribute(blendUV);
 	addAttribute(blendUVFilterSize);
 	addAttribute(blendOutput);
@@ -90,6 +157,17 @@ MStatus blendTexNode::initialize()
 	attributeAffects(blendStype,blendOutput);
 	attributeAffects(mappingMethod,blendOutput);
 	attributeAffects(texCo,blendOutput);
+
+	attributeAffects(layerMix,blendOutput);
+	attributeAffects(textureColor,blendOutput);
+	attributeAffects(texColorFact,blendOutput);
+	attributeAffects(defVal,blendOutput);
+	attributeAffects(valFact,blendOutput);
+	attributeAffects(doColor,blendOutput);
+	attributeAffects(negative,blendOutput);
+	attributeAffects(noRGB,blendOutput);
+	attributeAffects(stencil,blendOutput);
+
 	attributeAffects(blendUV,blendOutput);
 	attributeAffects(texCo,blendOutput);
 
@@ -98,17 +176,18 @@ MStatus blendTexNode::initialize()
 MStatus blendTexNode::compute(const MPlug &plug, MDataBlock &data)
 {
 	MStatus stat=MStatus::kSuccess;
-	if ((plug !=blendOutput)&&(plug.parent() !=blendOutput))
+	if ((plug !=blendOutput)&&(plug.parent() != blendOutput))
 	{
 		return MStatus::kUnknownParameter;
 	}
 
-	const MFloatVector color(0.0,0.0,0.0);
+	MDataHandle indexColor=data.inputValue(textureColor);
+	const MFloatVector & iColor=indexColor.asFloatVector();
 
 	MDataHandle outColorHandle=data.outputValue(blendOutput);
 	MFloatVector & outColor=outColorHandle.asFloatVector();
 
-	outColor=color;
+	outColor=iColor;
 	outColorHandle.setClean();
 	return stat;
 }

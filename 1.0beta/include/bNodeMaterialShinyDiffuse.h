@@ -17,7 +17,11 @@ public:
 
 private:
 //	static MObject tString;
-	static MObject texLayer;
+
+	static MObject colorTexLayer;
+	static MObject mirrorTexLayer;
+	static MObject bumpTexLayer;
+
 	static MObject color;
 	static MObject mirrorColor;
 	static MObject diffuseReflection;

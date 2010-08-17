@@ -20,6 +20,18 @@ MObject cloudTexNode::cloudDepth;
 MObject cloudTexNode::NoiseType;
 MObject cloudTexNode::mappingMethod;
 MObject cloudTexNode::texCo;
+
+//texture layer settings
+MObject cloudTexNode::layerMix;
+MObject cloudTexNode::textureColor;
+MObject cloudTexNode::texColorFact;
+MObject cloudTexNode::defVal;
+MObject cloudTexNode::valFact;
+MObject cloudTexNode::doColor;
+MObject cloudTexNode::negative;
+MObject cloudTexNode::noRGB;
+MObject cloudTexNode::stencil;
+
 MObject cloudTexNode::UV;
 MObject cloudTexNode::UVFilterSize;
 MObject cloudTexNode::Output;
@@ -47,10 +59,10 @@ MStatus cloudTexNode::initialize()
 	MFnNumericAttribute numAttr;
 	MFnEnumAttribute enumAttr;
 
-	cloudSize=numAttr.create("CloudSize","cs",MFnNumericData::kFloat,0.25);
+	cloudSize=numAttr.create("CloudSize","cs",MFnNumericData::kFloat,2.0);
 	MAKE_INPUT(numAttr);
 	numAttr.setMin(0.0);
-	numAttr.setMax(2.0);
+	numAttr.setMax(32.0);
 
 	cloudHard=numAttr.create("Hard","hr",MFnNumericData::kBoolean,0);
 	MAKE_INPUT(numAttr);
@@ -79,12 +91,57 @@ MStatus cloudTexNode::initialize()
 	enumAttr.addField("window",3);
 	MAKE_INPUT(enumAttr);
 
-	texCo=enumAttr.create("TextureCoordinate","teco",0);
+	texCo=enumAttr.create("TextureCoordinate","texco",0);
 	enumAttr.addField("plain",0);
 	enumAttr.addField("cube",1);
 	enumAttr.addField("tube",2);
 	enumAttr.addField("sphere",3);
 	MAKE_INPUT(enumAttr);
+
+	//*******************************layer texture attribute*********************************//
+	layerMix=enumAttr.create("MixMethod","mm1",0);
+	enumAttr.addField("mix",0);
+	enumAttr.addField("add",1);
+	enumAttr.addField("multiply",2);
+	enumAttr.addField("subtract",3);
+	enumAttr.addField("screen",4);
+	enumAttr.addField("divide",5);
+	enumAttr.addField("difference",6);
+	enumAttr.addField("darken",7);
+	enumAttr.addField("lighten",8);
+	MAKE_INPUT(enumAttr);
+
+	textureColor=numAttr.createColor("TextureColor","teco");
+	numAttr.setDefault(1.0,0.0,1.0);
+	MAKE_INPUT(numAttr);
+
+	texColorFact=numAttr.create("TextureColorWeight","tcw",MFnNumericData::kFloat,1.0);
+	numAttr.setMin(0.0);
+	numAttr.setMax(1.0);
+	MAKE_INPUT(numAttr);
+
+	defVal=numAttr.create("DefValue","dev",MFnNumericData::kFloat,1.0);
+	numAttr.setMin(0.0);
+	numAttr.setMax(1.0);
+	MAKE_INPUT(numAttr);
+
+	valFact=numAttr.create("ValueWeight","vaw",MFnNumericData::kFloat,1.0);
+	numAttr.setMin(0.0);
+	numAttr.setMax(1.0);
+	MAKE_INPUT(numAttr);
+
+	doColor=numAttr.create("DoColor","doco",MFnNumericData::kBoolean,true);
+	MAKE_INPUT(numAttr);
+
+	negative=numAttr.create("Negative","nega",MFnNumericData::kBoolean,false);
+	MAKE_INPUT(numAttr);
+
+	noRGB=numAttr.create("NoRGB","nr",MFnNumericData::kBoolean,false);
+	MAKE_INPUT(numAttr);
+
+	stencil=numAttr.create("Stencil","sten",MFnNumericData::kBoolean,false);
+	MAKE_INPUT(numAttr);
+	//*******************************layer texture attribute end*********************************//
 
 	MObject u=numAttr.create("uCoord","u",MFnNumericData::kFloat);
 	MObject v=numAttr.create("vCoord","v",MFnNumericData::kFloat);
@@ -106,6 +163,17 @@ MStatus cloudTexNode::initialize()
 	addAttribute(NoiseType);
 	addAttribute(mappingMethod);
 	addAttribute(texCo);
+
+	addAttribute(layerMix);
+	addAttribute(textureColor);
+	addAttribute(texColorFact);
+	addAttribute(defVal);
+	addAttribute(valFact);
+	addAttribute(doColor);
+	addAttribute(negative);
+	addAttribute(noRGB);
+	addAttribute(stencil);
+
 	addAttribute(UV);
 	addAttribute(UVFilterSize);
 	addAttribute(Output);
@@ -115,6 +183,15 @@ MStatus cloudTexNode::initialize()
 	attributeAffects(cloudDepth,Output);
 	attributeAffects(NoiseType,Output);
 	attributeAffects(mappingMethod,Output);
+	attributeAffects(layerMix,Output);
+	attributeAffects(textureColor,Output);
+	attributeAffects(texColorFact,Output);
+	attributeAffects(defVal,Output);
+	attributeAffects(valFact,Output);
+	attributeAffects(doColor,Output);
+	attributeAffects(negative,Output);
+	attributeAffects(noRGB,Output);
+	attributeAffects(stencil,Output);
 	attributeAffects(texCo,Output);
 	attributeAffects(UV,Output);
 	attributeAffects(UVFilterSize,Output);
@@ -130,12 +207,14 @@ MStatus cloudTexNode::compute(const MPlug &plug, MDataBlock &data)
 		return MStatus::kUnknownParameter;
 	}
 
-	const MFloatVector color(0.0,0.0,0.0);
+	MDataHandle indexColor=data.inputValue(textureColor);
+	const MFloatVector & iColor=indexColor.asFloatVector();
 
 	MDataHandle outColorHandle=data.outputValue(Output);
 	MFloatVector & outColor=outColorHandle.asFloatVector();
 
-	outColor=color;
+	outColor=iColor;
 	outColorHandle.setClean();
+
 	return stat;
 }

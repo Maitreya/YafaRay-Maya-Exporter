@@ -18,13 +18,9 @@ public:
 private:
 
 	static MObject layerInput1;
-	static MObject layerMix1;
 	static MObject layerInput2;
-	static MObject layerMix2;
 	static MObject layerInput3;
-	static MObject layerMix3;
 	static MObject layerInput4;
-	static MObject layerMix4;
 	static MObject layerUV;
 	static MObject layerUVFilterSize;
 	static MObject layerOutput;

@@ -23,6 +23,18 @@ MObject musgraveTexNode::musgraveIntensity;
 MObject musgraveTexNode::NoiseType;
 MObject musgraveTexNode::mappingMethod;
 MObject musgraveTexNode::texCo;
+
+//texture layer settings
+MObject musgraveTexNode::layerMix;
+MObject musgraveTexNode::textureColor;
+MObject musgraveTexNode::texColorFact;
+MObject musgraveTexNode::defVal;
+MObject musgraveTexNode::valFact;
+MObject musgraveTexNode::doColor;
+MObject musgraveTexNode::negative;
+MObject musgraveTexNode::noRGB;
+MObject musgraveTexNode::stencil;
+
 MObject musgraveTexNode::UV;
 MObject musgraveTexNode::UVFilterSize;
 MObject musgraveTexNode::Output;
@@ -72,9 +84,9 @@ MStatus musgraveTexNode::initialize()
 	numAttr.setMax(8.0);
 	MAKE_INPUT(numAttr);
 
-	musgraveSize=numAttr.create("MusgraveSize","mus",MFnNumericData::kFloat,0.0);
+	musgraveSize=numAttr.create("MusgraveSize","mus",MFnNumericData::kFloat,4.0);
 	numAttr.setMin(0.0);
-	numAttr.setMax(2.0);
+	numAttr.setMax(32.0);
 	MAKE_INPUT(numAttr);
 
 	musgraveIntensity=numAttr.create("Intensity","intn",MFnNumericData::kFloat,1.0);
@@ -102,12 +114,57 @@ MStatus musgraveTexNode::initialize()
 	enumAttr.addField("window",3);
 	MAKE_INPUT(enumAttr);
 
-	texCo=enumAttr.create("TextureCoordinate","teco",0);
+	texCo=enumAttr.create("TextureCoordinate","texco",0);
 	enumAttr.addField("plain",0);
 	enumAttr.addField("cube",1);
 	enumAttr.addField("tube",2);
 	enumAttr.addField("sphere",3);
 	MAKE_INPUT(enumAttr);
+
+	//*******************************layer texture attribute*********************************//
+	layerMix=enumAttr.create("MixMethod","mm1",0);
+	enumAttr.addField("mix",0);
+	enumAttr.addField("add",1);
+	enumAttr.addField("multiply",2);
+	enumAttr.addField("subtract",3);
+	enumAttr.addField("screen",4);
+	enumAttr.addField("divide",5);
+	enumAttr.addField("difference",6);
+	enumAttr.addField("darken",7);
+	enumAttr.addField("lighten",8);
+	MAKE_INPUT(enumAttr);
+
+	textureColor=numAttr.createColor("TextureColor","teco");
+	numAttr.setDefault(1.0,0.0,1.0);
+	MAKE_INPUT(numAttr);
+
+	texColorFact=numAttr.create("TextureColorWeight","tcw",MFnNumericData::kFloat,1.0);
+	numAttr.setMin(0.0);
+	numAttr.setMax(1.0);
+	MAKE_INPUT(numAttr);
+
+	defVal=numAttr.create("DefValue","dev",MFnNumericData::kFloat,1.0);
+	numAttr.setMin(0.0);
+	numAttr.setMax(1.0);
+	MAKE_INPUT(numAttr);
+
+	valFact=numAttr.create("ValueWeight","vaw",MFnNumericData::kFloat,1.0);
+	numAttr.setMin(0.0);
+	numAttr.setMax(1.0);
+	MAKE_INPUT(numAttr);
+
+	doColor=numAttr.create("DoColor","doco",MFnNumericData::kBoolean,true);
+	MAKE_INPUT(numAttr);
+
+	negative=numAttr.create("Negative","nega",MFnNumericData::kBoolean,false);
+	MAKE_INPUT(numAttr);
+
+	noRGB=numAttr.create("NoRGB","nr",MFnNumericData::kBoolean,false);
+	MAKE_INPUT(numAttr);
+
+	stencil=numAttr.create("Stencil","sten",MFnNumericData::kBoolean,false);
+	MAKE_INPUT(numAttr);
+	//*******************************layer texture attribute end*********************************//
 
 	MObject u=numAttr.create("uCoord","u",MFnNumericData::kFloat);
 	MObject v=numAttr.create("vCoord","v",MFnNumericData::kFloat);
@@ -133,6 +190,17 @@ MStatus musgraveTexNode::initialize()
 	addAttribute(NoiseType);
 	addAttribute(mappingMethod);
 	addAttribute(texCo);
+
+	addAttribute(layerMix);
+	addAttribute(textureColor);
+	addAttribute(texColorFact);
+	addAttribute(defVal);
+	addAttribute(valFact);
+	addAttribute(doColor);
+	addAttribute(negative);
+	addAttribute(noRGB);
+	addAttribute(stencil);
+
 	addAttribute(UV);
 	addAttribute(UVFilterSize);
 	addAttribute(Output);
@@ -147,6 +215,17 @@ MStatus musgraveTexNode::initialize()
 	attributeAffects(NoiseType,Output);
 	attributeAffects(mappingMethod,Output);
 	attributeAffects(texCo,Output);
+
+	attributeAffects(layerMix,Output);
+	attributeAffects(textureColor,Output);
+	attributeAffects(texColorFact,Output);
+	attributeAffects(defVal,Output);
+	attributeAffects(valFact,Output);
+	attributeAffects(doColor,Output);
+	attributeAffects(negative,Output);
+	attributeAffects(noRGB,Output);
+	attributeAffects(stencil,Output);
+
 	attributeAffects(UV,Output);
 	attributeAffects(UVFilterSize,Output);
 
@@ -155,17 +234,19 @@ MStatus musgraveTexNode::initialize()
 MStatus musgraveTexNode::compute(const MPlug &plug, MDataBlock &data)
 {
 	MStatus stat=MStatus::kSuccess;
-	if ((plug !=Output)&&(plug.parent() !=Output))
+	if ((plug !=Output)&&(plug.parent() != Output))
 	{
 		return MStatus::kUnknownParameter;
 	}
 
-	const MFloatVector color(0.0,0.0,0.0);
+	MDataHandle indexColor=data.inputValue(textureColor);
+	const MFloatVector & iColor=indexColor.asFloatVector();
 
 	MDataHandle outColorHandle=data.outputValue(Output);
 	MFloatVector & outColor=outColorHandle.asFloatVector();
 
-	outColor=color;
+	outColor=iColor;
 	outColorHandle.setClean();
+
 	return stat;
 }
