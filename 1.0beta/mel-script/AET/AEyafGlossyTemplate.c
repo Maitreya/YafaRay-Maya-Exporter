@@ -1,22 +1,21 @@
-global proc AEyafCoatedGlossyTemplate(string $nodeName)
+global proc AEyafGlossyTemplate(string $nodeName)
 {
 	AEswatchDisplay $nodeName;
 	editorTemplate -beginScrollLayout;
-	    editorTemplate -beginLayout "YafaRay Coated Glossy Attribute" -collapse 0;
+	    editorTemplate -beginLayout "YafaRay Glossy Attribute" -collapse 0;
 	        editorTemplate -addControl "DiffuseColor"; 
-	        editorTemplate -callCustom AECoatedDiffuseNew AECoatedReplace "DiffuseTextureLayer";
+	        editorTemplate -callCustom AEGlossyDiffuseNew AEGlossyReplace "DiffuseTextureLayer";
 	        editorTemplate -addControl "DiffuseReflection";
 			editorTemplate -addControl "GlossyColor";
-			editorTemplate -callCustom AECoatedGlossyNew AECoatedReplace "GlossyTextureLayer";
+			editorTemplate -callCustom AEGlossyGlossyNew AEGlossyReplace "GlossyTextureLayer";
 			editorTemplate -addControl "GlossyReflection";
-			editorTemplate -callCustom AECoatedGlReNew AECoatedReplace "GlossyReflectionTexLayer";
+			editorTemplate -callCustom AEGlossyGlReNew AEGlossyReplace "GlossyReflectionTexLayer";
 			editorTemplate -addControl "Exponent";
 			editorTemplate -addControl "AsDiffuse";
 			editorTemplate -addControl "Anisotropic";
 			editorTemplate -addControl "ExponentHorizontal";
 			editorTemplate -addControl "ExponentVertical";
-			editorTemplate -addControl "IOR";
-			editorTemplate -callCustom AECoatedBumpNew AECoatedReplace "BumpTextureLayer";
+			editorTemplate -callCustom AEGlossyBumpNew AEGlossyReplace "BumpTextureLayer";
 		editorTemplate -endLayout;
 
 		
@@ -26,35 +25,35 @@ global proc AEyafCoatedGlossyTemplate(string $nodeName)
 		
 	        
 }
-global proc AECoatedDiffuseNew(string $shaderName)
+global proc AEGlossyDiffuseNew(string $shaderName)
 {
 	setUITemplate -pst attributeEditorTemplate;
 	attrNavigationControlGrp -attribute $shaderName -label "Diffuse Texture Layer" layerInput;
 	setUITemplate -ppt;
-	AECoatedReplace( $shaderName );
+	AEGlossyReplace( $shaderName );
 }
-global proc AECoatedGlossyNew(string $shaderName)
+global proc AEGlossyGlossyNew(string $shaderName)
 {
 	setUITemplate -pst attributeEditorTemplate;
 	attrNavigationControlGrp -attribute $shaderName -label "Glossy Texture Layer" layerInput;
 	setUITemplate -ppt;
-	AECoatedReplace( $shaderName );
+	AEGlossyReplace( $shaderName );
 }
-global proc AECoatedGlReNew(string $shaderName)
+global proc AEGlossyGlReNew(string $shaderName)
 {
 	setUITemplate -pst attributeEditorTemplate;
 	attrNavigationControlGrp -attribute $shaderName -label "Glossy Reflection TexLayer" layerInput;
 	setUITemplate -ppt;
-	AECoatedReplace( $shaderName );
+	AEGlossyReplace( $shaderName );
 }
-global proc AECoatedBumpNew(string $shaderName)
+global proc AEGlossyBumpNew(string $shaderName)
 {
 	setUITemplate -pst attributeEditorTemplate;
 	attrNavigationControlGrp -attribute $shaderName -label "Bump Texture Layer" layerInput;
 	setUITemplate -ppt;
-	AECoatedReplace( $shaderName );
+	AEGlossyReplace( $shaderName );
 }
-global proc AECoatedReplace(string $shaderName)
+global proc AEGlossyReplace(string $shaderName)
 {
 	setUITemplate -pst attributeEditorTemplate;
 	attrNavigationControlGrp -edit -attribute $shaderName layerInput;

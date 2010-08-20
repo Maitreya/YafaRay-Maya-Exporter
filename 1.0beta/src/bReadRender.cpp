@@ -375,3 +375,40 @@ MStatus getRender::getImageHeight(int &height)
 
 	return stat;
 }
+MStatus getRender::getAnimationInfo(int &start, int &end, MString &format)
+{
+	MStatus stat;
+	MString listRnderSetting("ls -type yafRenderSetting");
+	MStringArray listRenderResult;
+	MGlobal::executeCommand(listRnderSetting,listRenderResult);
+
+	MSelectionList list;
+	MGlobal::getSelectionListByName(listRenderResult[0],list);
+	for(unsigned int index=0; index<list.length(); index++)
+	{
+		MObject renderSettingNode;
+		list.getDependNode(index, renderSettingNode);
+		MFnDependencyNode renderFn(renderSettingNode);
+
+		renderFn.findPlug("StartFrame").getValue(start);
+		renderFn.findPlug("EndFrame").getValue(end);
+		short fileFormat;
+		renderFn.findPlug("OutputFileType").getValue(fileFormat);
+		switch (fileFormat)
+		{
+		case 0:
+			format="tiff";
+			break;
+		case 1:
+			format="tga";
+			break;
+		case 2:
+			format="jpg";
+			break;
+		}
+
+	}
+
+
+	return stat;
+}

@@ -14,6 +14,7 @@ class getRender
 		MStatus createRender(yafrayInterface_t &yI);
 		MStatus getImageWidth(int &width);
 		MStatus getImageHeight(int &height);
+		MStatus getAnimationInfo(int &start, int &end, MString &format);
 	private:
 		MStatus setGammaInput(yafrayInterface_t &yI, MFnDependencyNode &renderFn);
 		MStatus readIntegrator(yafrayInterface_t &yI , MFnDependencyNode &renderFn);

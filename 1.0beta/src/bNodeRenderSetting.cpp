@@ -4,6 +4,7 @@
 
 #include <maya/MFnNumericAttribute.h>
 #include <maya/MFnEnumAttribute.h>
+#include <maya/MFnTypedAttribute.h>
 
 const MTypeId renderSettingNode::id(0x75302);
 
@@ -29,6 +30,10 @@ const MTypeId renderSettingNode::id(0x75302);
 	//output settings
 	MObject renderSettingNode::renderWidth;
 	MObject renderSettingNode::renderHeight;
+
+	//animation
+	MObject renderSettingNode::renderStartFrame;
+	MObject renderSettingNode::renderEndFrame;
 
 	MObject renderSettingNode::renderClampRGB;
 	MObject renderSettingNode::renderPremultAlpha;
@@ -82,16 +87,11 @@ const MTypeId renderSettingNode::id(0x75302);
 	MObject renderSettingNode::renderDebugType;//enum
 	MObject renderSettingNode::renderDebugMaps;
 
-    MObject renderSettingNode::renderOutput;
-
 void *renderSettingNode::creator()
 {
 		return new renderSettingNode;
 }
-MStatus renderSettingNode::compute(const MPlug &plug, MDataBlock &data)
-{
-	return MStatus::kSuccess;
-}
+
 
 MStatus renderSettingNode::initialize()
 {
@@ -194,13 +194,24 @@ MStatus renderSettingNode::initialize()
 	 numAttr.setStorable(true);
 	 numAttr.setKeyable(true);
 
+	 //set animation render attributes
+	 renderStartFrame=numAttr.create("StartFrame","start",MFnNumericData::kInt,1);
+	 numAttr.setStorable(true);
+	 numAttr.setKeyable(true);
+	 numAttr.setMin(1);
+
+	 renderEndFrame=numAttr.create("EndFrame","endf",MFnNumericData::kInt,10);
+	 numAttr.setStorable(true);
+	 numAttr.setKeyable(true);
+	 numAttr.setMin(1);
+
+
 	 renderOutputFileType=enumAttr.create("OutputFileType","ropft",0);
-	 enumAttr.addField("TIFF",0);
-	 enumAttr.addField("TGA",1);
-	 enumAttr.addField("PNG",2);
-	 enumAttr.addField("JPEG",3);
-	 enumAttr.addField("HDR",4);
-	 enumAttr.addField("EXR",5);
+	 enumAttr.addField("tiff",0);
+	 enumAttr.addField("tga",1);
+	 enumAttr.addField("jpg",2);
+	 //enumAttr.addField("HDR",4);
+	 //enumAttr.addField("EXR",5);
 	 numAttr.setKeyable(true);
 	 numAttr.setStorable(true);
 
@@ -409,10 +420,6 @@ MStatus renderSettingNode::initialize()
 	 numAttr.setStorable(true);
 	 numAttr.setKeyable(true);
 
-	//an output
-	 renderOutput=numAttr.create("WorldSettingOutput","wwso",MFnNumericData::kBoolean,1);
-	 numAttr.setHidden(true);
-
 	 setAttribute();
 
 
@@ -490,78 +497,6 @@ void renderSettingNode::setAttribute()
 
 	addAttribute(renderDebugType);
 	addAttribute(renderDebugMaps);
-
-	addAttribute(renderOutput);
-
-	attributeAffects(renderRayDepth,renderOutput);
-	attributeAffects(renderTranspShadow,renderOutput);
-	attributeAffects(renderClayRender,renderOutput);
-	attributeAffects(renderShadowDepth,renderOutput);
-	attributeAffects(renderAutoThreads,renderOutput);
-	attributeAffects(renderZBuffer,renderOutput);
-	attributeAffects(renderThreads,renderOutput);
-
-	//output settings
-	attributeAffects(renderWidth,renderOutput);
-	attributeAffects(renderHeight,renderOutput);
-
-	attributeAffects(renderGamma,renderOutput);
-	attributeAffects(renderGammaInput,renderOutput);
-	attributeAffects(renderClampRGB,renderOutput);
-	attributeAffects(renderPremultAlpha,renderOutput);
-	attributeAffects(renderOutputMethod,renderOutput);//enum
-	attributeAffects(renderTileOrder,renderOutput);//enum
-	attributeAffects(renderTileSize,renderOutput);
-	attributeAffects(renderAutoSave,renderOutput);
-	attributeAffects(renderAlpha,renderOutput);
-	attributeAffects(renderShowSampleMask,renderOutput);
-	attributeAffects(renderOutputFileType,renderOutput);//enum
-	attributeAffects(renderDrawParams,renderOutput);
-	//attributeAffects(renderCustomString,renderOutput);//this is text field?
-
-	//AA settings
-	attributeAffects(renderAAPasses,renderOutput);
-	attributeAffects(renderAASamples,renderOutput);
-	attributeAffects(renderAAThreshold,renderOutput);
-	attributeAffects(renderAAIncSamples,renderOutput);
-	attributeAffects(renderFilterType,renderOutput);//enum
-	attributeAffects(renderAAPixelWidth,renderOutput);
-
-    attributeAffects(renderLightType,renderOutput);
-	//direct lighting
-	attributeAffects(renderDirCaustics,renderOutput);
-	attributeAffects(renderPhPhotons,renderOutput);
-	attributeAffects(renderPhCaustixMix,renderOutput);
-	attributeAffects(renderDirCausticDepth,renderOutput);
-	attributeAffects(renderDirCausticRadius,renderOutput);
-	attributeAffects(renderDirAO,renderOutput);
-	attributeAffects(renderDirAOSamples,renderOutput);
-	attributeAffects(renderDirAODist,renderOutput);
-	attributeAffects(renderDirAOColor,renderOutput);
-
-	//pathtracing setting
-	attributeAffects(renderCausticType,renderOutput);//enum
-	//here use direct light's caustic settings
-	attributeAffects(renderGIDepth,renderOutput);
-	attributeAffects(renderUseBG,renderOutput);
-	attributeAffects(renderGIQuality,renderOutput);
-	attributeAffects(renderNoRecursive,renderOutput);
-
-	//photon mapping settings
-	//depth use pathtracing's
-	//phphotons use directlight's
-	attributeAffects(renderPhCausPhotons,renderOutput);
-	attributeAffects(renderPhDiffuseRad,renderOutput);
-	attributeAffects(renderPhCausticRad,renderOutput);
-	attributeAffects(renderPhSearch,renderOutput);
-	//attributeAffects(renderPhCausticMix,renderOutput);//nani?! this shared with directlight too
-	attributeAffects(renderPhFG,renderOutput);
-	attributeAffects(renderPhFGBounces,renderOutput);
-	attributeAffects(renderPhFGSamples,renderOutput);
-	attributeAffects(renderPhShowMap,renderOutput);
-
-	attributeAffects(renderDebugType,renderOutput);
-	attributeAffects(renderDebugMaps,renderOutput);
 
 
 }

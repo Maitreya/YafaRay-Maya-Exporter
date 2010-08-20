@@ -96,12 +96,12 @@ MStatus imageTexNode::initialize()
 	numAttr.setMin(-10.0);
 	numAttr.setMax(10.0);
 
-	imageMaxX=numAttr.create("MaxX","maxx",MFnNumericData::kFloat,0.0);
+	imageMaxX=numAttr.create("MaxX","maxx",MFnNumericData::kFloat,1.0);
 	MAKE_INPUT(numAttr);
 	numAttr.setMin(-10.0);
 	numAttr.setMax(10.0);
 
-	imageMaxY=numAttr.create("MaxY","maxy",MFnNumericData::kFloat,0.0);
+	imageMaxY=numAttr.create("MaxY","maxy",MFnNumericData::kFloat,1.0);
 	MAKE_INPUT(numAttr);
 	numAttr.setMin(-10.0);
 	numAttr.setMax(10.0);

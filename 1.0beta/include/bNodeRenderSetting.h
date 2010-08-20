@@ -8,7 +8,6 @@
 class renderSettingNode : MPxNode
 {
 public:
-	virtual MStatus compute(const MPlug &plug,MDataBlock &data);
 	static void * creator();
 	static MStatus initialize();
 	static const MTypeId id;
@@ -40,6 +39,10 @@ private:
 	//added width, height
 	static MObject renderWidth;
 	static MObject renderHeight;
+	
+	//animation render settings
+	static MObject renderStartFrame;
+	static MObject renderEndFrame;
 
 	static MObject renderClampRGB;
 	static MObject renderPremultAlpha;
@@ -89,9 +92,6 @@ private:
 	//debug settings
 	static MObject renderDebugType;//enum
 	static MObject renderDebugMaps;
-
-	//an output
-	static MObject renderOutput;
 
 
 
