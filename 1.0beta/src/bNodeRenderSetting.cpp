@@ -1,7 +1,7 @@
 #define NOMINMAX
 #define _USE_MATH_DEFINES 1
 #include "bNodeRenderSetting.h"
-
+#include <iostream>
 #include <maya/MFnNumericAttribute.h>
 #include <maya/MFnEnumAttribute.h>
 #include <maya/MFnTypedAttribute.h>

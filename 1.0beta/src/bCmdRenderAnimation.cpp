@@ -16,9 +16,9 @@
 #include <maya/MPlug.h>
 #include <maya/MObject.h>
 #include <maya/MFnDependencyNode.h>
-#include "maya/MPoint.h"
+#include <maya/MPoint.h>
 #include <maya/MImage.h>
-#include "maya/MIOStream.h"
+#include <maya/MIOStream.h>
 #include <maya/MRenderView.h>
 #include<interface/yafrayinterface.h>
 #include <yafraycore/memoryIO.h>

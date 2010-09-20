@@ -1,5 +1,7 @@
 #define NOMINMAX
 #define _USE_MATH_DEFINES 1
+#include <iostream>
+
 #include"bNodeWorldSetting.h"
 #include"bNodeRenderSetting.h"
 #include"bNodeMaterialGlass.h"
@@ -27,13 +29,31 @@
 #include "bNodeTextureMusgrave.h"
 #include "bNodeTextureDisnoise.h"
 #include"bCmdRender.h"
-#include "bCmdRenderPreview.h"
-#include "bCmdRenderAnimation.h"
+//#include "bCmdRenderPreview.h"
+//#include "bCmdRenderAnimation.h"
 
 #include<maya/MFnPlugin.h>
 #include<maya/MString.h>
 
-MStatus initializePlugin(MObject obj)
+#ifdef WIN32
+	#pragma comment(lib,"Foundation.lib")
+	#pragma comment(lib,"OpenMaya.lib")
+	#pragma comment(lib,"OpenMayaFx.lib")
+	#pragma comment(lib,"OpenMayaUi.lib")
+    #pragma comment(lib,"OpenMayaRender.lib")
+	#pragma comment(lib,"Image.lib")
+	#pragma comment(lib,"OpenMayaAnim.lib")
+	#pragma comment(lib,"OpenGl32.lib")
+	#pragma comment(lib,"glu32.lib")
+#endif
+
+#ifdef WIN32
+#define EXPORT __declspec(dllexport)
+#else
+#define EXPORT
+#endif
+
+EXPORT MStatus initializePlugin(MObject obj)
 {
 	MStatus stat;
     const MString MaterialClassify("shader/surface");
@@ -42,8 +62,8 @@ MStatus initializePlugin(MObject obj)
 
 	MFnPlugin plugin(obj,"YafaRay","2011","Any");
 
-	stat=plugin.registerCommand("yafLoad",loadPlugin::creator);
-	if(!stat) stat.perror("register command yafLoad failed");
+	//stat=plugin.registerCommand("yafLoad",loadPlugin::creator);
+	//if(!stat) stat.perror("register command yafLoad failed");
 
 	stat=plugin.registerNode("yafWorldSetting",worldSettingNode::id,worldSettingNode::creator,worldSettingNode::initialize);
 	if(!stat) stat.perror("register node worldSetting failed");
@@ -74,8 +94,8 @@ MStatus initializePlugin(MObject obj)
 	stat=plugin.registerNode("yafAngular",angularNode::id,angularNode::creator,angularNode::initialize);
 	if(!stat) stat.perror("register node yafAngular failed");
 
-	stat=plugin.registerCommand("yafCreateAngular",createAngular::creator);
-	if(!stat) stat.perror("register command yafCreateAngular failed");
+	//stat=plugin.registerCommand("yafCreateAngular",createAngular::creator);
+	//if(!stat) stat.perror("register command yafCreateAngular failed");
 
 	//lights
 	stat=plugin.registerNode("yafPointLight",pointLightNode::id,pointLightNode::creator,pointLightNode::initialize,MPxNode::kLocatorNode,&LightClassify);
@@ -127,11 +147,11 @@ MStatus initializePlugin(MObject obj)
 	stat=plugin.registerCommand("yafRender",renderScene::creator);
 	if(!stat) stat.perror("register command yafRender failed");
 
-	stat=plugin.registerCommand("yafRenderPreview",renderPreview::creator);
-	if(!stat) stat.perror("register command yafRenderPreview failed");
+	//stat=plugin.registerCommand("yafRenderPreview",renderPreview::creator);
+	//if(!stat) stat.perror("register command yafRenderPreview failed");
 
-	stat=plugin.registerCommand("yafRenderAnimation",renderAnimation::creator);
-	if(!stat) stat.perror("register command yafRenderAnimation failed");
+	//stat=plugin.registerCommand("yafRenderAnimation",renderAnimation::creator);
+	//if(!stat) stat.perror("register command yafRenderAnimation failed");
 
 	stat=plugin.registerUI("yafCreateUI","yafDeleteUI");
 	if(!stat) stat.perror("register UI failed");
@@ -139,13 +159,13 @@ MStatus initializePlugin(MObject obj)
 	return stat;
 }
 
-MStatus uninitializePlugin(MObject obj)
+EXPORT MStatus uninitializePlugin(MObject obj)
 {
 	MStatus stat;
 	MFnPlugin plugin(obj);
 
-	stat=plugin.deregisterCommand("yafLoad");
-	if(!stat) stat.perror("deregister command yafLoad failed");
+	//stat=plugin.deregisterCommand("yafLoad");
+	//if(!stat) stat.perror("deregister command yafLoad failed");
 
 	stat=plugin.deregisterNode(worldSettingNode::id);
 	if(!stat) stat.perror("deregister node worldSetting failed");
@@ -176,8 +196,8 @@ MStatus uninitializePlugin(MObject obj)
 	if(!stat) stat.perror("deregister node yafAngular failed");
 
 	//camera
-	stat=plugin.deregisterCommand("yafCreateAngular");
-	if(!stat) stat.perror("deregister command yafCreateAngular failed");
+	//stat=plugin.deregisterCommand("yafCreateAngular");
+	//if(!stat) stat.perror("deregister command yafCreateAngular failed");
 
 	//light
 	stat=plugin.deregisterNode(pointLightNode::id);
@@ -229,11 +249,11 @@ MStatus uninitializePlugin(MObject obj)
 	stat=plugin.deregisterCommand("yafRender");
 	if(!stat) stat.perror("deregister command yafRender failed");
 
-	stat=plugin.deregisterCommand("yafRenderPreview");
-	if(!stat) stat.perror("deregister command yafRenderPreview failed");
+	//stat=plugin.deregisterCommand("yafRenderPreview");
+	//if(!stat) stat.perror("deregister command yafRenderPreview failed");
 
-	stat=plugin.deregisterCommand("yafRenderAnimation");
-	if(!stat) stat.perror("deregister command yafRenderAnimation failed");
+	//stat=plugin.deregisterCommand("yafRenderAnimation");
+	//if(!stat) stat.perror("deregister command yafRenderAnimation failed");
 
 	return stat;
 }

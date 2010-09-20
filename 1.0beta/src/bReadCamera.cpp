@@ -10,7 +10,6 @@
 #include<maya/MVector.h>
 #include<maya/MFnCamera.h>
 #include<maya/MRenderData.h>
-#include<iostream>
 
 MStatus getCamera::readCamera(yafaray::yafrayInterface_t &yI)
 {
@@ -40,9 +39,9 @@ MStatus getCamera::readCamera(yafaray::yafrayInterface_t &yI)
 	cout<<up.x<<up.y<<up.z<<endl;
 
 	//try to find resx, resy, even i don't know what do they mean......
-	MRenderData rData;
-	int resx=rData.resX;
-	int resy=rData.resY;
+	//MRenderData rData;
+	//int resx=rData.resX;
+	//int resy=rData.resY;
 
 
 	yI.paramsClearAll();

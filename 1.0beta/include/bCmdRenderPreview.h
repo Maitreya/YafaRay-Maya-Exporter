@@ -1,5 +1,11 @@
 #define NOMINMAX
 #define _USE_MATH_DEFINES 1
+
+#ifdef WIN32
+#pragma once
+#define NT_PLUGIN
+#endif
+#include <iostream>
 #include <maya/MGlobal.h>
 #include <maya/MPxCommand.h>
 #include <interface/yafrayinterface.h>
@@ -11,6 +17,8 @@ using namespace std;
 
 #ifndef RENDERPREVIEW
 #define RENDERPREVIEW
+
+
 class renderPreview : public MPxCommand
 {
 public:

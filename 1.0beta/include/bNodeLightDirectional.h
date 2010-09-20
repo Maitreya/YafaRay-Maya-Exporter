@@ -1,5 +1,11 @@
 #define NOMINMAX
 #define _USE_MATH_DEFINES 1
+
+#ifdef WIN32
+#pragma once
+#define NT_PLUGIN
+#endif
+#include <iostream>
 #include<maya/MPxLocatorNode.h>
 #include<maya/MTypeId.h>
 #include<maya/M3dView.h>
@@ -7,6 +13,8 @@
 
 #ifndef DIRECTIONALLIGHT
 #define DIRECTIONALLIGHT
+
+
 
 class  directionalLightNode : public MPxLocatorNode
 {

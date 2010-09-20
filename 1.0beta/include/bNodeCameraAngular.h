@@ -1,10 +1,18 @@
 #define NOMINMAX
 #define _USE_MATH_DEFINES 1
+
+#ifdef WIN32
+#pragma once
+#define NT_PLUGIN
+#endif
+
+#include <iostream>
 #include<maya/MPxNode.h>
 #include<maya/MTypeId.h>
 
 #ifndef ANGULAR
 #define ANGULAR
+
 
 class angularNode : public MPxNode
 {

@@ -1,10 +1,18 @@
-#ifndef RENDERSETTING
-#define RENDERSETTING
+#ifdef WIN32
+#pragma once
+#define NT_PLUGIN
+#endif
+
 #define NOMINMAX
 #define _USE_MATH_DEFINES 1
+
+#include <iostream>
+using namespace std;
 #include <maya/MPxNode.h>
 #include <maya/MTypeId.h>
 
+#ifndef RENDERSETTING
+#define RENDERSETTING
 class renderSettingNode : MPxNode
 {
 public:
